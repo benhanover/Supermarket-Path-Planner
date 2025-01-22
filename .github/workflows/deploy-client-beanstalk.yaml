@@ -1,0 +1,38 @@
+name: Deploy web-platform to AWS Elastic Beanstalk
+name: Deploy Next.js App
+
+on:
+  pull_request:
+    types: [closed] 
+    branches:
+      - main
+  workflow_dispatch: 
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true 
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Generate deployment package
+        run: zip -r deploy.zip . -x .git/\* .github/\* .gitignore
+      
+      - name: Change directory to client
+        working-directory: web-platform
+        run: |
+          echo "Moved to project/client"
+
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: "us-east-1"
+          application_name: "web-platform"
+          environment_name: "Web-platform-staging"
+          version_label: "v${{ github.sha }}"
+          deployment_package: "deploy.zip"
+          existing_bucket_name: "elasticbeanstalk-us-east-1-317692226605"
