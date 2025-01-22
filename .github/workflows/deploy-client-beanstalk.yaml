@@ -1,5 +1,4 @@
 name: Deploy web-platform to AWS Elastic Beanstalk
-name: Deploy Next.js App
 
 on:
   pull_request:
