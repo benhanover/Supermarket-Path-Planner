@@ -1,9 +1,10 @@
 import "./App.css";
-
+import { useAuthenticator } from "@aws-amplify/ui-react";
 function App() {
+  const { signOut } = useAuthenticator();
   return (
     <>
-      <div>Hey</div>
+      <button onClick={signOut}>Sign out</button>
     </>
   );
 }
