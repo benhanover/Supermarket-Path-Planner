@@ -32,3 +32,4 @@ jobs:
           environment_name: Web-platform-staging
           version_label: ${{ github.sha }}
           deployment_package: deploy.zip
+          existing_bucket_name: elasticbeanstalk-us-east-1-317692226605
