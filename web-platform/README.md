@@ -1,15 +1,15 @@
+
 ### Development
-
 ```
-docker run -it -v ${PWD}:/app -p 3000:3000 node:18 sh
+docker run -it -v ${PWD}:/app -p 5173:5173 node:18 sh
 cd app
-npm run dev
-open http://localhost:3000
+npm run dev -- --host 0.0.0.0
+http://localhost:5173/
 ```
 
-### Production (before commiting)
+### Before push
 ```
 docker compose up --build
-open http://localhost
+test http://localhost
 docker compose down
 ```

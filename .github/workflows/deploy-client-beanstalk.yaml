@@ -9,12 +9,12 @@ on:
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Generate deployment package
         working-directory: web-platform
@@ -27,9 +27,8 @@ jobs:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_session_token: ${{ secrets.AWS_SESSION_TOKEN }}
-          region: "us-east-1"
-          application_name: "web-platform"
-          environment_name: "Web-platform-staging"
-          version_label: "v${{ github.sha }}"
-          deployment_package: "deploy.zip"
-          existing_bucket_name: "elasticbeanstalk-us-east-1-317692226605"
+          region: us-east-1
+          application_name: web-platform
+          environment_name: Web-platform-staging
+          version_label: ${{ github.sha }}
+          deployment_package: deploy.zip
