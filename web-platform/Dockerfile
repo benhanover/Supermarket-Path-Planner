@@ -1,37 +1,23 @@
-# Step 1: Build the Next.js application
+# Stage 1: Build the app
 FROM node:18 as builder
-
 WORKDIR /app
 
-# Copy package.json and package-lock.json and install dependencies
-COPY package.json package-lock.json ./
+# Install dependencies
+COPY package.json .
 RUN npm install
 
-# Copy the rest of the application code
+# Copy the rest of the application
 COPY . .
 
-# Build the Next.js application
+# Build the app (Vite will output to 'dist' by default)
 RUN npm run build
 
-# Step 2: Set up a Node.js server to run Next.js and serve SSR
-FROM node:18-slim as production
+# Stage 2: Serve the app with Nginx
+FROM nginx:1.21
+EXPOSE 80
 
-WORKDIR /app
+# Copy the build output from the builder stage to Nginx's default HTML directory
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Set NODE_ENV to production for optimized performance
-ENV NODE_ENV=production
-
-# Copy only necessary files for production (build output and package files)
-COPY --from=builder /app/.next /app/.next
-COPY --from=builder /app/public /app/public
-COPY --from=builder /app/package.json /app/package-lock.json /app/
-
-# Install only production dependencies
-RUN npm install --only=production && \
-    npm cache clean --force  # Clean up npm cache to reduce image size
-
-# Expose the app on port 3000 (default for Next.js)
-EXPOSE 3000
-
-# Start the Next.js server
-CMD ["npm", "run", "start"]
+# Optional: You can add a custom Nginx config if needed
+# COPY nginx.conf /etc/nginx/nginx.conf
