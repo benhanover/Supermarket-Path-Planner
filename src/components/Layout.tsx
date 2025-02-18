@@ -1,26 +1,4 @@
-// import React, { useState } from "react";
-// import { Layout as LayoutType } from "../types/layout";
-// import { SquareType } from "../types/square";
-// import Square from "./Square";
-// import SidebarMenu from "./SidebarMenu";
-
-// const ROWS = 20;
-// const COLS = 30;
-
-// const initialLayout: LayoutType = {
-//   rows: ROWS,
-//   cols: COLS,
-//   grid: Array.from({ length: ROWS }, (_, row) =>
-//     Array.from({ length: COLS }, (_, col) => ({
-//       type: "empty",
-//       products: [],
-//       row,
-//       col,
-//     }))
-//   ),
-// };
 import { SquareType, Layout as LayoutType } from "../types";
-import SidebarMenu from "./SidebarMenu"; // Ensure SidebarMenu is correctly imported
 import Square from "./Square"; // Ensure Square component is correctly imported
 import { useState } from "react";
 
@@ -61,13 +39,6 @@ const Layout: React.FC<LayoutProps> = ({
 
   return (
     <div className="flex" onMouseUp={handleMouseUp}>
-      {editMode && (
-        <SidebarMenu
-          selectedType={selectedType}
-          onSelectType={setSelectedType}
-        />
-      )}
-
       <div className="flex flex-col items-center p-4 overflow-auto">
         <div
           className="grid gap-0.5 border border-gray-400"

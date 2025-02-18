@@ -1,48 +1,10 @@
-// import { Button } from "@aws-amplify/ui-react";
-// import { useAuthenticator } from "@aws-amplify/ui-react";
-// import { useState } from "react";
-// import Layout from "./Layout";
-// import { Square, Layout as LayoutType } from "../types";
-
-// const Dashboard = () => {
-//   const { signOut } = useAuthenticator();
-
-//   const handleSquareClick = (row: number, col: number) => {
-//     setLayout((prevLayout) => {
-//       const newLayout = prevLayout.map((r, rowIndex) =>
-//         r.map((square, colIndex) => {
-//           if (rowIndex === row && colIndex === col) {
-//             return new Square(
-//               square.type === "empty" ? "aisle" : "empty",
-//               [],
-//               row,
-//               col
-//             );
-//           }
-//           return square;
-//         })
-//       );
-//       return newLayout;
-//     });
-//   };
-
-//   return (
-//     <div className="dashboard">
-//       <h1>Supermarket Dashboard</h1>
-//       <p>Manage your supermarket layout here.</p>
-//       {/* <Layout layout={layout} onSquareClick={handleSquareClick} /> */}
-//       <Button onClick={signOut}>Sign Out</Button>
-//     </div>
-//   );
-// };
-
-// export default Dashboard;
 import { Button } from "@aws-amplify/ui-react";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useState } from "react";
 import Layout from "./Layout";
 import { SquareType } from "../types/square";
 import { Layout as LayoutType } from "../types/layout";
+import SidebarMenu from "./SidebarMenu";
 
 const ROWS = 20;
 const COLS = 30;
@@ -80,11 +42,40 @@ const Dashboard = () => {
     });
   };
 
+  // return (
+  //   <div className="dashboard flex flex-col items-center p-4">
+  //     <h1>Supermarket Dashboard</h1>
+  //     <p>Manage your supermarket layout here.</p>
+  //     {editMode && (
+  //       <SidebarMenu
+  //         selectedType={selectedType}
+  //         onSelectType={setSelectedType}
+  //       />
+  //     )}
+  //     <button
+  //       onClick={() => setEditMode(!editMode)}
+  //       className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+  //     >
+  //       {editMode ? "Switch to Preview Mode" : "Switch to Edit Mode"}
+  //     </button>
+
+  //     <Layout
+  //       layout={layout}
+  //       onSquareClick={handleSquareClick}
+  //       editMode={editMode}
+  //       selectedType={selectedType}
+  //       setSelectedType={setSelectedType}
+  //     />
+
+  //     <Button onClick={signOut}>Sign Out</Button>
+  //   </div>
+  // );
   return (
     <div className="dashboard flex flex-col items-center p-4">
       <h1>Supermarket Dashboard</h1>
       <p>Manage your supermarket layout here.</p>
 
+      {/* Button to toggle Edit Mode */}
       <button
         onClick={() => setEditMode(!editMode)}
         className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-md"
@@ -92,15 +83,27 @@ const Dashboard = () => {
         {editMode ? "Switch to Preview Mode" : "Switch to Edit Mode"}
       </button>
 
-      <Layout
-        layout={layout}
-        onSquareClick={handleSquareClick}
-        editMode={editMode}
-        selectedType={selectedType}
-        setSelectedType={setSelectedType}
-      />
+      {/* Sidebar & Layout Wrapper */}
+      <div className="flex items-start gap-4">
+        {editMode && (
+          <SidebarMenu
+            selectedType={selectedType}
+            onSelectType={setSelectedType}
+          />
+        )}
 
-      <Button onClick={signOut}>Sign Out</Button>
+        <Layout
+          layout={layout}
+          onSquareClick={handleSquareClick}
+          editMode={editMode}
+          selectedType={selectedType}
+          setSelectedType={setSelectedType}
+        />
+      </div>
+
+      <Button onClick={signOut} className="mt-4">
+        Sign Out
+      </Button>
     </div>
   );
 };
