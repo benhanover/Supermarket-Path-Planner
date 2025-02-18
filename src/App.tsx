@@ -3,10 +3,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import LandingPage from "./pages/LandingPage";
 import Home from "./pages/Home";
 
-export default function App() {
+const App = () => {
   return (
     <Router>
-      {/* <Navbar /> */}
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route
@@ -20,5 +19,6 @@ export default function App() {
       </Routes>
     </Router>
   );
-}
+};
 
+export default App;

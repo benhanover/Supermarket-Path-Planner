@@ -1,6 +1,5 @@
-import React from "react";
 import { Button } from "@aws-amplify/ui-react";
-import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 
 const Dashboard = () => {
   const { signOut } = useAuthenticator();

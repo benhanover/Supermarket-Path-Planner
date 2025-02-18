@@ -1,8 +1,8 @@
 import Dashboard from "../components/Dashboard";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { fetchUserAttributes } from "aws-amplify/auth";
 
-const Home = () => {
+const Home: React.FC = () => {
   useEffect(() => {
     async function getUserAttributes() {
       try {

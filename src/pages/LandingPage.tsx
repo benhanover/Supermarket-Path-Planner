@@ -1,8 +1,9 @@
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { FormFields } from "../types/auth";
 
-const formFields = {
+const formFields: FormFields = {
   signUp: {
     nickname: {
       label: "Supermarket name",
@@ -37,12 +38,12 @@ export default function LandingPage() {
           Sign in or create an account to get started.
         </p>
 
-        {!user ? (
+        {!user && (
           <Authenticator
             formFields={formFields}
             signUpAttributes={["birthdate", "nickname"]}
           />
-        ) : null}
+        )}
       </div>
     </div>
   );
