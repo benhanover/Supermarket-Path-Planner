@@ -1,7 +1,7 @@
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FormFields } from "../types/auth";
+import { FormFields } from "../types";
 
 const formFields: FormFields = {
   signUp: {
