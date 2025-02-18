@@ -40,38 +40,6 @@ const Dashboard = () => {
       return { ...prevLayout, grid: newGrid };
     });
   };
-<<<<<<< HEAD
-=======
-
-  // return (
-  //   <div className="dashboard flex flex-col items-center p-4">
-  //     <h1>Supermarket Dashboard</h1>
-  //     <p>Manage your supermarket layout here.</p>
-  //     {editMode && (
-  //       <SidebarMenu
-  //         selectedType={selectedType}
-  //         onSelectType={setSelectedType}
-  //       />
-  //     )}
-  //     <button
-  //       onClick={() => setEditMode(!editMode)}
-  //       className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-md"
-  //     >
-  //       {editMode ? "Switch to Preview Mode" : "Switch to Edit Mode"}
-  //     </button>
-
-  //     <Layout
-  //       layout={layout}
-  //       onSquareClick={handleSquareClick}
-  //       editMode={editMode}
-  //       selectedType={selectedType}
-  //       setSelectedType={setSelectedType}
-  //     />
-
-  //     <Button onClick={signOut}>Sign Out</Button>
-  //   </div>
-  // );
->>>>>>> staging
   return (
     <div className="dashboard flex flex-col items-center p-4">
       <h1>Supermarket Dashboard</h1>
