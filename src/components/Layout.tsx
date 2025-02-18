@@ -12,13 +12,7 @@ interface LayoutProps {
   setSelectedType: (type: SquareType) => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({
-  layout,
-  onSquareClick,
-  editMode,
-  selectedType,
-  setSelectedType,
-}) => {
+const Layout: React.FC<LayoutProps> = ({ layout, onSquareClick, editMode }) => {
   const [isDragging, setIsDragging] = useState(false);
 
   const handleMouseDown = (row: number, col: number) => {

@@ -8,7 +8,6 @@ import SidebarMenu from "./SidebarMenu";
 
 const ROWS = 20;
 const COLS = 30;
-const SQUARE_SIZE = 24; // Adjust square size here
 
 const createInitialLayout = (): LayoutType => ({
   rows: ROWS,
@@ -41,6 +40,8 @@ const Dashboard = () => {
       return { ...prevLayout, grid: newGrid };
     });
   };
+<<<<<<< HEAD
+=======
 
   // return (
   //   <div className="dashboard flex flex-col items-center p-4">
@@ -70,6 +71,7 @@ const Dashboard = () => {
   //     <Button onClick={signOut}>Sign Out</Button>
   //   </div>
   // );
+>>>>>>> staging
   return (
     <div className="dashboard flex flex-col items-center p-4">
       <h1>Supermarket Dashboard</h1>
