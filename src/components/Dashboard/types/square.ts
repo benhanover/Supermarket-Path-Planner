@@ -2,14 +2,14 @@ import { Product } from "./product";
 
 export type SquareType =
   | "empty"
-  | "aisle"
+  | "products"
   | "cash_register"
   | "entrance"
   | "exit";
 
-export type Square = {
+export interface Square {
   type: SquareType;
   products: Product[];
   row: number;
   col: number;
-};
+}
