@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 import { Layout as LayoutType, SquareType, Square } from "./types";
+import { products } from "./types/product";
 
 const ROWS = 20;
 const COLS = 30;
@@ -10,7 +11,8 @@ const createInitialLayout = (): LayoutType => ({
   grid: Array.from({ length: ROWS }, (_, row) =>
     Array.from({ length: COLS }, (_, col) => ({
       type: "empty",
-      products: [],
+      // products: [],
+      products: products,
       row,
       col,
     }))

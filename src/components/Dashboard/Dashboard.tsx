@@ -1,4 +1,3 @@
-import { Button } from "@aws-amplify/ui-react";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { DashboardProvider, useDashboard } from "./DashboardContext";
 import Layout from "./Layout";
@@ -10,28 +9,46 @@ const DashboardContent = () => {
   const { editMode, setEditMode, selectedSquare } = useDashboard();
 
   return (
-    <div className="dashboard flex flex-col items-center p-4">
-      <h1>Supermarket Dashboard</h1>
-      <p>Manage your supermarket layout here.</p>
+    <div className="Dashboard max-w-5xl w-full mx-auto flex flex-col p-4">
+      <h1 className="text-4xl font-extrabold text-green-800 drop-shadow-md text-center">
+        Supermarket Dashboard
+      </h1>
+      <p className="text-lg text-gray-700 mt-2 text-center">
+        Manage your supermarket layout here.
+      </p>
 
-      {/* Button to toggle Edit Mode */}
-      <button
-        onClick={() => setEditMode(!editMode)}
-        className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-md"
-      >
-        {editMode ? "Switch to Preview Mode" : "Switch to Edit Mode"}
-      </button>
-
-      {/* Sidebar & Layout Wrapper */}
-      <div className="flex items-start gap-4">
-        {editMode && <SidebarMenu />}
-        <Layout />
-        {selectedSquare && <DisplaySquare square={selectedSquare} />}{" "}
+      {/* Toggle Edit Mode Button */}
+      <div className="flex justify-center mt-2">
+        <button
+          onClick={() => setEditMode(!editMode)}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md"
+        >
+          {editMode ? "Switch to Preview Mode" : "Switch to Edit Mode"}
+        </button>
       </div>
 
-      <Button onClick={signOut} className="mt-4">
-        Sign Out
-      </Button>
+      {/* Sidebar & Layout Wrapper */}
+      <div className="flex justify-center items-start gap-4 mt-4">
+        {editMode && <SidebarMenu />}
+        <Layout />
+      </div>
+
+      {/* DisplaySquare Below */}
+      {selectedSquare && (
+        <div className="mt-4 w-full">
+          <DisplaySquare />
+        </div>
+      )}
+
+      {/* Sign Out Button */}
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={signOut}
+          className="px-4 py-2 bg-red-500 text-white rounded-md"
+        >
+          Sign Out
+        </button>
+      </div>
     </div>
   );
 };

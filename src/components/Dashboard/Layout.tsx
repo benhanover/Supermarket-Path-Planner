@@ -25,15 +25,16 @@ const Layout = () => {
   };
 
   return (
-    <div className="flex" onMouseUp={handleMouseUp}>
-      <div className="flex flex-col items-center p-4 overflow-auto">
+    <div className="flex justify-center items-center w-full h-full overflow-hidden">
+      <div
+        className="p-4 overflow-auto border border-gray-300 shadow-lg rounded-lg bg-white"
+        onMouseUp={handleMouseUp}
+      >
         <div
-          className="grid gap-0.5 border border-gray-400"
+          className="grid gap-0.5"
           style={{
-            gridTemplateColumns: `repeat(${layout.cols}, ${SQUARE_SIZE}px)`,
-            gridTemplateRows: `repeat(${layout.rows}, ${SQUARE_SIZE}px)`,
-            width: `${layout.cols * SQUARE_SIZE}px`,
-            height: `${layout.rows * SQUARE_SIZE}px`,
+            gridTemplateColumns: `repeat(${layout.cols}, minmax(20px, ${SQUARE_SIZE}px))`,
+            gridTemplateRows: `repeat(${layout.rows}, minmax(20px, ${SQUARE_SIZE}px))`,
           }}
         >
           {layout.grid.map((row, rowIndex) =>

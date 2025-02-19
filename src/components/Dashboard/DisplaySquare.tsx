@@ -6,7 +6,7 @@ const DisplaySquare = () => {
   if (!selectedSquare) return null; // Don't render if no square is selected
 
   return (
-    <div className="fixed top-10 right-10 bg-white p-4 border rounded shadow-lg">
+    <div className="w-full bg-white p-4 border rounded shadow-lg">
       {/* Close Button */}
       <button
         onClick={() => setSelectedSquare(null)}
@@ -21,16 +21,22 @@ const DisplaySquare = () => {
         📍 Row: {selectedSquare.row}, Col: {selectedSquare.col}
       </p>
 
-      {/* Display Products */}
+      {/* Display Products in a Carousel */}
       <h3 className="text-md font-semibold mt-2">Products:</h3>
       {selectedSquare.products.length > 0 ? (
-        <ul className="mt-2">
-          {selectedSquare.products.map((product) => (
-            <li key={product.id} className="border-b py-1">
-              {product.name} - ${product.price.toFixed(2)}
-            </li>
-          ))}
-        </ul>
+        <div className="overflow-x-auto w-full mt-2">
+          <div className="flex space-x-4">
+            {selectedSquare.products.map((product) => (
+              <div
+                key={product.id}
+                className="flex-none w-48 p-2 bg-gray-100 border rounded-md shadow-md"
+              >
+                <h4 className="font-bold">{product.name}</h4>
+                <p className="text-gray-600">${product.price.toFixed(2)}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       ) : (
         <p className="text-gray-500">No products in this square.</p>
       )}
