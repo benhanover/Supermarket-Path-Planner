@@ -18,8 +18,11 @@ jobs:
         with:
           node-version: 20
 
+      - name: Create mock amplify outputs
+        run: echo '{}' > amplify_outputs.json
+
       - name: Install dependencies
-        run: npm install # or yarn install if using yarn
+        run: npm install
 
       - name: Build project
-        run: npm run build # Ensure this script exists in package.json
+        run: npm run build
