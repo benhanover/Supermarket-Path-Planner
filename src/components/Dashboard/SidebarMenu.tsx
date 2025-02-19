@@ -1,10 +1,5 @@
-import React from "react";
-import { SquareType } from "../types/square";
-
-type SidebarMenuProps = {
-  selectedType: SquareType;
-  onSelectType: (type: SquareType) => void;
-};
+import { useDashboard } from "./DashboardContext";
+import { SquareType } from "../../types/square";
 
 const squareTypes: SquareType[] = [
   "empty",
@@ -14,10 +9,9 @@ const squareTypes: SquareType[] = [
   "exit",
 ];
 
-const SidebarMenu: React.FC<SidebarMenuProps> = ({
-  selectedType,
-  onSelectType,
-}) => {
+const SidebarMenu = () => {
+  const { selectedType, setSelectedType } = useDashboard();
+
   return (
     <div className="p-4 border-r bg-gray-100 min-h-screen">
       <h2 className="text-lg font-bold mb-4">Select Square Type</h2>
@@ -28,7 +22,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
             className={`p-2 border rounded ${
               selectedType === type ? "bg-blue-500 text-white" : "bg-white"
             }`}
-            onClick={() => onSelectType(type)}
+            onClick={() => setSelectedType(type)}
           >
             {type}
           </button>

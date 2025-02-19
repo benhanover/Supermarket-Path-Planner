@@ -1,4 +1,4 @@
-import { Square as SquareType } from "../types/square";
+import { Square as SquareType } from "../../types/square";
 
 interface SquareProps {
   square: SquareType;

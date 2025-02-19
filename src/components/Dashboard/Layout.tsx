@@ -1,29 +1,22 @@
-import { SquareType, Layout as LayoutType } from "../types";
-import Square from "./Square"; // Ensure Square component is correctly imported
 import { useState } from "react";
+import { useDashboard } from "./DashboardContext";
+import Square from "./Square"; // Ensure Square component is correctly imported
 
 const SQUARE_SIZE = 24; // Adjust for bigger squares
 
-interface LayoutProps {
-  layout: LayoutType;
-  onSquareClick: (row: number, col: number) => void;
-  editMode: boolean;
-  selectedType: SquareType;
-  setSelectedType: (type: SquareType) => void;
-}
-
-const Layout: React.FC<LayoutProps> = ({ layout, onSquareClick, editMode }) => {
+const Layout = () => {
+  const { layout, handleSquareClick, editMode } = useDashboard();
   const [isDragging, setIsDragging] = useState(false);
 
   const handleMouseDown = (row: number, col: number) => {
     if (!editMode) return;
     setIsDragging(true);
-    onSquareClick(row, col);
+    handleSquareClick(row, col);
   };
 
   const handleMouseEnter = (row: number, col: number) => {
     if (isDragging) {
-      onSquareClick(row, col);
+      handleSquareClick(row, col);
     }
   };
 
