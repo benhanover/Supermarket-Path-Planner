@@ -1,7 +1,7 @@
 import { Square } from "./square";
 
-export type Layout = {
+export interface Layout {
   rows: number;
   cols: number;
   grid: Square[][];
-};
+}

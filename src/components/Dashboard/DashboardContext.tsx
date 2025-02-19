@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from "react";
-import { Layout as LayoutType } from "../../types/layout";
-import { SquareType } from "../../types/square";
+import { Layout as LayoutType, SquareType, Square } from "./types";
 
 const ROWS = 20;
 const COLS = 30;
@@ -18,7 +17,12 @@ const createInitialLayout = (): LayoutType => ({
   ),
 });
 
-// Define the shape of the context
+export enum EditableAction {
+  None = "none",
+  ModifyLayout = "modify_layout",
+  EditProducts = "edit_products",
+}
+
 interface DashboardContextType {
   layout: LayoutType;
   setLayout: React.Dispatch<React.SetStateAction<LayoutType>>;
@@ -26,7 +30,11 @@ interface DashboardContextType {
   setSelectedType: (type: SquareType) => void;
   editMode: boolean;
   setEditMode: (editMode: boolean) => void;
+  activeAction: EditableAction;
+  setActiveAction: (action: EditableAction) => void;
   handleSquareClick: (row: number, col: number) => void;
+  selectedSquare: Square | null;
+  setSelectedSquare: React.Dispatch<React.SetStateAction<Square | null>>;
 }
 
 // Create the context with default values
@@ -34,23 +42,37 @@ const DashboardContext = createContext<DashboardContextType | undefined>(
   undefined
 );
 
-// Provider component
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const [layout, setLayout] = useState<LayoutType>(createInitialLayout);
   const [selectedType, setSelectedType] = useState<SquareType>("empty");
   const [editMode, setEditMode] = useState(true);
+  // const [activeAction, setActiveAction] = useState<EditableAction>("none");
+  const [activeAction, setActiveAction] = useState<EditableAction>(
+    EditableAction.None
+  );
+  const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
 
   const handleSquareClick = (row: number, col: number) => {
-    setLayout((prevLayout) => {
-      const newGrid = prevLayout.grid.map((r) =>
-        r.map((square) =>
-          square.row === row && square.col === col
-            ? { ...square, type: selectedType }
-            : square
-        )
-      );
-      return { ...prevLayout, grid: newGrid };
-    });
+    const clickedSquare = layout.grid[row][col];
+
+    if (activeAction === "modify_layout") {
+      setLayout((prevLayout) => {
+        const newGrid = prevLayout.grid.map((r) =>
+          r.map((square) =>
+            square.row === row && square.col === col
+              ? { ...square, type: selectedType }
+              : square
+          )
+        );
+        return { ...prevLayout, grid: newGrid };
+      });
+    } else if (
+      activeAction === "edit_products" &&
+      clickedSquare.type === "products"
+      // clickedSquare.type === "aisle"
+    ) {
+      setSelectedSquare(clickedSquare);
+    }
   };
 
   return (
@@ -62,14 +84,17 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         setSelectedType,
         editMode,
         setEditMode,
+        activeAction,
+        setActiveAction,
         handleSquareClick,
+        selectedSquare,
+        setSelectedSquare,
       }}
     >
       {children}
     </DashboardContext.Provider>
   );
 };
-
 // Custom hook for using the context
 export const useDashboard = () => {
   const context = useContext(DashboardContext);

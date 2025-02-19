@@ -1,4 +1,5 @@
-import { Square as SquareType } from "../../types/square";
+import { Square as SquareType } from "./types";
+import { useDashboard } from "./DashboardContext";
 
 interface SquareProps {
   square: SquareType;
@@ -11,9 +12,11 @@ const Square: React.FC<SquareProps> = ({
   onMouseDown,
   onMouseEnter,
 }) => {
+  const { activeAction } = useDashboard();
+
   const getColor = () => {
     switch (square.type) {
-      case "aisle":
+      case "products":
         return "bg-gray-700";
       case "cash_register":
         return "bg-green-500";
@@ -28,7 +31,12 @@ const Square: React.FC<SquareProps> = ({
 
   return (
     <div
-      className={`w-full h-full ${getColor()} cursor-pointer`}
+      className={`w-full h-full ${getColor()} cursor-pointer 
+        ${
+          activeAction == "edit_products" && square.type !== "products"
+            ? "opacity-50 pointer-events-none"
+            : ""
+        }`}
       onMouseDown={() => onMouseDown(square.row, square.col)}
       onMouseEnter={() => onMouseEnter(square.row, square.col)}
     ></div>

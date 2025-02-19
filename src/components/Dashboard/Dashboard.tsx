@@ -1,12 +1,13 @@
 import { Button } from "@aws-amplify/ui-react";
 import { useAuthenticator } from "@aws-amplify/ui-react";
+import { DashboardProvider, useDashboard } from "./DashboardContext";
 import Layout from "./Layout";
 import SidebarMenu from "./SidebarMenu";
-import { DashboardProvider, useDashboard } from "./DashboardContext";
+import DisplaySquare from "./DisplaySquare";
 
 const DashboardContent = () => {
   const { signOut } = useAuthenticator();
-  const { editMode, setEditMode } = useDashboard();
+  const { editMode, setEditMode, selectedSquare } = useDashboard();
 
   return (
     <div className="dashboard flex flex-col items-center p-4">
@@ -25,6 +26,7 @@ const DashboardContent = () => {
       <div className="flex items-start gap-4">
         {editMode && <SidebarMenu />}
         <Layout />
+        {selectedSquare && <DisplaySquare square={selectedSquare} />}{" "}
       </div>
 
       <Button onClick={signOut} className="mt-4">
