@@ -27,6 +27,7 @@ import "@aws-amplify/ui-react/styles.css";
 // Load amplify_outputs.json dynamically to prevent build failures in CI
 async function configureAmplify() {
   try {
+    // @ts-ignore
     const outputs = await import("../amplify_outputs.json");
     Amplify.configure(outputs.default);
   } catch (error) {
