@@ -1,5 +1,6 @@
 import { useDashboard, EditableAction } from "./DashboardContext";
 import { SquareType } from "./types";
+import { useEffect } from "react";
 
 const squareTypes: { type: SquareType; color: string; label: string }[] = [
   { type: "empty", color: "bg-gray-300", label: "Empty" },
@@ -18,6 +19,13 @@ const SidebarMenu = () => {
     editMode,
     setEditMode,
   } = useDashboard();
+
+  // Close active actions when switching to Preview Mode
+  useEffect(() => {
+    if (!editMode) {
+      setActiveAction(EditableAction.None);
+    }
+  }, [editMode, setActiveAction]);
 
   return (
     <div
@@ -38,7 +46,7 @@ const SidebarMenu = () => {
         {editMode ? "Switch to Preview Mode" : "Switch to Edit Mode"}
       </button>
 
-      {/* Modify Layout Button */}
+      {/* Modify Layout Button (Disabled in Preview Mode) */}
       <button
         onClick={() =>
           setActiveAction(
@@ -60,7 +68,7 @@ const SidebarMenu = () => {
           : "Modify Layout"}
       </button>
 
-      {/* Square Type Selection */}
+      {/* Square Type Selection (Only Show When Modifying Layout & Edit Mode is On) */}
       {activeAction === EditableAction.ModifyLayout && editMode && (
         <div className="flex flex-col gap-2">
           <h2 className="text-lg font-bold">Select Square Type</h2>
@@ -77,7 +85,7 @@ const SidebarMenu = () => {
         </div>
       )}
 
-      {/* Edit Products Button */}
+      {/* Edit Products Button (Disabled in Preview Mode) */}
       <button
         onClick={() =>
           setActiveAction(

@@ -3,8 +3,6 @@ import Layout from "./Layout";
 import { useDashboard } from "./DashboardContext";
 
 const LayoutEditor = () => {
-  const { editMode } = useDashboard();
-
   return (
     <div className="flex justify-center items-start gap-4 mt-4">
       <SidebarMenu />

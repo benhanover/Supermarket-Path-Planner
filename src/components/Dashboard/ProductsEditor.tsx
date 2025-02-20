@@ -1,34 +1,43 @@
-import { useState, useEffect } from "react";
-import Products from "./Products";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const ProductsEditor = () => {
-  const [products, setProducts] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [products, setProducts] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    // Fetch products from a free supermarket API
-    fetch("https://fakestoreapi.com/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(data));
+    axios
+      .get("https://fakestoreapi.com/products")
+      .then((response) => setProducts(response.data))
+      .catch((error) => console.error("Error fetching products:", error));
   }, []);
 
   const filteredProducts = products.filter((product) =>
-    product.title.toLowerCase().includes(searchQuery.toLowerCase())
+    product.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="p-4">
-      {/* Search Bar */}
+    <div className="p-4 bg-white rounded-lg shadow-md">
       <input
         type="text"
         placeholder="Search products..."
-        className="p-2 border rounded w-full mb-4"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        className="w-full p-2 mb-4 border rounded"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
       />
-
-      {/* Products Component */}
-      <Products products={filteredProducts} />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {filteredProducts.map((product) => (
+          <div key={product.id} className="p-4 border rounded-lg shadow-sm">
+            <img
+              src={product.image}
+              alt={product.title}
+              className="w-full h-32 object-cover mb-2 rounded"
+            />
+            <h3 className="text-sm font-semibold">{product.title}</h3>
+            <p className="text-gray-500">${product.price}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
