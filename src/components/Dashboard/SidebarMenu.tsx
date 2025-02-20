@@ -2,19 +2,42 @@ import { useDashboard, EditableAction } from "./DashboardContext";
 import { SquareType } from "./types";
 
 const squareTypes: { type: SquareType; color: string; label: string }[] = [
-  { type: "empty", color: "bg-gray-200", label: "Empty" },
-  { type: "products", color: "bg-green-500", label: "Products" },
-  { type: "cash_register", color: "bg-yellow-500", label: "Cash Register" },
-  { type: "entrance", color: "bg-blue-500", label: "Entrance" },
-  { type: "exit", color: "bg-red-500", label: "Exit" },
+  { type: "empty", color: "bg-gray-300", label: "Empty" },
+  { type: "products", color: "bg-green-400", label: "Products" },
+  { type: "cash_register", color: "bg-yellow-400", label: "Cash Register" },
+  { type: "entrance", color: "bg-blue-400", label: "Entrance" },
+  { type: "exit", color: "bg-red-400", label: "Exit" },
 ];
 
 const SidebarMenu = () => {
-  const { selectedType, setSelectedType, activeAction, setActiveAction } =
-    useDashboard();
+  const {
+    selectedType,
+    setSelectedType,
+    activeAction,
+    setActiveAction,
+    editMode,
+    setEditMode,
+  } = useDashboard();
 
   return (
-    <div className="p-4 border-r bg-gray-50 flex flex-col gap-4 w-60">
+    <div
+      className={`p-6 border-r flex flex-col gap-4 w-64 transition-all duration-300 
+        rounded-xl shadow-lg
+        ${editMode ? "bg-gray-800 text-white" : "bg-gray-100"}`}
+    >
+      {/* Toggle Edit Mode */}
+      <button
+        onClick={() => setEditMode(!editMode)}
+        className={`p-3 rounded-lg font-semibold transition w-full 
+          ${
+            editMode
+              ? "bg-gray-600 hover:bg-gray-700 text-white"
+              : "bg-blue-600 hover:bg-blue-700 text-white"
+          }`}
+      >
+        {editMode ? "Switch to Preview Mode" : "Switch to Edit Mode"}
+      </button>
+
       {/* Modify Layout Button */}
       <button
         onClick={() =>
@@ -24,27 +47,28 @@ const SidebarMenu = () => {
               : EditableAction.ModifyLayout
           )
         }
-        className={`p-2 rounded font-bold transition 
+        className={`p-3 rounded-lg font-semibold transition w-full 
           ${
-            activeAction === "modify_layout"
-              ? "bg-red-500 hover:bg-red-600"
-              : "bg-blue-600 hover:bg-blue-700"
-          } 
-          text-white`}
+            activeAction === EditableAction.ModifyLayout
+              ? "bg-red-500 hover:bg-red-600 text-white"
+              : "bg-blue-500 hover:bg-blue-600 text-white"
+          }`}
+        disabled={!editMode}
       >
-        {activeAction === "modify_layout" ? "Back" : "Modify Layout"}
+        {activeAction === EditableAction.ModifyLayout
+          ? "Cancel Layout Edit"
+          : "Modify Layout"}
       </button>
 
-      {/* Square Type Selection (Only Visible When Modifying Layout) */}
-      {activeAction === "modify_layout" && (
+      {/* Square Type Selection */}
+      {activeAction === EditableAction.ModifyLayout && editMode && (
         <div className="flex flex-col gap-2">
           <h2 className="text-lg font-bold">Select Square Type</h2>
-          {squareTypes.map(({ type }) => (
+          {squareTypes.map(({ type, color }) => (
             <button
               key={type}
-              className={`p-2 border rounded ${
-                selectedType === type ? "bg-blue-500 text-white" : "bg-white"
-              }`}
+              className={`p-2 border rounded-lg transition w-full ${color} text-black hover:opacity-75 
+                ${selectedType === type ? "ring-2 ring-blue-500" : ""}`}
               onClick={() => setSelectedType(type)}
             >
               {type}
@@ -53,7 +77,7 @@ const SidebarMenu = () => {
         </div>
       )}
 
-      {/* Add Products Button */}
+      {/* Edit Products Button */}
       <button
         onClick={() =>
           setActiveAction(
@@ -62,15 +86,17 @@ const SidebarMenu = () => {
               : EditableAction.EditProducts
           )
         }
-        className={`p-2 rounded font-bold transition 
+        className={`p-3 rounded-lg font-semibold transition w-full 
           ${
-            activeAction === "edit_products"
-              ? "bg-red-500 hover:bg-red-600"
-              : "bg-green-500 hover:bg-green-600"
-          } 
-          text-white`}
+            activeAction === EditableAction.EditProducts
+              ? "bg-red-500 hover:bg-red-600 text-white"
+              : "bg-green-500 hover:bg-green-600 text-white"
+          }`}
+        disabled={!editMode}
       >
-        {activeAction === "edit_products" ? "Back" : "Edit Products"}
+        {activeAction === EditableAction.EditProducts
+          ? "Cancel Product Edit"
+          : "Edit Products"}
       </button>
 
       {/* Legend Section */}
@@ -79,7 +105,7 @@ const SidebarMenu = () => {
         <div className="flex flex-col gap-2 mt-2">
           {squareTypes.map(({ color, label }) => (
             <div key={label} className="flex items-center gap-2">
-              <div className={`w-4 h-4 ${color} border rounded`}></div>
+              <div className={`w-4 h-4 ${color} border rounded-md`}></div>
               <span className="text-sm">{label}</span>
             </div>
           ))}

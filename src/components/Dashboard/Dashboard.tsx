@@ -1,12 +1,9 @@
-import { useAuthenticator } from "@aws-amplify/ui-react";
 import { DashboardProvider, useDashboard } from "./DashboardContext";
-import Layout from "./Layout";
-import SidebarMenu from "./SidebarMenu";
+import LayoutEditor from "./LayoutEditor";
 import DisplaySquare from "./DisplaySquare";
 
 const DashboardContent = () => {
-  const { signOut } = useAuthenticator();
-  const { editMode, setEditMode, selectedSquare } = useDashboard();
+  const { selectedSquare } = useDashboard();
 
   return (
     <div className="Dashboard max-w-5xl w-full mx-auto flex flex-col p-4">
@@ -17,21 +14,8 @@ const DashboardContent = () => {
         Manage your supermarket layout here.
       </p>
 
-      {/* Toggle Edit Mode Button */}
-      <div className="flex justify-center mt-2">
-        <button
-          onClick={() => setEditMode(!editMode)}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md"
-        >
-          {editMode ? "Switch to Preview Mode" : "Switch to Edit Mode"}
-        </button>
-      </div>
-
       {/* Sidebar & Layout Wrapper */}
-      <div className="flex justify-center items-start gap-4 mt-4">
-        {editMode && <SidebarMenu />}
-        <Layout />
-      </div>
+      <LayoutEditor />
 
       {/* DisplaySquare Below */}
       {selectedSquare && (
@@ -39,16 +23,6 @@ const DashboardContent = () => {
           <DisplaySquare />
         </div>
       )}
-
-      {/* Sign Out Button */}
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={signOut}
-          className="px-4 py-2 bg-red-500 text-white rounded-md"
-        >
-          Sign Out
-        </button>
-      </div>
     </div>
   );
 };
