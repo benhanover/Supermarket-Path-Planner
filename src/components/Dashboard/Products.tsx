@@ -1,4 +1,5 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 interface Product {
   id: number;
@@ -8,32 +9,36 @@ interface Product {
 }
 
 interface ProductsProps {
-  products: Product[];
+  searchTerm: string;
 }
 
-const Products: React.FC<ProductsProps> = ({ products }) => {
+const Products = ({ searchTerm }: ProductsProps) => {
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    axios
+      .get("https://fakestoreapi.com/products")
+      .then((response) => setProducts(response.data))
+      .catch((error) => console.error("Error fetching products:", error));
+  }, []);
+
+  const filteredProducts = products.filter((product) =>
+    product.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {products.length > 0 ? (
-        products.map((product) => (
-          <div
-            key={product.id}
-            className="p-4 border rounded-lg shadow-md bg-white"
-          >
-            <img
-              src={product.image}
-              alt={product.title}
-              className="w-full h-32 object-cover rounded-md mb-2"
-            />
-            <h4 className="font-bold text-sm">{product.title}</h4>
-            <p className="text-gray-600 text-sm">${product.price.toFixed(2)}</p>
-          </div>
-        ))
-      ) : (
-        <p className="text-gray-500 col-span-2 md:col-span-3 lg:col-span-4 text-center">
-          No products found.
-        </p>
-      )}
+      {filteredProducts.map((product) => (
+        <div key={product.id} className="p-4 border rounded-lg shadow-sm">
+          <img
+            src={product.image}
+            alt={product.title}
+            className="w-full h-32 object-cover mb-2 rounded"
+          />
+          <h3 className="text-sm font-semibold">{product.title}</h3>
+          <p className="text-gray-500">${product.price}</p>
+        </div>
+      ))}
     </div>
   );
 };

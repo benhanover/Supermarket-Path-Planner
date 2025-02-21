@@ -1,12 +1,11 @@
 import { DashboardProvider, useDashboard } from "./DashboardContext";
 import LayoutEditor from "./LayoutEditor";
 import ProductsEditor from "./ProductsEditor";
-import DisplaySquare from "./DisplaySquare";
 import { useState } from "react";
+import DisplaySquareWindow from "./DisplaySquareWindows";
 
 const DashboardContent = () => {
-  const [activeTab, setActiveTab] = useState<"layout" | "products">("layout");
-  const { selectedSquare } = useDashboard();
+  const { activeTab, setActiveTab } = useDashboard();
 
   return (
     <div className="max-w-5xl w-full mx-auto p-6 bg-white shadow-lg rounded-xl">
@@ -40,6 +39,20 @@ const DashboardContent = () => {
             <span className="absolute bottom-0 left-0 w-full h-1 bg-green-600 rounded-t-lg"></span>
           )}
         </button>
+        <button
+          className={`px-4 py-2 font-semibold transition rounded-t-lg relative 
+            ${
+              activeTab === "product_square"
+                ? "bg-green-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          onClick={() => setActiveTab("product_square")}
+        >
+          Product Square Editor
+          {activeTab === "product_square" && (
+            <span className="absolute bottom-0 left-0 w-full h-1 bg-purple-600 rounded-t-lg"></span>
+          )}
+        </button>
       </div>
 
       {/* Editor Sections */}
@@ -57,13 +70,13 @@ const DashboardContent = () => {
       >
         <ProductsEditor />
       </div>
-
-      {/* DisplaySquare Always Present */}
-      {selectedSquare && (
-        <div className="mt-4 w-full">
-          <DisplaySquare />
-        </div>
-      )}
+      <div
+        className={`transition-opacity duration-300 ${
+          activeTab === "product_square" ? "opacity-100" : "opacity-0 hidden"
+        }`}
+      >
+        <DisplaySquareWindow />
+      </div>
     </div>
   );
 };
