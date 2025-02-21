@@ -1,53 +1,80 @@
-import { useAuthenticator } from "@aws-amplify/ui-react";
 import { DashboardProvider, useDashboard } from "./DashboardContext";
-import Layout from "./Layout";
-import SidebarMenu from "./SidebarMenu";
-import DisplaySquare from "./DisplaySquare";
+import LayoutEditor from "./LayoutEditor";
+import ProductsEditor from "./ProductsEditor";
+import DisplaySquareWindow from "./DisplaySquareWindows";
 
 const DashboardContent = () => {
-  const { signOut } = useAuthenticator();
-  const { editMode, setEditMode, selectedSquare } = useDashboard();
+  const { activeTab, setActiveTab } = useDashboard();
 
   return (
-    <div className="Dashboard max-w-5xl w-full mx-auto flex flex-col p-4">
-      <h1 className="text-4xl font-extrabold text-green-800 drop-shadow-md text-center">
-        Supermarket Dashboard
-      </h1>
-      <p className="text-lg text-gray-700 mt-2 text-center">
-        Manage your supermarket layout here.
-      </p>
-
-      {/* Toggle Edit Mode Button */}
-      <div className="flex justify-center mt-2">
+    <div className="max-w-5xl w-full mx-auto p-6 bg-white shadow-lg rounded-xl">
+      {/* Navigation Tabs */}
+      <div className="flex space-x-4 border-b pb-2">
         <button
-          onClick={() => setEditMode(!editMode)}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md"
+          className={`px-4 py-2 font-semibold transition rounded-t-lg relative 
+            ${
+              activeTab === "layout"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          onClick={() => setActiveTab("layout")}
         >
-          {editMode ? "Switch to Preview Mode" : "Switch to Edit Mode"}
+          Layout Editor
+          {activeTab === "layout" && (
+            <span className="absolute bottom-0 left-0 w-full h-1 bg-blue-600 rounded-t-lg"></span>
+          )}
+        </button>
+        <button
+          className={`px-4 py-2 font-semibold transition rounded-t-lg relative 
+            ${
+              activeTab === "products"
+                ? "bg-green-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          onClick={() => setActiveTab("products")}
+        >
+          Products Editor
+          {activeTab === "products" && (
+            <span className="absolute bottom-0 left-0 w-full h-1 bg-green-600 rounded-t-lg"></span>
+          )}
+        </button>
+        <button
+          className={`px-4 py-2 font-semibold transition rounded-t-lg relative 
+            ${
+              activeTab === "product_square"
+                ? "bg-green-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          onClick={() => setActiveTab("product_square")}
+        >
+          Product Square Editor
+          {activeTab === "product_square" && (
+            <span className="absolute bottom-0 left-0 w-full h-1 bg-purple-600 rounded-t-lg"></span>
+          )}
         </button>
       </div>
 
-      {/* Sidebar & Layout Wrapper */}
-      <div className="flex justify-center items-start gap-4 mt-4">
-        {editMode && <SidebarMenu />}
-        <Layout />
+      {/* Editor Sections */}
+      <div
+        className={`transition-opacity duration-300 ${
+          activeTab === "layout" ? "opacity-100" : "opacity-0 hidden"
+        }`}
+      >
+        <LayoutEditor />
       </div>
-
-      {/* DisplaySquare Below */}
-      {selectedSquare && (
-        <div className="mt-4 w-full">
-          <DisplaySquare />
-        </div>
-      )}
-
-      {/* Sign Out Button */}
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={signOut}
-          className="px-4 py-2 bg-red-500 text-white rounded-md"
-        >
-          Sign Out
-        </button>
+      <div
+        className={`transition-opacity duration-300 ${
+          activeTab === "products" ? "opacity-100" : "opacity-0 hidden"
+        }`}
+      >
+        <ProductsEditor />
+      </div>
+      <div
+        className={`transition-opacity duration-300 ${
+          activeTab === "product_square" ? "opacity-100" : "opacity-0 hidden"
+        }`}
+      >
+        <DisplaySquareWindow />
       </div>
     </div>
   );

@@ -11,7 +11,6 @@ const createInitialLayout = (): LayoutType => ({
   grid: Array.from({ length: ROWS }, (_, row) =>
     Array.from({ length: COLS }, (_, col) => ({
       type: "empty",
-      // products: [],
       products: products,
       row,
       col,
@@ -34,9 +33,17 @@ interface DashboardContextType {
   setEditMode: (editMode: boolean) => void;
   activeAction: EditableAction;
   setActiveAction: (action: EditableAction) => void;
-  handleSquareClick: (row: number, col: number) => void;
+  handleSquareClick: (
+    row: number,
+    col: number,
+    trigger: "mouse_down" | "mouse_enter"
+  ) => void;
   selectedSquare: Square | null;
   setSelectedSquare: React.Dispatch<React.SetStateAction<Square | null>>;
+  activeTab: "layout" | "products" | "product_square";
+  setActiveTab: React.Dispatch<
+    React.SetStateAction<"layout" | "products" | "product_square">
+  >;
 }
 
 // Create the context with default values
@@ -47,14 +54,20 @@ const DashboardContext = createContext<DashboardContextType | undefined>(
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const [layout, setLayout] = useState<LayoutType>(createInitialLayout);
   const [selectedType, setSelectedType] = useState<SquareType>("empty");
-  const [editMode, setEditMode] = useState(true);
-  // const [activeAction, setActiveAction] = useState<EditableAction>("none");
+  const [editMode, setEditMode] = useState(false);
   const [activeAction, setActiveAction] = useState<EditableAction>(
     EditableAction.None
   );
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
+  const [activeTab, setActiveTab] = useState<
+    "layout" | "products" | "product_square"
+  >("layout");
 
-  const handleSquareClick = (row: number, col: number) => {
+  const handleSquareClick = (
+    row: number,
+    col: number,
+    trigger: "mouse_down" | "mouse_enter"
+  ) => {
     const clickedSquare = layout.grid[row][col];
 
     if (activeAction === "modify_layout") {
@@ -70,10 +83,12 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
       });
     } else if (
       activeAction === "edit_products" &&
-      clickedSquare.type === "products"
-      // clickedSquare.type === "aisle"
+      clickedSquare.type === "products" &&
+      trigger === "mouse_down"
     ) {
       setSelectedSquare(clickedSquare);
+      setEditMode(!editMode);
+      setActiveTab("product_square");
     }
   };
 
@@ -91,6 +106,8 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         handleSquareClick,
         selectedSquare,
         setSelectedSquare,
+        activeTab,
+        setActiveTab,
       }}
     >
       {children}

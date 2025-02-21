@@ -43,7 +43,9 @@ const Square: React.FC<SquareProps> = ({
           : ""
       }`}
       onMouseDown={() => onMouseDown(square.row, square.col)}
-      onMouseEnter={() => onMouseEnter(square.row, square.col)}
+      onMouseEnter={() => {
+        onMouseEnter(square.row, square.col);
+      }}
     ></div>
   );
 };

@@ -11,12 +11,12 @@ const Layout = () => {
   const handleMouseDown = (row: number, col: number) => {
     if (!editMode) return;
     setIsDragging(true);
-    handleSquareClick(row, col);
+    handleSquareClick(row, col, "mouse_down");
   };
 
   const handleMouseEnter = (row: number, col: number) => {
     if (isDragging) {
-      handleSquareClick(row, col);
+      handleSquareClick(row, col, "mouse_enter");
     }
   };
 
