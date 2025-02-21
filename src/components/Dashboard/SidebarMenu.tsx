@@ -46,66 +46,73 @@ const SidebarMenu = () => {
         {editMode ? "Switch to Preview Mode" : "Switch to Edit Mode"}
       </button>
 
-      {/* Modify Layout Button (Disabled in Preview Mode) */}
-      <button
-        onClick={() =>
-          setActiveAction(
-            activeAction === EditableAction.ModifyLayout
-              ? EditableAction.None
-              : EditableAction.ModifyLayout
-          )
-        }
-        className={`p-3 rounded-lg font-semibold transition w-full 
-          ${
-            activeAction === EditableAction.ModifyLayout
-              ? "bg-red-500 hover:bg-red-600 text-white"
-              : "bg-blue-500 hover:bg-blue-600 text-white"
-          }`}
-        disabled={!editMode}
-      >
-        {activeAction === EditableAction.ModifyLayout
-          ? "Cancel Layout Edit"
-          : "Modify Layout"}
-      </button>
-
-      {/* Square Type Selection (Only Show When Modifying Layout & Edit Mode is On) */}
-      {activeAction === EditableAction.ModifyLayout && editMode && (
-        <div className="flex flex-col gap-2">
-          <h2 className="text-lg font-bold">Select Square Type</h2>
-          {squareTypes.map(({ type, color }) => (
+      {/* Hide buttons when in Preview Mode */}
+      {editMode && (
+        <>
+          {/* Modify Layout Button (Hidden when Edit Products is active) */}
+          {activeAction !== EditableAction.EditProducts && (
             <button
-              key={type}
-              className={`p-2 border rounded-lg transition w-full ${color} text-black hover:opacity-75 
-                ${selectedType === type ? "ring-2 ring-blue-500" : ""}`}
-              onClick={() => setSelectedType(type)}
+              onClick={() =>
+                setActiveAction(
+                  activeAction === EditableAction.ModifyLayout
+                    ? EditableAction.None
+                    : EditableAction.ModifyLayout
+                )
+              }
+              className={`p-3 rounded-lg font-semibold transition w-full 
+                ${
+                  activeAction === EditableAction.ModifyLayout
+                    ? "bg-red-500 hover:bg-red-600 text-white"
+                    : "bg-blue-500 hover:bg-blue-600 text-white"
+                }`}
             >
-              {type}
+              {activeAction === EditableAction.ModifyLayout
+                ? "Cancel Layout Edit"
+                : "Modify Layout"}
             </button>
-          ))}
-        </div>
-      )}
+          )}
 
-      {/* Edit Products Button (Disabled in Preview Mode) */}
-      <button
-        onClick={() =>
-          setActiveAction(
-            activeAction === EditableAction.EditProducts
-              ? EditableAction.None
-              : EditableAction.EditProducts
-          )
-        }
-        className={`p-3 rounded-lg font-semibold transition w-full 
-          ${
-            activeAction === EditableAction.EditProducts
-              ? "bg-red-500 hover:bg-red-600 text-white"
-              : "bg-green-500 hover:bg-green-600 text-white"
-          }`}
-        disabled={!editMode}
-      >
-        {activeAction === EditableAction.EditProducts
-          ? "Cancel Product Edit"
-          : "Edit Products"}
-      </button>
+          {/* Square Type Selection (Only Show When Modifying Layout) */}
+          {activeAction === EditableAction.ModifyLayout && (
+            <div className="flex flex-col gap-2">
+              <h2 className="text-lg font-bold">Select Square Type</h2>
+              {squareTypes.map(({ type, color }) => (
+                <button
+                  key={type}
+                  className={`p-2 border rounded-lg transition w-full ${color} text-black hover:opacity-75 
+                    ${selectedType === type ? "ring-2 ring-blue-500" : ""}`}
+                  onClick={() => setSelectedType(type)}
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Edit Products Button (Hidden when Modify Layout is active) */}
+          {activeAction !== EditableAction.ModifyLayout && (
+            <button
+              onClick={() =>
+                setActiveAction(
+                  activeAction === EditableAction.EditProducts
+                    ? EditableAction.None
+                    : EditableAction.EditProducts
+                )
+              }
+              className={`p-3 rounded-lg font-semibold transition w-full 
+                ${
+                  activeAction === EditableAction.EditProducts
+                    ? "bg-red-500 hover:bg-red-600 text-white"
+                    : "bg-green-500 hover:bg-green-600 text-white"
+                }`}
+            >
+              {activeAction === EditableAction.EditProducts
+                ? "Cancel Product Edit"
+                : "Edit Products"}
+            </button>
+          )}
+        </>
+      )}
 
       {/* Legend Section */}
       <div className="mt-6">

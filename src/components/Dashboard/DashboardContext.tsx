@@ -54,7 +54,7 @@ const DashboardContext = createContext<DashboardContextType | undefined>(
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const [layout, setLayout] = useState<LayoutType>(createInitialLayout);
   const [selectedType, setSelectedType] = useState<SquareType>("empty");
-  const [editMode, setEditMode] = useState(true);
+  const [editMode, setEditMode] = useState(false);
   const [activeAction, setActiveAction] = useState<EditableAction>(
     EditableAction.None
   );
@@ -88,8 +88,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     ) {
       setSelectedSquare(clickedSquare);
       setEditMode(!editMode);
-      console.log("test");
-
       setActiveTab("product_square");
     }
   };
