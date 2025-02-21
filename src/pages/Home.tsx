@@ -1,6 +1,6 @@
 import Dashboard from "../components/Dashboard/Dashboard";
-import React, { useEffect } from "react";
-import { fetchUserAttributes } from "aws-amplify/auth";
+// import React, { useEffect } from "react";
+// import { fetchUserAttributes } from "aws-amplify/auth";
 
 const Home: React.FC = () => {
   // useEffect(() => {

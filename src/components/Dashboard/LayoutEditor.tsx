@@ -1,6 +1,5 @@
 import SidebarMenu from "./SidebarMenu";
 import Layout from "./Layout";
-import { useDashboard } from "./DashboardContext";
 
 const LayoutEditor = () => {
   return (

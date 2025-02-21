@@ -12,7 +12,7 @@ const Products = ({ searchTerm, renderProduct }: ProductsProps) => {
 
   useEffect(() => {
     axios
-      .get("https://fakestoreapi.com/products")
+      .get<Product[]>("https://fakestoreapi.com/products")
       .then((response) => {
         setProducts(response.data);
       })

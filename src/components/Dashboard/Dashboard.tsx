@@ -1,7 +1,6 @@
 import { DashboardProvider, useDashboard } from "./DashboardContext";
 import LayoutEditor from "./LayoutEditor";
 import ProductsEditor from "./ProductsEditor";
-import { useState } from "react";
 import DisplaySquareWindow from "./DisplaySquareWindows";
 
 const DashboardContent = () => {
