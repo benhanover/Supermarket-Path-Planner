@@ -12,7 +12,6 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
   const {
     selectedSquare,
     setSelectedSquare,
-    layout,
     setLayout,
     products,
     setProducts,
@@ -20,9 +19,7 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [editProduct, setEditProduct] = useState<Product | null>(null);
 
-  // ✅ If in "square" mode, use selected square's products. Otherwise, use global products.
-  const productList =
-    mode === "square" ? selectedSquare?.products || [] : products;
+  mode === "square" ? selectedSquare?.products || [] : products;
 
   // ✅ Function to update a product globally AND inside all squares
   const updateProduct = (updatedProduct: Product) => {
