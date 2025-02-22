@@ -30,7 +30,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       }
 
       const attributes = await fetchUserAttributes();
-      console.log("Fetched user attributes:", attributes);
 
       const formattedUser: User = {
         address: attributes.address || "",

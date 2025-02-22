@@ -80,7 +80,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   // ✅ Initialize layout only when user is available
   useEffect(() => {
     if (user) {
-      console.log("Initializing layout with user values:", user);
       setLayout(createInitialLayout(user));
     }
   }, [user]);

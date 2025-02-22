@@ -1,7 +1,13 @@
 import { useDashboard, EditableAction } from "../DashboardContext";
+import { useAppContext } from "../../../context/AppContext";
 import { SquareType } from "../types";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import {
+  updateUserAttributes,
+  type UpdateUserAttributesOutput,
+} from "aws-amplify/auth";
 
+// Square types with colors for UI
 const squareTypes: { type: SquareType; color: string; label: string }[] = [
   { type: "empty", color: "bg-gray-300", label: "Empty" },
   { type: "products", color: "bg-green-400", label: "Products" },
@@ -18,7 +24,14 @@ const SidebarMenu = () => {
     setActiveAction,
     editMode,
     setEditMode,
+    setLayout,
   } = useDashboard();
+
+  const { user, setUser } = useAppContext(); // ✅ Get user and setter from AppContext
+
+  const [showSizePrompt, setShowSizePrompt] = useState(false);
+  const [newRows, setNewRows] = useState<number | "">(user?.layoutRows || 50);
+  const [newCols, setNewCols] = useState<number | "">(user?.layoutCols || 30);
 
   // Close active actions when switching to Preview Mode
   useEffect(() => {
@@ -27,16 +40,73 @@ const SidebarMenu = () => {
     }
   }, [editMode, setActiveAction]);
 
+  // ✅ Function to confirm new layout size
+  const confirmLayoutSize = async () => {
+    if (!newRows || !newCols) {
+      alert("Please enter valid numbers for rows and columns.");
+      return;
+    }
+
+    const confirmChange = window.confirm(
+      `Are you sure you want to reset the layout to ${newRows} rows and ${newCols} columns? This will erase all current data.`
+    );
+
+    if (!confirmChange) return; // ✅ Stop if user cancels
+
+    try {
+      console.log("Updating layout size to Rows:", newRows, "Cols:", newCols);
+
+      // ✅ Update user attributes in Cognito
+      await updateUserAttributes({
+        userAttributes: {
+          "custom:layout_rows": newRows.toString(),
+          "custom:layout_cols": newCols.toString(),
+        },
+      });
+
+      // ✅ Update user state in AppContext
+      setUser((prevUser) => ({
+        ...prevUser,
+        layoutRows: parseInt(newRows.toString(), 10),
+        layoutCols: parseInt(newCols.toString(), 10),
+      }));
+
+      // ✅ Update layout state in DashboardContext
+      setLayout({
+        rows: parseInt(newRows.toString(), 10),
+        cols: parseInt(newCols.toString(), 10),
+        grid: Array.from(
+          { length: parseInt(newRows.toString(), 10) },
+          (_, row) =>
+            Array.from(
+              { length: parseInt(newCols.toString(), 10) },
+              (_, col) => ({
+                type: "empty",
+                products: [],
+                row,
+                col,
+              })
+            )
+        ),
+      });
+
+      setShowSizePrompt(false);
+      setActiveAction(EditableAction.None);
+    } catch (error) {
+      console.error("Failed to update layout size:", error);
+    }
+  };
+
   return (
     <div
-      className={`p-6 border-r flex flex-col gap-4 w-64 transition-all duration-300 
+      className={`p-6 border-r flex flex-col gap-4 w-64 transition-all duration-300
         rounded-xl shadow-lg
         ${editMode ? "bg-gray-800 text-white" : "bg-gray-100"}`}
     >
       {/* Toggle Edit Mode */}
       <button
         onClick={() => setEditMode(!editMode)}
-        className={`p-3 rounded-lg font-semibold transition w-full 
+        className={`p-3 rounded-lg font-semibold transition w-full
           ${
             editMode
               ? "bg-gray-600 hover:bg-gray-700 text-white"
@@ -49,37 +119,38 @@ const SidebarMenu = () => {
       {/* Hide buttons when in Preview Mode */}
       {editMode && (
         <>
-          {/* Modify Layout Button (Hidden when Edit Products is active) */}
-          {activeAction !== EditableAction.EditProducts && (
-            <button
-              onClick={() =>
-                setActiveAction(
-                  activeAction === EditableAction.ModifyLayout
-                    ? EditableAction.None
-                    : EditableAction.ModifyLayout
-                )
-              }
-              className={`p-3 rounded-lg font-semibold transition w-full 
+          {/* Modify Layout Button */}
+          {activeAction !== EditableAction.EditProducts &&
+            activeAction !== EditableAction.ChangeLayoutSize && (
+              <button
+                onClick={() =>
+                  setActiveAction(
+                    activeAction === EditableAction.ModifyLayout
+                      ? EditableAction.None
+                      : EditableAction.ModifyLayout
+                  )
+                }
+                className={`p-3 rounded-lg font-semibold transition w-full
                 ${
                   activeAction === EditableAction.ModifyLayout
                     ? "bg-red-500 hover:bg-red-600 text-white"
                     : "bg-blue-500 hover:bg-blue-600 text-white"
                 }`}
-            >
-              {activeAction === EditableAction.ModifyLayout
-                ? "Cancel Layout Edit"
-                : "Modify Layout"}
-            </button>
-          )}
+              >
+                {activeAction === EditableAction.ModifyLayout
+                  ? "Cancel Layout Edit"
+                  : "Modify Layout"}
+              </button>
+            )}
 
-          {/* Square Type Selection (Only Show When Modifying Layout) */}
+          {/* Square Type Selection */}
           {activeAction === EditableAction.ModifyLayout && (
             <div className="flex flex-col gap-2">
               <h2 className="text-lg font-bold">Select Square Type</h2>
               {squareTypes.map(({ type, color }) => (
                 <button
                   key={type}
-                  className={`p-2 border rounded-lg transition w-full ${color} text-black hover:opacity-75 
+                  className={`p-2 border rounded-lg transition w-full ${color} text-black hover:opacity-75
                     ${selectedType === type ? "ring-2 ring-blue-500" : ""}`}
                   onClick={() => setSelectedType(type)}
                 >
@@ -89,32 +160,85 @@ const SidebarMenu = () => {
             </div>
           )}
 
-          {/* Edit Products Button (Hidden when Modify Layout is active) */}
-          {activeAction !== EditableAction.ModifyLayout && (
-            <button
-              onClick={() =>
-                setActiveAction(
-                  activeAction === EditableAction.EditProducts
-                    ? EditableAction.None
-                    : EditableAction.EditProducts
-                )
-              }
-              className={`p-3 rounded-lg font-semibold transition w-full 
+          {/* Edit Products Button */}
+          {activeAction !== EditableAction.ModifyLayout &&
+            activeAction !== EditableAction.ChangeLayoutSize && (
+              <button
+                onClick={() =>
+                  setActiveAction(
+                    activeAction === EditableAction.EditProducts
+                      ? EditableAction.None
+                      : EditableAction.EditProducts
+                  )
+                }
+                className={`p-3 rounded-lg font-semibold transition w-full
                 ${
                   activeAction === EditableAction.EditProducts
                     ? "bg-red-500 hover:bg-red-600 text-white"
                     : "bg-green-500 hover:bg-green-600 text-white"
                 }`}
-            >
-              {activeAction === EditableAction.EditProducts
-                ? "Cancel Product Edit"
-                : "Edit Products"}
-            </button>
-          )}
+              >
+                {activeAction === EditableAction.EditProducts
+                  ? "Cancel Product Edit"
+                  : "Edit Products"}
+              </button>
+            )}
+
+          {/* Change Layout Size Button */}
+          {activeAction !== EditableAction.ModifyLayout &&
+            activeAction !== EditableAction.EditProducts && (
+              <button
+                onClick={() => {
+                  setActiveAction(
+                    activeAction === EditableAction.ChangeLayoutSize
+                      ? EditableAction.None
+                      : EditableAction.ChangeLayoutSize
+                  );
+                  setShowSizePrompt(true);
+                }}
+                className={`p-3 rounded-lg font-semibold transition w-full
+                ${
+                  activeAction === EditableAction.ChangeLayoutSize
+                    ? "bg-red-500 hover:bg-red-600 text-white"
+                    : "bg-purple-500 hover:bg-purple-600 text-white"
+                }`}
+              >
+                {activeAction === EditableAction.ChangeLayoutSize
+                  ? "Cancel Layout Change"
+                  : "Change Layout Size"}
+              </button>
+            )}
         </>
       )}
 
-      {/* Legend Section */}
+      {/* Layout Size Input Prompt */}
+      {showSizePrompt && activeAction === EditableAction.ChangeLayoutSize && (
+        <div className="p-4 border rounded-lg bg-gray-200 text-black mt-4">
+          <h3 className="text-md font-bold">Enter New Layout Size</h3>
+          <input
+            type="number"
+            placeholder="Rows"
+            className="w-full p-2 mt-2 border rounded"
+            value={newRows}
+            onChange={(e) => setNewRows(Number(e.target.value) || "")}
+          />
+          <input
+            type="number"
+            placeholder="Columns"
+            className="w-full p-2 mt-2 border rounded"
+            value={newCols}
+            onChange={(e) => setNewCols(Number(e.target.value) || "")}
+          />
+          <button
+            className="mt-3 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+            onClick={confirmLayoutSize}
+          >
+            Confirm
+          </button>
+        </div>
+      )}
+
+      {/* ✅ Restored Legend Section */}
       <div className="mt-6">
         <h3 className="text-md font-bold">Legend</h3>
         <div className="flex flex-col gap-2 mt-2">
