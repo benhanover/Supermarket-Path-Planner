@@ -1,6 +1,13 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { Layout as LayoutType, SquareType, Square } from "./types";
-import { products } from "./types/product";
+import { Product } from "./types/product"; // ✅ Import Product type
+import axios from "axios"; // ✅ Import Axios
 
 const ROWS = 20;
 const COLS = 30;
@@ -11,7 +18,7 @@ const createInitialLayout = (): LayoutType => ({
   grid: Array.from({ length: ROWS }, (_, row) =>
     Array.from({ length: COLS }, (_, col) => ({
       type: "empty",
-      products: products,
+      products: [], // ✅ No predefined products
       row,
       col,
     }))
@@ -44,9 +51,10 @@ interface DashboardContextType {
   setActiveTab: React.Dispatch<
     React.SetStateAction<"layout" | "products" | "product_square">
   >;
+  products: Product[]; // ✅ Store fetched products
+  setProducts: React.Dispatch<React.SetStateAction<Product[]>>; // ✅ Allow updates
 }
 
-// Create the context with default values
 const DashboardContext = createContext<DashboardContextType | undefined>(
   undefined
 );
@@ -62,6 +70,17 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const [activeTab, setActiveTab] = useState<
     "layout" | "products" | "product_square"
   >("layout");
+  const [products, setProducts] = useState<Product[]>([]); // ✅ Products state
+
+  // ✅ Fetch products from API when component mounts
+  useEffect(() => {
+    axios
+      .get<Product[]>("https://fakestoreapi.com/products")
+      .then((response) => {
+        setProducts(response.data); // ✅ Store products in state
+      })
+      .catch((error) => console.error("Error fetching products:", error));
+  }, []);
 
   const handleSquareClick = (
     row: number,
@@ -108,12 +127,15 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         setSelectedSquare,
         activeTab,
         setActiveTab,
+        products, // ✅ Provide products
+        setProducts, // ✅ Provide setter
       }}
     >
       {children}
     </DashboardContext.Provider>
   );
 };
+
 // Custom hook for using the context
 export const useDashboard = () => {
   const context = useContext(DashboardContext);

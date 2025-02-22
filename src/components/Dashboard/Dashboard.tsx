@@ -1,7 +1,7 @@
 import { DashboardProvider, useDashboard } from "./DashboardContext";
-import LayoutEditor from "./LayoutEditor";
-import ProductsEditor from "./ProductsEditor";
-import DisplaySquareWindow from "./DisplaySquareWindows";
+import LayoutEditor from "./Layout/LayoutEditor";
+import ProductsEditor from "./Products/ProductsEditor";
+import ProductSquareEditor from "./Product_Square_Editor/ProductSquareEditor";
 
 const DashboardContent = () => {
   const { activeTab, setActiveTab } = useDashboard();
@@ -20,9 +20,6 @@ const DashboardContent = () => {
           onClick={() => setActiveTab("layout")}
         >
           Layout Editor
-          {activeTab === "layout" && (
-            <span className="absolute bottom-0 left-0 w-full h-1 bg-blue-600 rounded-t-lg"></span>
-          )}
         </button>
         <button
           className={`px-4 py-2 font-semibold transition rounded-t-lg relative 
@@ -34,47 +31,29 @@ const DashboardContent = () => {
           onClick={() => setActiveTab("products")}
         >
           Products Editor
-          {activeTab === "products" && (
-            <span className="absolute bottom-0 left-0 w-full h-1 bg-green-600 rounded-t-lg"></span>
-          )}
         </button>
         <button
           className={`px-4 py-2 font-semibold transition rounded-t-lg relative 
             ${
               activeTab === "product_square"
-                ? "bg-green-600 text-white"
+                ? "bg-purple-600 text-white" /* ✅ Changed from green to purple */
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           onClick={() => setActiveTab("product_square")}
         >
           Product Square Editor
-          {activeTab === "product_square" && (
-            <span className="absolute bottom-0 left-0 w-full h-1 bg-purple-600 rounded-t-lg"></span>
-          )}
         </button>
       </div>
 
       {/* Editor Sections */}
-      <div
-        className={`transition-opacity duration-300 ${
-          activeTab === "layout" ? "opacity-100" : "opacity-0 hidden"
-        }`}
-      >
+      <div className={`${activeTab === "layout" ? "block" : "hidden"}`}>
         <LayoutEditor />
       </div>
-      <div
-        className={`transition-opacity duration-300 ${
-          activeTab === "products" ? "opacity-100" : "opacity-0 hidden"
-        }`}
-      >
-        <ProductsEditor />
+      <div className={`${activeTab === "products" ? "block" : "hidden"}`}>
+        <ProductsEditor mode="global" />
       </div>
-      <div
-        className={`transition-opacity duration-300 ${
-          activeTab === "product_square" ? "opacity-100" : "opacity-0 hidden"
-        }`}
-      >
-        <DisplaySquareWindow />
+      <div className={`${activeTab === "product_square" ? "block" : "hidden"}`}>
+        <ProductSquareEditor />
       </div>
     </div>
   );

@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useDashboard } from "./DashboardContext";
-import DisplaySquare from "./Product_Square_Editor/DisplaySquare";
-import ProductsEditor from "./ProductsEditor";
-import { EditableAction } from "./DashboardContext";
+import { useDashboard } from "../DashboardContext";
+import DisplaySquare from "./DisplaySquare";
+import ProductsEditor from "../Products/ProductsEditor";
+import { EditableAction } from "../DashboardContext";
 
-const DisplaySquareWindow = () => {
+const ProductSquareEditor = () => {
   const [showProductsEditor, setShowProductsEditor] = useState(false);
   const { selectedSquare, setEditMode, setActiveTab, setActiveAction } =
     useDashboard();
@@ -37,9 +37,9 @@ const DisplaySquareWindow = () => {
       >
         Add or Remove Products
       </button>
-      {showProductsEditor && <ProductsEditor />}
+      {showProductsEditor && <ProductsEditor mode="square" />}
     </div>
   );
 };
 
-export default DisplaySquareWindow;
+export default ProductSquareEditor;
