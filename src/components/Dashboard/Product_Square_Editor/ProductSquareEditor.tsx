@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useDashboard } from "./DashboardContext";
+import { useDashboard } from "../DashboardContext";
 import DisplaySquare from "./DisplaySquare";
-import ProductsEditor from "./ProductsEditor";
-import { EditableAction } from "./DashboardContext";
+import ProductsEditor from "../Products/ProductsEditor";
+import { EditableAction } from "../DashboardContext";
 
-const DisplaySquareWindow = () => {
+const ProductSquareEditor = () => {
   const [showProductsEditor, setShowProductsEditor] = useState(false);
   const { selectedSquare, setEditMode, setActiveTab, setActiveAction } =
     useDashboard();
@@ -42,4 +42,4 @@ const DisplaySquareWindow = () => {
   );
 };
 
-export default DisplaySquareWindow;
+export default ProductSquareEditor;

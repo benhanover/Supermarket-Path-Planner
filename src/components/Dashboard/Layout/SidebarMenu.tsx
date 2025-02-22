@@ -1,5 +1,5 @@
-import { useDashboard, EditableAction } from "./DashboardContext";
-import { SquareType } from "./types";
+import { useDashboard, EditableAction } from "../DashboardContext";
+import { SquareType } from "../types";
 import { useEffect } from "react";
 
 const squareTypes: { type: SquareType; color: string; label: string }[] = [

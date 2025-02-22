@@ -1,7 +1,7 @@
 import { DashboardProvider, useDashboard } from "./DashboardContext";
-import LayoutEditor from "./LayoutEditor";
-import ProductsEditor from "./ProductsEditor";
-import DisplaySquareWindow from "./DisplaySquareWindows";
+import LayoutEditor from "./Layout/LayoutEditor";
+import ProductsEditor from "./Products/ProductsEditor";
+import ProductSquareEditor from "./Product_Square_Editor/ProductSquareEditor";
 
 const DashboardContent = () => {
   const { activeTab, setActiveTab } = useDashboard();
@@ -36,7 +36,7 @@ const DashboardContent = () => {
           className={`px-4 py-2 font-semibold transition rounded-t-lg relative 
             ${
               activeTab === "product_square"
-                ? "bg-green-600 text-white"
+                ? "bg-purple-600 text-white" /* ✅ Changed from green to purple */
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           onClick={() => setActiveTab("product_square")}
@@ -53,7 +53,7 @@ const DashboardContent = () => {
         <ProductsEditor mode="global" />
       </div>
       <div className={`${activeTab === "product_square" ? "block" : "hidden"}`}>
-        <DisplaySquareWindow />
+        <ProductSquareEditor />
       </div>
     </div>
   );

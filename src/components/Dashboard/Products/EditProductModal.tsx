@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Product } from "./types/product";
+import { Product } from "../types/product";
 
 interface EditProductModalProps {
   product: Product;

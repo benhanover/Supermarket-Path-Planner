@@ -1,4 +1,4 @@
-import { useDashboard } from "./DashboardContext";
+import { useDashboard } from "../DashboardContext";
 
 const DisplaySquare = () => {
   const { selectedSquare, setSelectedSquare } = useDashboard();

@@ -1,5 +1,5 @@
-import { Square as SquareType } from "./types";
-import { useDashboard } from "./DashboardContext";
+import { Square as SquareType } from "../types";
+import { useDashboard } from "../DashboardContext";
 
 interface SquareProps {
   square: SquareType;
