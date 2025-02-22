@@ -21,5 +21,21 @@ export const auth = defineAuth({
       mutable: true,
       required: false,
     },
+    "custom:layout_rows": {
+      dataType: "Number",
+      mutable: true,
+      min: 1,
+      max: 10000,
+    },
+    "custom:layout_cols": {
+      dataType: "Number",
+      mutable: true,
+      min: 1,
+      max: 10000,
+    },
+    "custom:supermarket_name": {
+      dataType: "String",
+      mutable: true,
+    },
   },
 });

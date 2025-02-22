@@ -6,19 +6,20 @@ import {
   ReactNode,
 } from "react";
 import { Layout as LayoutType, SquareType, Square } from "./types";
-import { Product } from "./types/product"; // ✅ Import Product type
-import axios from "axios"; // ✅ Import Axios
+import { Product } from "./types/product";
+import { useAppContext } from "../../context/AppContext";
+import axios from "axios";
 
-const ROWS = 20;
-const COLS = 30;
-
-const createInitialLayout = (): LayoutType => ({
-  rows: ROWS,
-  cols: COLS,
-  grid: Array.from({ length: ROWS }, (_, row) =>
-    Array.from({ length: COLS }, (_, col) => ({
+const createInitialLayout = (user: {
+  layoutRows: number;
+  layoutCols: number;
+}): LayoutType => ({
+  rows: user.layoutRows,
+  cols: user.layoutCols,
+  grid: Array.from({ length: user.layoutRows }, (_, row) =>
+    Array.from({ length: user.layoutCols }, (_, col) => ({
       type: "empty",
-      products: [], // ✅ No predefined products
+      products: [],
       row,
       col,
     }))
@@ -29,11 +30,12 @@ export enum EditableAction {
   None = "none",
   ModifyLayout = "modify_layout",
   EditProducts = "edit_products",
+  ChangeLayoutSize = "change_layout_size",
 }
 
 interface DashboardContextType {
-  layout: LayoutType;
-  setLayout: React.Dispatch<React.SetStateAction<LayoutType>>;
+  layout: LayoutType | null; // ✅ `null` until user is available
+  setLayout: React.Dispatch<React.SetStateAction<LayoutType | null>>;
   selectedType: SquareType;
   setSelectedType: (type: SquareType) => void;
   editMode: boolean;
@@ -51,8 +53,9 @@ interface DashboardContextType {
   setActiveTab: React.Dispatch<
     React.SetStateAction<"layout" | "products" | "product_square">
   >;
-  products: Product[]; // ✅ Store fetched products
-  setProducts: React.Dispatch<React.SetStateAction<Product[]>>; // ✅ Allow updates
+  products: Product[];
+  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  loading: boolean; // ✅ Track loading state
 }
 
 const DashboardContext = createContext<DashboardContextType | undefined>(
@@ -60,7 +63,8 @@ const DashboardContext = createContext<DashboardContextType | undefined>(
 );
 
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
-  const [layout, setLayout] = useState<LayoutType>(createInitialLayout);
+  const { user, loading: userLoading } = useAppContext(); // ✅ Get `user` & `loading` state
+  const [layout, setLayout] = useState<LayoutType | null>(null); // ✅ No default values
   const [selectedType, setSelectedType] = useState<SquareType>("empty");
   const [editMode, setEditMode] = useState(false);
   const [activeAction, setActiveAction] = useState<EditableAction>(
@@ -70,27 +74,40 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const [activeTab, setActiveTab] = useState<
     "layout" | "products" | "product_square"
   >("layout");
-  const [products, setProducts] = useState<Product[]>([]); // ✅ Products state
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true); // ✅ Track loading state for products
 
-  // ✅ Fetch products from API when component mounts
+  // ✅ Initialize layout only when user is available
   useEffect(() => {
+    if (user) {
+      console.log("Initializing layout with user values:", user);
+      setLayout(createInitialLayout(user));
+    }
+  }, [user]);
+
+  // ✅ Fetch products when user is available
+  useEffect(() => {
+    if (!user) return;
+    setLoading(true);
     axios
       .get<Product[]>("https://fakestoreapi.com/products")
-      .then((response) => {
-        setProducts(response.data); // ✅ Store products in state
-      })
-      .catch((error) => console.error("Error fetching products:", error));
-  }, []);
+      .then((response) => setProducts(response.data))
+      .catch((error) => console.error("Error fetching products:", error))
+      .finally(() => setLoading(false));
+  }, [user]);
 
   const handleSquareClick = (
     row: number,
     col: number,
     trigger: "mouse_down" | "mouse_enter"
   ) => {
+    if (!layout) return; // ✅ Ensure layout is ready before interacting
+
     const clickedSquare = layout.grid[row][col];
 
     if (activeAction === "modify_layout") {
       setLayout((prevLayout) => {
+        if (!prevLayout) return null;
         const newGrid = prevLayout.grid.map((r) =>
           r.map((square) =>
             square.row === row && square.col === col
@@ -111,6 +128,11 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // ✅ Show a loader if user or layout is still loading
+  if (userLoading || !layout) {
+    return <div className="text-center text-gray-600 text-lg">Loading...</div>;
+  }
+
   return (
     <DashboardContext.Provider
       value={{
@@ -127,8 +149,9 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         setSelectedSquare,
         activeTab,
         setActiveTab,
-        products, // ✅ Provide products
-        setProducts, // ✅ Provide setter
+        products,
+        setProducts,
+        loading,
       }}
     >
       {children}
@@ -136,7 +159,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Custom hook for using the context
+// ✅ Custom hook for using the context
 export const useDashboard = () => {
   const context = useContext(DashboardContext);
   if (!context) {
