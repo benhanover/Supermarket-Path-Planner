@@ -12,7 +12,7 @@ const AddProductModal = ({ onClose, onSave }: AddProductModalProps) => {
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
-  const [rating, setRating] = useState({ rate: 0, count: 0 });
+  const [rating] = useState({ rate: 0, count: 0 });
 
   // ✅ Handle form submission
   const handleSave = () => {
