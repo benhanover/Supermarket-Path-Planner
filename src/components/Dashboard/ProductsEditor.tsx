@@ -2,40 +2,89 @@ import { useState } from "react";
 import Products from "./Products";
 import { useDashboard } from "./DashboardContext";
 import { Product } from "./types/product";
+import EditProductModal from "./EditProductModal";
 
-const ProductsEditor = () => {
+interface ProductsEditorProps {
+  mode: "square" | "global";
+}
+
+const ProductsEditor = ({ mode }: ProductsEditorProps) => {
+  const {
+    selectedSquare,
+    setSelectedSquare,
+    layout,
+    setLayout,
+    products,
+    setProducts,
+  } = useDashboard();
   const [searchTerm, setSearchTerm] = useState("");
-  const { selectedSquare, setSelectedSquare, layout, setLayout } =
-    useDashboard();
+  const [editProduct, setEditProduct] = useState<Product | null>(null);
 
-  // Function to toggle product selection
+  // ✅ If in "square" mode, use selected square's products. Otherwise, use global products.
+  const productList =
+    mode === "square" ? selectedSquare?.products || [] : products;
+
+  // ✅ Function to update a product globally AND inside all squares
+  const updateProduct = (updatedProduct: Product) => {
+    // Update the global product list
+    setProducts((prevProducts) =>
+      prevProducts.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+    );
+
+    // ✅ Update all squares that contain the edited product
+    setLayout((prevLayout) => {
+      const updatedGrid = prevLayout.grid.map((row) =>
+        row.map((square) => ({
+          ...square,
+          products: square.products.map((p) =>
+            p.id === updatedProduct.id ? updatedProduct : p
+          ),
+        }))
+      );
+      return { ...prevLayout, grid: updatedGrid };
+    });
+
+    // ✅ If in "square" mode, update selected square's products immediately
+    if (mode === "square" && selectedSquare) {
+      const updatedProducts = selectedSquare.products.map((p) =>
+        p.id === updatedProduct.id ? updatedProduct : p
+      );
+
+      setSelectedSquare({ ...selectedSquare, products: updatedProducts });
+    }
+  };
+
+  // ✅ Function to toggle product selection inside a square
   const toggleProductSelection = (product: Product) => {
-    if (!selectedSquare) return;
+    if (mode !== "square" || !selectedSquare) return;
 
-    // Check if the product is already selected
     const isSelected = selectedSquare.products.some((p) => p.id === product.id);
-
-    // Update selected square's products
     const updatedProducts = isSelected
       ? selectedSquare.products.filter((p) => p.id !== product.id) // Remove product
       : [...selectedSquare.products, product]; // Add product
 
-    // Update the square inside the grid layout
-    const updatedGrid = layout.grid.map((row) =>
-      row.map((square) =>
-        square.row === selectedSquare.row && square.col === selectedSquare.col
-          ? { ...square, products: updatedProducts }
-          : square
-      )
-    );
-
-    // Update state
-    setLayout({ ...layout, grid: updatedGrid });
+    // Update the selected square
     setSelectedSquare({ ...selectedSquare, products: updatedProducts });
+
+    // Update the layout grid
+    setLayout((prevLayout) => {
+      const updatedGrid = prevLayout.grid.map((row) =>
+        row.map((square) =>
+          square.row === selectedSquare.row && square.col === selectedSquare.col
+            ? { ...square, products: updatedProducts }
+            : square
+        )
+      );
+      return { ...prevLayout, grid: updatedGrid };
+    });
   };
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
+      <h2 className="text-lg font-bold">
+        {mode === "square" ? "Edit Square Products" : "Manage All Products"}
+      </h2>
+
       {/* Search Input */}
       <input
         type="text"
@@ -49,9 +98,9 @@ const ProductsEditor = () => {
       <Products
         searchTerm={searchTerm}
         renderProduct={(product) => {
-          const isSelected = selectedSquare?.products.some(
-            (p) => p.id === product.id
-          );
+          const isSelected =
+            mode === "square" &&
+            selectedSquare?.products.some((p) => p.id === product.id);
 
           return (
             <div
@@ -61,7 +110,11 @@ const ProductsEditor = () => {
                   ? "bg-yellow-200 border-yellow-400"
                   : "hover:bg-gray-100"
               }`}
-              onClick={() => toggleProductSelection(product)} // Toggle selection on click
+              onClick={
+                mode === "square"
+                  ? () => toggleProductSelection(product)
+                  : undefined
+              }
             >
               <img
                 src={product.image}
@@ -73,16 +126,33 @@ const ProductsEditor = () => {
                 ${product.price.toFixed(2)}
               </p>
 
-              {/* Selection Indicator */}
-              {isSelected && (
+              {/* Buttons based on mode */}
+              {mode === "square" && isSelected && (
                 <span className="absolute top-2 right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded">
                   Selected
                 </span>
+              )}
+              {mode === "global" && (
+                <button
+                  onClick={() => setEditProduct(product)} // Open edit modal
+                  className="mt-2 px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+                >
+                  Edit Product
+                </button>
               )}
             </div>
           );
         }}
       />
+
+      {/* Edit Product Modal */}
+      {editProduct && (
+        <EditProductModal
+          product={editProduct}
+          onClose={() => setEditProduct(null)}
+          onSave={updateProduct}
+        />
+      )}
     </div>
   );
 };

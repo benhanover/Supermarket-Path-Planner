@@ -37,7 +37,7 @@ const DisplaySquareWindow = () => {
       >
         Add or Remove Products
       </button>
-      {showProductsEditor && <ProductsEditor />}
+      {showProductsEditor && <ProductsEditor mode="square" />}
     </div>
   );
 };
