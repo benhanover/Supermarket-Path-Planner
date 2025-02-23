@@ -5,21 +5,22 @@ import Square from "./Square";
 const SQUARE_SIZE = 24; // Adjust for bigger squares
 
 const Layout = () => {
-  const { layout, handleSquareClick, editMode } = useDashboard();
+  const { supermarket, handleSquareClick } = useDashboard(); // ✅ Use supermarket instead of layout
   const [isDragging, setIsDragging] = useState(false);
 
-  if (!layout) {
+  if (!supermarket?.layout) {
     return <div className="text-center text-gray-500">Loading layout...</div>;
   }
 
   const handleMouseDown = (row: number, col: number) => {
-    if (!editMode) return;
     setIsDragging(true);
-    handleSquareClick(row, col, "mouse_down");
+    supermarket &&
+      supermarket.layout &&
+      handleSquareClick(row, col, "mouse_down");
   };
 
   const handleMouseEnter = (row: number, col: number) => {
-    if (isDragging) {
+    if (isDragging && supermarket?.layout) {
       handleSquareClick(row, col, "mouse_enter");
     }
   };
@@ -37,11 +38,11 @@ const Layout = () => {
         <div
           className="grid gap-0.5"
           style={{
-            gridTemplateColumns: `repeat(${layout.cols}, minmax(20px, ${SQUARE_SIZE}px))`,
-            gridTemplateRows: `repeat(${layout.rows}, minmax(20px, ${SQUARE_SIZE}px))`,
+            gridTemplateColumns: `repeat(${supermarket.layout.cols}, minmax(20px, ${SQUARE_SIZE}px))`,
+            gridTemplateRows: `repeat(${supermarket.layout.rows}, minmax(20px, ${SQUARE_SIZE}px))`,
           }}
         >
-          {layout.grid.map((row, rowIndex) =>
+          {supermarket.layout.grid.map((row, rowIndex) =>
             row.map((square, colIndex) => (
               <Square
                 key={`${rowIndex}-${colIndex}`}

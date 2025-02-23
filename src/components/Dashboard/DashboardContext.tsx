@@ -4,26 +4,30 @@ import {
   useState,
   useEffect,
   ReactNode,
+  useCallback,
 } from "react";
-import { Layout as LayoutType, SquareType, Square } from "./types";
-import { Product } from "./types/product";
+import { SquareType, Square, Product, Supermarket } from "./types";
+import { User } from "../../types/user";
 import { useAppContext } from "../../context/AppContext";
 import axios from "axios";
 
-const createInitialLayout = (user: {
-  layoutRows: number;
-  layoutCols: number;
-}): LayoutType => ({
-  rows: user.layoutRows,
-  cols: user.layoutCols,
-  grid: Array.from({ length: user.layoutRows }, (_, row) =>
-    Array.from({ length: user.layoutCols }, (_, col) => ({
-      type: "empty",
-      products: [],
-      row,
-      col,
-    }))
-  ),
+const createInitialSupermarket = (user: User): Supermarket => ({
+  id: Date.now(),
+  name: user.supermarketName,
+  address: user.address,
+  layout: {
+    rows: user.layoutRows,
+    cols: user.layoutCols,
+    grid: Array.from({ length: user.layoutRows }, (_, row) =>
+      Array.from({ length: user.layoutCols }, (_, col) => ({
+        type: "empty",
+        products: [],
+        row,
+        col,
+      }))
+    ),
+  },
+  products: [],
 });
 
 export enum EditableAction {
@@ -34,8 +38,8 @@ export enum EditableAction {
 }
 
 interface DashboardContextType {
-  layout: LayoutType | null;
-  setLayout: React.Dispatch<React.SetStateAction<LayoutType | null>>;
+  supermarket: Supermarket | null;
+  setSupermarket: React.Dispatch<React.SetStateAction<Supermarket | null>>;
   selectedType: SquareType;
   setSelectedType: (type: SquareType) => void;
   editMode: boolean;
@@ -53,8 +57,6 @@ interface DashboardContextType {
   setActiveTab: React.Dispatch<
     React.SetStateAction<"layout" | "products" | "product_square">
   >;
-  products: Product[];
-  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
   loading: boolean;
 }
 
@@ -64,7 +66,12 @@ const DashboardContext = createContext<DashboardContextType | undefined>(
 
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const { user, loading: userLoading } = useAppContext();
-  const [layout, setLayout] = useState<LayoutType | null>(null);
+
+  // Use lazy initial state to avoid unnecessary re-computations
+  const [supermarket, setSupermarket] = useState<Supermarket | null>(() =>
+    user ? createInitialSupermarket(user) : null
+  );
+
   const [selectedType, setSelectedType] = useState<SquareType>("empty");
   const [editMode, setEditMode] = useState(false);
   const [activeAction, setActiveAction] = useState<EditableAction>(
@@ -74,76 +81,91 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const [activeTab, setActiveTab] = useState<
     "layout" | "products" | "product_square"
   >("layout");
-  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (user) {
-      setLayout(createInitialLayout(user));
-    }
-  }, [user]);
+  // Initialize supermarket products once
+  const initializeSupermarket = useCallback(async () => {
+    if (!user || supermarket?.products.length) return;
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      if (!user) return;
+    setLoading(true);
+    try {
+      const response = await axios.get<Product[]>(
+        "https://fakestoreapi.com/products"
+      );
 
-      setLoading(true);
-      try {
-        const response = await axios.get<Product[]>(
-          "https://fakestoreapi.com/products"
-        );
-        setProducts(response.data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [user]);
-
-  const handleSquareClick = (
-    row: number,
-    col: number,
-    trigger: "mouse_down" | "mouse_enter"
-  ) => {
-    if (!layout) return;
-
-    const clickedSquare = layout.grid[row][col];
-
-    if (activeAction === EditableAction.ModifyLayout) {
-      setLayout((prevLayout) => {
-        if (!prevLayout) return null;
-        const newGrid = prevLayout.grid.map((r) =>
-          r.map((square) =>
-            square.row === row && square.col === col
-              ? { ...square, type: selectedType }
-              : square
-          )
-        );
-        return { ...prevLayout, grid: newGrid };
+      setSupermarket((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          products: response.data,
+        };
       });
-    } else if (
-      activeAction === EditableAction.EditProducts &&
-      clickedSquare.type === "products" &&
-      trigger === "mouse_down"
-    ) {
-      setSelectedSquare(clickedSquare);
-      setEditMode(!editMode);
-      setActiveTab("product_square");
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [user, supermarket?.products.length]);
 
-  if (userLoading || !layout) {
+  // Initialize supermarket when user changes
+  useEffect(() => {
+    if (user && !supermarket) {
+      setSupermarket(createInitialSupermarket(user));
+    }
+  }, [user, supermarket]);
+
+  // Fetch products when supermarket is created
+  useEffect(() => {
+    if (supermarket && !supermarket.products.length) {
+      initializeSupermarket();
+    }
+  }, [supermarket, initializeSupermarket]);
+
+  const handleSquareClick = useCallback(
+    (row: number, col: number, trigger: "mouse_down" | "mouse_enter") => {
+      if (!supermarket) return;
+
+      const clickedSquare = supermarket.layout.grid[row][col];
+
+      if (activeAction === EditableAction.ModifyLayout) {
+        setSupermarket((prevSupermarket) => {
+          if (!prevSupermarket) return prevSupermarket;
+
+          const updatedGrid = prevSupermarket.layout.grid.map((r) =>
+            r.map((square) =>
+              square.row === row && square.col === col
+                ? { ...square, type: selectedType }
+                : square
+            )
+          );
+
+          return {
+            ...prevSupermarket,
+            layout: { ...prevSupermarket.layout, grid: updatedGrid },
+          };
+        });
+      } else if (
+        activeAction === EditableAction.EditProducts &&
+        clickedSquare.type === "products" &&
+        trigger === "mouse_down"
+      ) {
+        setSelectedSquare(clickedSquare);
+        setEditMode(!editMode);
+        setActiveTab("product_square");
+      }
+    },
+    [supermarket, activeAction, selectedType, editMode]
+  );
+
+  if (userLoading) {
     return <div className="text-center text-gray-600 text-lg">Loading...</div>;
   }
 
   return (
     <DashboardContext.Provider
       value={{
-        layout,
-        setLayout,
+        supermarket,
+        setSupermarket,
         selectedType,
         setSelectedType,
         editMode,
@@ -155,8 +177,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         setSelectedSquare,
         activeTab,
         setActiveTab,
-        products,
-        setProducts,
         loading,
       }}
     >

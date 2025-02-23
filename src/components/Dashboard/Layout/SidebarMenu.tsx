@@ -22,10 +22,10 @@ const SidebarMenu = () => {
     setActiveAction,
     editMode,
     setEditMode,
-    setLayout,
+    setSupermarket, // ✅ Use this instead of setLayout
   } = useDashboard();
 
-  const { user, setUser } = useAppContext(); // ✅ Get user and setter from AppContext
+  const { user, setUser } = useAppContext();
 
   const [showSizePrompt, setShowSizePrompt] = useState(false);
   const [newRows, setNewRows] = useState<number | "">(user?.layoutRows || 50);
@@ -54,7 +54,7 @@ const SidebarMenu = () => {
     try {
       console.log("Updating layout size to Rows:", newRows, "Cols:", newCols);
 
-      // Update user attributes in Cognito
+      // ✅ Update user attributes in Cognito
       await updateUserAttributes({
         userAttributes: {
           "custom:layout_rows": newRows.toString(),
@@ -62,29 +62,35 @@ const SidebarMenu = () => {
         },
       });
 
-      // Update user state in AppContext with proper typing
+      // ✅ Update user state in AppContext
       setUser((prevUser) => {
         if (!prevUser) return null;
-
         return {
           ...prevUser,
           layoutRows: Number(newRows),
           layoutCols: Number(newCols),
-        } satisfies User; // This ensures the returned object matches the User type
+        } satisfies User;
       });
 
-      // Update layout state in DashboardContext
-      setLayout({
-        rows: Number(newRows),
-        cols: Number(newCols),
-        grid: Array.from({ length: Number(newRows) }, (_, row) =>
-          Array.from({ length: Number(newCols) }, (_, col) => ({
-            type: "empty" as const,
-            products: [],
-            row,
-            col,
-          }))
-        ),
+      // ✅ Update supermarket state (instead of setLayout)
+      setSupermarket((prevSupermarket) => {
+        if (!prevSupermarket) return prevSupermarket;
+
+        return {
+          ...prevSupermarket,
+          layout: {
+            rows: Number(newRows),
+            cols: Number(newCols),
+            grid: Array.from({ length: Number(newRows) }, (_, row) =>
+              Array.from({ length: Number(newCols) }, (_, col) => ({
+                type: "empty" as const,
+                products: [],
+                row,
+                col,
+              }))
+            ),
+          },
+        };
       });
 
       setShowSizePrompt(false);
@@ -113,7 +119,6 @@ const SidebarMenu = () => {
         {editMode ? "Switch to Preview Mode" : "Switch to Edit Mode"}
       </button>
 
-      {/* Hide buttons when in Preview Mode */}
       {editMode && (
         <>
           {/* Modify Layout Button */}
@@ -234,8 +239,6 @@ const SidebarMenu = () => {
           </button>
         </div>
       )}
-
-      {/* ✅ Restored Legend Section */}
       <div className="mt-6">
         <h3 className="text-md font-bold">Legend</h3>
         <div className="flex flex-col gap-2 mt-2">
