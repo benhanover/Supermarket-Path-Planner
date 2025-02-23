@@ -2,10 +2,8 @@ import { useDashboard, EditableAction } from "../DashboardContext";
 import { useAppContext } from "../../../context/AppContext";
 import { SquareType } from "../types";
 import { useEffect, useState } from "react";
-import {
-  updateUserAttributes,
-  type UpdateUserAttributesOutput,
-} from "aws-amplify/auth";
+import { User } from "../../../types";
+import { updateUserAttributes } from "aws-amplify/auth";
 
 // Square types with colors for UI
 const squareTypes: { type: SquareType; color: string; label: string }[] = [
@@ -51,12 +49,12 @@ const SidebarMenu = () => {
       `Are you sure you want to reset the layout to ${newRows} rows and ${newCols} columns? This will erase all current data.`
     );
 
-    if (!confirmChange) return; // ✅ Stop if user cancels
+    if (!confirmChange) return;
 
     try {
       console.log("Updating layout size to Rows:", newRows, "Cols:", newCols);
 
-      // ✅ Update user attributes in Cognito
+      // Update user attributes in Cognito
       await updateUserAttributes({
         userAttributes: {
           "custom:layout_rows": newRows.toString(),
@@ -64,29 +62,28 @@ const SidebarMenu = () => {
         },
       });
 
-      // ✅ Update user state in AppContext
-      setUser((prevUser) => ({
-        ...prevUser,
-        layoutRows: parseInt(newRows.toString(), 10),
-        layoutCols: parseInt(newCols.toString(), 10),
-      }));
+      // Update user state in AppContext with proper typing
+      setUser((prevUser) => {
+        if (!prevUser) return null;
 
-      // ✅ Update layout state in DashboardContext
+        return {
+          ...prevUser,
+          layoutRows: Number(newRows),
+          layoutCols: Number(newCols),
+        } satisfies User; // This ensures the returned object matches the User type
+      });
+
+      // Update layout state in DashboardContext
       setLayout({
-        rows: parseInt(newRows.toString(), 10),
-        cols: parseInt(newCols.toString(), 10),
-        grid: Array.from(
-          { length: parseInt(newRows.toString(), 10) },
-          (_, row) =>
-            Array.from(
-              { length: parseInt(newCols.toString(), 10) },
-              (_, col) => ({
-                type: "empty",
-                products: [],
-                row,
-                col,
-              })
-            )
+        rows: Number(newRows),
+        cols: Number(newCols),
+        grid: Array.from({ length: Number(newRows) }, (_, row) =>
+          Array.from({ length: Number(newCols) }, (_, col) => ({
+            type: "empty" as const,
+            products: [],
+            row,
+            col,
+          }))
         ),
       });
 

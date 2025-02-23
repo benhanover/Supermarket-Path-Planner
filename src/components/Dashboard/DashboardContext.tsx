@@ -34,7 +34,7 @@ export enum EditableAction {
 }
 
 interface DashboardContextType {
-  layout: LayoutType | null; // ✅ `null` until user is available
+  layout: LayoutType | null;
   setLayout: React.Dispatch<React.SetStateAction<LayoutType | null>>;
   selectedType: SquareType;
   setSelectedType: (type: SquareType) => void;
@@ -55,7 +55,7 @@ interface DashboardContextType {
   >;
   products: Product[];
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
-  loading: boolean; // ✅ Track loading state
+  loading: boolean;
 }
 
 const DashboardContext = createContext<DashboardContextType | undefined>(
@@ -63,8 +63,8 @@ const DashboardContext = createContext<DashboardContextType | undefined>(
 );
 
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
-  const { user, loading: userLoading } = useAppContext(); // ✅ Get `user` & `loading` state
-  const [layout, setLayout] = useState<LayoutType | null>(null); // ✅ No default values
+  const { user, loading: userLoading } = useAppContext();
+  const [layout, setLayout] = useState<LayoutType | null>(null);
   const [selectedType, setSelectedType] = useState<SquareType>("empty");
   const [editMode, setEditMode] = useState(false);
   const [activeAction, setActiveAction] = useState<EditableAction>(
@@ -75,24 +75,32 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     "layout" | "products" | "product_square"
   >("layout");
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true); // ✅ Track loading state for products
+  const [loading, setLoading] = useState(true);
 
-  // ✅ Initialize layout only when user is available
   useEffect(() => {
     if (user) {
       setLayout(createInitialLayout(user));
     }
   }, [user]);
 
-  // ✅ Fetch products when user is available
   useEffect(() => {
-    if (!user) return;
-    setLoading(true);
-    axios
-      .get<Product[]>("https://fakestoreapi.com/products")
-      .then((response) => setProducts(response.data))
-      .catch((error) => console.error("Error fetching products:", error))
-      .finally(() => setLoading(false));
+    const fetchProducts = async () => {
+      if (!user) return;
+
+      setLoading(true);
+      try {
+        const response = await axios.get<Product[]>(
+          "https://fakestoreapi.com/products"
+        );
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, [user]);
 
   const handleSquareClick = (
@@ -100,11 +108,11 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     col: number,
     trigger: "mouse_down" | "mouse_enter"
   ) => {
-    if (!layout) return; // ✅ Ensure layout is ready before interacting
+    if (!layout) return;
 
     const clickedSquare = layout.grid[row][col];
 
-    if (activeAction === "modify_layout") {
+    if (activeAction === EditableAction.ModifyLayout) {
       setLayout((prevLayout) => {
         if (!prevLayout) return null;
         const newGrid = prevLayout.grid.map((r) =>
@@ -117,7 +125,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         return { ...prevLayout, grid: newGrid };
       });
     } else if (
-      activeAction === "edit_products" &&
+      activeAction === EditableAction.EditProducts &&
       clickedSquare.type === "products" &&
       trigger === "mouse_down"
     ) {
@@ -127,7 +135,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // ✅ Show a loader if user or layout is still loading
   if (userLoading || !layout) {
     return <div className="text-center text-gray-600 text-lg">Loading...</div>;
   }
@@ -158,7 +165,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// ✅ Custom hook for using the context
 export const useDashboard = () => {
   const context = useContext(DashboardContext);
   if (!context) {

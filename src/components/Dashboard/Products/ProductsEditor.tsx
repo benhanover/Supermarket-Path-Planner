@@ -3,7 +3,7 @@ import Products from "./Products";
 import { useDashboard } from "../DashboardContext";
 import { Product } from "../types/product";
 import EditProductModal from "./EditProductModal";
-import AddProductModal from "./AddProductModal"; // ✅ Import new modal
+import AddProductModal from "./AddProductModal";
 
 interface ProductsEditorProps {
   mode: "square" | "global";
@@ -19,31 +19,34 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
   } = useDashboard();
   const [searchTerm, setSearchTerm] = useState("");
   const [editProduct, setEditProduct] = useState<Product | null>(null);
-  const [showAddProductModal, setShowAddProductModal] = useState(false); // ✅ Track modal visibility
+  const [showAddProductModal, setShowAddProductModal] = useState(false);
 
-  // ✅ Function to add a new product (only in global mode)
   const addProduct = (newProduct: Product) => {
     setProducts([...products, newProduct]);
   };
 
   const removeProduct = (productId: number) => {
-    // ✅ Remove from global products list
     setProducts((prevProducts) =>
       prevProducts.filter((p) => p.id !== productId)
     );
 
-    // ✅ Remove from all squares in the layout
     setLayout((prevLayout) => {
+      if (!prevLayout) return null;
+
       const updatedGrid = prevLayout.grid.map((row) =>
         row.map((square) => ({
           ...square,
-          products: square.products.filter((p) => p.id !== productId), // Remove deleted product
+          products: square.products.filter((p) => p.id !== productId),
         }))
       );
-      return { ...prevLayout, grid: updatedGrid };
+
+      return {
+        rows: prevLayout.rows,
+        cols: prevLayout.cols,
+        grid: updatedGrid,
+      };
     });
 
-    // ✅ If selectedSquare contains the deleted product, update it
     if (selectedSquare) {
       const updatedProducts = selectedSquare.products.filter(
         (p) => p.id !== productId
@@ -52,13 +55,14 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
     }
   };
 
-  // ✅ Function to update a product globally AND inside all squares
   const updateProduct = (updatedProduct: Product) => {
     setProducts((prevProducts) =>
       prevProducts.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
     );
 
     setLayout((prevLayout) => {
+      if (!prevLayout) return null;
+
       const updatedGrid = prevLayout.grid.map((row) =>
         row.map((square) => ({
           ...square,
@@ -67,32 +71,35 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
           ),
         }))
       );
-      return { ...prevLayout, grid: updatedGrid };
+
+      return {
+        rows: prevLayout.rows,
+        cols: prevLayout.cols,
+        grid: updatedGrid,
+      };
     });
 
     if (mode === "square" && selectedSquare) {
       const updatedProducts = selectedSquare.products.map((p) =>
         p.id === updatedProduct.id ? updatedProduct : p
       );
-
       setSelectedSquare({ ...selectedSquare, products: updatedProducts });
     }
   };
 
-  // ✅ Function to toggle product selection inside a square
   const toggleProductSelection = (product: Product) => {
     if (mode !== "square" || !selectedSquare) return;
 
     const isSelected = selectedSquare.products.some((p) => p.id === product.id);
     const updatedProducts = isSelected
-      ? selectedSquare.products.filter((p) => p.id !== product.id) // Remove product
-      : [...selectedSquare.products, product]; // Add product
+      ? selectedSquare.products.filter((p) => p.id !== product.id)
+      : [...selectedSquare.products, product];
 
-    // Update the selected square
     setSelectedSquare({ ...selectedSquare, products: updatedProducts });
 
-    // Update the layout grid
     setLayout((prevLayout) => {
+      if (!prevLayout) return null;
+
       const updatedGrid = prevLayout.grid.map((row) =>
         row.map((square) =>
           square.row === selectedSquare.row && square.col === selectedSquare.col
@@ -100,7 +107,12 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
             : square
         )
       );
-      return { ...prevLayout, grid: updatedGrid };
+
+      return {
+        rows: prevLayout.rows,
+        cols: prevLayout.cols,
+        grid: updatedGrid,
+      };
     });
   };
 
@@ -110,7 +122,6 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
         {mode === "square" ? "Edit Square Products" : "Manage All Products"}
       </h2>
 
-      {/* ✅ Show "Add Product" button in global mode */}
       {mode === "global" && (
         <button
           onClick={() => setShowAddProductModal(true)}
@@ -120,7 +131,6 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
         </button>
       )}
 
-      {/* Search Input */}
       <input
         type="text"
         placeholder="Search products..."
@@ -129,7 +139,6 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
         onChange={(e) => setSearchTerm(e.target.value)}
       />
 
-      {/* Products List */}
       <Products
         searchTerm={searchTerm}
         renderProduct={(product) => {
@@ -161,7 +170,6 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
                 ${product.price.toFixed(2)}
               </p>
 
-              {/* Buttons based on mode */}
               {mode === "square" && isSelected && (
                 <span className="absolute top-2 right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded">
                   Selected
@@ -188,7 +196,6 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
         }}
       />
 
-      {/* ✅ Add Product Modal (Only in Global Mode) */}
       {showAddProductModal && mode === "global" && (
         <AddProductModal
           onClose={() => setShowAddProductModal(false)}
@@ -196,7 +203,6 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
         />
       )}
 
-      {/* Edit Product Modal */}
       {editProduct && (
         <EditProductModal
           product={editProduct}

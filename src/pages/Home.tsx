@@ -1,22 +1,11 @@
 import Dashboard from "../components/Dashboard/Dashboard";
 import { signOut } from "aws-amplify/auth";
-
+import { useAppContext } from "../context/AppContext";
 const Home: React.FC = () => {
-  // useEffect(() => {
-  //   async function getUserAttributes() {
-  //     try {
-  //       const attributes = await fetchUserAttributes();
-  //       console.log("User attributes: ", attributes);
-  //     } catch (error) {
-  //       console.error("Error fetching user attributes:", error);
-  //     }
-  //   }
-  //   getUserAttributes();
-  // }, []);
-
+  const { user } = useAppContext();
   return (
     <div>
-      <h1>HOME</h1>
+      <h1>{user?.supermarketName}</h1>
       <Dashboard />
       <button
         onClick={async () => {

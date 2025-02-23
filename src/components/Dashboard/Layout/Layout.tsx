@@ -8,6 +8,10 @@ const Layout = () => {
   const { layout, handleSquareClick, editMode } = useDashboard();
   const [isDragging, setIsDragging] = useState(false);
 
+  if (!layout) {
+    return <div className="text-center text-gray-500">Loading layout...</div>;
+  }
+
   const handleMouseDown = (row: number, col: number) => {
     if (!editMode) return;
     setIsDragging(true);

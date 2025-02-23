@@ -10,7 +10,7 @@ import { User } from "../types/user";
 
 interface AppContextType {
   user: User | null;
-  setUser: (user: User | null) => void;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
   loading: boolean;
 }
 
@@ -38,7 +38,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         layoutRows: parseInt(attributes["custom:layout_rows"] || "50"),
         email: attributes.email || "",
         emailVerified: attributes.email_verified === "true",
-        nickname: attributes.nickname || "",
+        supermarketName: attributes["custom:supermarket_name"] || "",
         sub: attributes.sub || "",
       };
 
