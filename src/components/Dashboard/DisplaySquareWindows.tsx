@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDashboard } from "./DashboardContext";
 import DisplaySquare from "./Product_Square_Editor/DisplaySquare";
-import ProductsEditor from "./ProductsEditor";
+import ProductsEditor from "./Products/ProductsEditor";
 import { EditableAction } from "./DashboardContext";
 
 const DisplaySquareWindow = () => {
@@ -37,7 +37,7 @@ const DisplaySquareWindow = () => {
       >
         Add or Remove Products
       </button>
-      {showProductsEditor && <ProductsEditor />}
+      {showProductsEditor && <ProductsEditor mode="square" />}
     </div>
   );
 };

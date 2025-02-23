@@ -1,6 +1,12 @@
+export type FormField = {
+  label: string;
+  placeholder: string;
+  required: boolean;
+};
+
 export type FormFields = {
-  signUp: Record<
-    string,
-    { label: string; placeholder: string; required: boolean }
-  >;
+  signUp: {
+    address: FormField;
+    [key: `custom:${string}`]: FormField;
+  };
 };
