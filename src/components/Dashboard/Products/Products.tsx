@@ -1,4 +1,4 @@
-import { useDashboard } from "../DashboardContext";
+import { useDashboard } from "../DashboardContext/useDashboard";
 import { Product } from "../types/product";
 
 interface ProductsProps {

@@ -1,9 +1,25 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 
 const schema = a.schema({
-  Todo: a
+  Supermarket: a
     .model({
-      content: a.string(),
+      name: a.string(),
+      address: a.string(),
+      layout: a.json(),
+      products: a.hasMany("Product", "supermarketID"),
+    })
+    .authorization((allow) => [allow.owner()]),
+
+  Product: a
+    .model({
+      title: a.string(),
+      price: a.float(),
+      category: a.string(),
+      description: a.string(),
+      image: a.string(),
+      rating: a.json(),
+      supermarketID: a.id().required(),
+      supermarket: a.belongsTo("Supermarket", "supermarketID"),
     })
     .authorization((allow) => [allow.owner()]),
 });
@@ -14,7 +30,6 @@ export const data = defineData({
   schema,
   authorizationModes: {
     defaultAuthorizationMode: "userPool",
-    // API Key is used for a.allow.public() rules
     apiKeyAuthorizationMode: {
       expiresInDays: 30,
     },

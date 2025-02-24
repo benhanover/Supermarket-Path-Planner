@@ -1,4 +1,5 @@
-import { useDashboard, EditableAction } from "../DashboardContext";
+import { EditableAction } from "../types";
+import { useDashboard } from "../DashboardContext/useDashboard";
 import { useAppContext } from "../../../context/AppContext";
 import { SquareType } from "../types";
 import { useEffect, useState } from "react";

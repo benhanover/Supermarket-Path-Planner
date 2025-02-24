@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDashboard } from "../DashboardContext";
+import { useDashboard } from "../DashboardContext/useDashboard";
 import Square from "./Square";
 
 const SQUARE_SIZE = 24; // Adjust for bigger squares
