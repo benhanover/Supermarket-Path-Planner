@@ -1,6 +1,6 @@
 // src/context/dashboard/useDashboard.ts
 import { useContext } from "react";
-import DashboardContext from "./DashboardContext";
+import { DashboardContext } from "./DashboardContext";
 
 export const useDashboard = () => {
   const context = useContext(DashboardContext);

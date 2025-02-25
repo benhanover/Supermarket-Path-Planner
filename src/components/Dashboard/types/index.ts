@@ -1,16 +1,21 @@
-import type { Square, SquareType } from "./square";
-import type { Product } from "./product";
-import type { Layout } from "./layout";
-import type { Supermarket } from "./supermarket";
-import type { DashboardContextType } from "./dashboard";
+import type { SquareType, Square, Supermarket, Layout, Product } from "./base";
+import type {
+  EnhancedLayout,
+  EnhancedSupermarket,
+  EnhancedDashboardContextType,
+  DashboardContextType,
+} from "./dashboard";
 import { EditableAction } from "./dashboard";
 
-export { EditableAction };
 export type {
-  Square,
   SquareType,
-  Product,
-  Layout,
+  Square,
   Supermarket,
+  Layout,
+  Product,
+  EnhancedLayout,
+  EnhancedSupermarket,
+  EnhancedDashboardContextType,
   DashboardContextType,
 };
+export { EditableAction };

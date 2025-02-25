@@ -1,5 +1,24 @@
+// Add this to your types/dashboard.ts file
+
 import { Dispatch, SetStateAction } from "react";
-import { Supermarket, SquareType, Square } from "./index";
+import { Supermarket, SquareType, Square, Layout } from "./index";
+
+// Enhanced Layout with grid property
+export interface EnhancedLayout extends Layout {
+  grid: Square[][];
+}
+
+// Enhanced Supermarket with enhanced layout
+export interface EnhancedSupermarket extends Omit<Supermarket, "layout"> {
+  layout: EnhancedLayout;
+}
+
+// Enhanced Dashboard Context Type
+export interface EnhancedDashboardContextType
+  extends Omit<DashboardContextType, "supermarket" | "setSupermarket"> {
+  supermarket: EnhancedSupermarket | null;
+  setSupermarket: Dispatch<SetStateAction<EnhancedSupermarket | null>>;
+}
 
 export enum EditableAction {
   None = "none",

@@ -51,21 +51,36 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // useEffect(() => {
+  //   loadUserAttributes(); // ✅ Load user attributes on component mount
+
+  //   // ✅ Poll authentication state every 3 seconds
+  //   const interval = setInterval(async () => {
+  //     const currentUser = await getCurrentUser().catch(() => null);
+  //     if (currentUser) {
+  //       console.log("User detected, fetching attributes...");
+  //       clearInterval(interval); // ✅ Stop polling once user is authenticated
+  //       loadUserAttributes();
+  //     }
+  //   }, 3000);
+
+  //   return () => clearInterval(interval); // ✅ Cleanup interval on component unmount
+  // }, []); // ✅ Run only once on mount
   useEffect(() => {
-    loadUserAttributes(); // ✅ Load user attributes on component mount
-
-    // ✅ Poll authentication state every 3 seconds
-    const interval = setInterval(async () => {
-      const currentUser = await getCurrentUser().catch(() => null);
-      if (currentUser) {
-        console.log("User detected, fetching attributes...");
-        clearInterval(interval); // ✅ Stop polling once user is authenticated
-        loadUserAttributes();
+    const loadAttributes = async () => {
+      try {
+        const currentUser = await getCurrentUser();
+        await loadUserAttributes();
+      } catch (error) {
+        // Handle authentication errors
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
-    }, 3000);
+    };
 
-    return () => clearInterval(interval); // ✅ Cleanup interval on component unmount
-  }, []); // ✅ Run only once on mount
+    loadAttributes();
+  }, []); // Remove polling, run only once
 
   return (
     <AppContext.Provider value={{ user, setUser, loading }}>
