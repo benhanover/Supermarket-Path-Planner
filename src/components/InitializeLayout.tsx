@@ -2,13 +2,17 @@ import { useState } from "react";
 import { updateUserAttributes } from "aws-amplify/auth";
 import { useAppContext } from "../context/AppContext";
 import { User } from "../types";
+import { generateClient } from "aws-amplify/data";
+import type { Schema } from "../../amplify/data/resource";
+
+const client = generateClient<Schema>();
 
 const InitializeLayout: React.FC = () => {
   const { user, setUser } = useAppContext();
   const [formData, setFormData] = useState({
     supermarketName: user?.supermarketName || "",
     address: user?.address || "",
-    layoutRows: user?.layoutRows || 50,
+    layoutRows: user?.layoutRows || 20,
     layoutCols: user?.layoutCols || 30,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,6 +43,25 @@ const InitializeLayout: React.FC = () => {
         },
       });
 
+      // Create initial layout - empty grid
+      const initialLayout = Array.from(
+        { length: formData.layoutRows },
+        (_, row) =>
+          Array.from({ length: formData.layoutCols }, (_, col) => ({
+            type: "empty",
+            products: [],
+            row,
+            col,
+          }))
+      );
+
+      // Create Supermarket in DataStore
+      await client.models.Supermarket.create({
+        name: formData.supermarketName,
+        address: formData.address,
+        layout: JSON.stringify(initialLayout),
+      });
+
       // Update local user state
       setUser((prevUser) => {
         if (!prevUser) return null;
@@ -52,7 +75,7 @@ const InitializeLayout: React.FC = () => {
         } satisfies User;
       });
     } catch (error) {
-      console.error("Failed to update user attributes:", error);
+      console.error("Failed to initialize supermarket:", error);
       setError("Failed to initialize supermarket. Please try again.");
     } finally {
       setIsSubmitting(false);

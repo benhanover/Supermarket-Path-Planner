@@ -16,6 +16,7 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
   const [editProduct, setEditProduct] = useState<Product | null>(null);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
 
+  
   const addProduct = (newProduct: Product) => {
     setSupermarket((prev) => {
       if (!prev) return null;

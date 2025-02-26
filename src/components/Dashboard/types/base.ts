@@ -30,9 +30,3 @@ export interface Supermarket {
   layout: Square[][];
   products: Product[];
 }
-
-// export interface Layout {
-//   rows: number;
-//   cols: number;
-//   grid: Square[][];
-// }
