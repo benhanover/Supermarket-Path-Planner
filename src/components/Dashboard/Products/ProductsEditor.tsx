@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Products from "./Products";
-import { useDashboard } from "../DashboardContext";
-import { Product } from "../types/product";
+import { useDashboard } from "../DashboardContext/useDashboard";
+import { Product } from "../types";
 import EditProductModal from "./EditProductModal";
 import AddProductModal from "./AddProductModal";
 

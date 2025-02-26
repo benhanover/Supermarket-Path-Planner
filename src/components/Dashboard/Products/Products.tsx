@@ -1,5 +1,5 @@
-import { useDashboard } from "../DashboardContext";
-import { Product } from "../types/product";
+import { useDashboard } from "../DashboardContext/useDashboard";
+import { Product } from "../types";
 
 interface ProductsProps {
   searchTerm: string;
