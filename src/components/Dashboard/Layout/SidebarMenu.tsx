@@ -23,7 +23,7 @@ const SidebarMenu = () => {
     setActiveAction,
     editMode,
     setEditMode,
-    setLayout,
+    setSupermarket,
   } = useDashboard();
 
   const { user, setUser } = useAppContext(); // ✅ Get user and setter from AppContext
@@ -39,7 +39,7 @@ const SidebarMenu = () => {
     }
   }, [editMode, setActiveAction]);
 
-  // ✅ Function to confirm new layout size
+  // Function to confirm new layout size
   const confirmLayoutSize = async () => {
     if (!newRows || !newCols) {
       alert("Please enter valid numbers for rows and columns.");
@@ -71,21 +71,24 @@ const SidebarMenu = () => {
           ...prevUser,
           layoutRows: Number(newRows),
           layoutCols: Number(newCols),
-        } satisfies User; // This ensures the returned object matches the User type
+        } satisfies User;
       });
 
-      // Update layout state in DashboardContext
-      setLayout({
-        rows: Number(newRows),
-        cols: Number(newCols),
-        grid: Array.from({ length: Number(newRows) }, (_, row) =>
-          Array.from({ length: Number(newCols) }, (_, col) => ({
-            type: "empty" as const,
-            products: [],
-            row,
-            col,
-          }))
-        ),
+      // Update supermarket state in DashboardContext
+      setSupermarket((prevSupermarket) => {
+        if (!prevSupermarket) return null;
+
+        return {
+          ...prevSupermarket,
+          layout: Array.from({ length: Number(newRows) }, (_, row) =>
+            Array.from({ length: Number(newCols) }, (_, col) => ({
+              type: "empty" as const,
+              products: [],
+              row,
+              col,
+            }))
+          ),
+        };
       });
 
       setShowSizePrompt(false);
@@ -94,7 +97,6 @@ const SidebarMenu = () => {
       console.error("Failed to update layout size:", error);
     }
   };
-
   return (
     <div
       className={`p-6 border-r flex flex-col gap-4 w-64 transition-all duration-300

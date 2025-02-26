@@ -7,15 +7,15 @@ interface ProductsProps {
 }
 
 const Products = ({ searchTerm, renderProduct }: ProductsProps) => {
-  const { products } = useDashboard(); // ✅ Get products from context
+  const { supermarket } = useDashboard(); // ✅ Get products from context
 
-  const filteredProducts = products.filter((product) =>
+  const filteredProducts = supermarket?.products.filter((product) =>
     product.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {filteredProducts.map((product) =>
+      {filteredProducts?.map((product) =>
         renderProduct ? (
           renderProduct(product)
         ) : (

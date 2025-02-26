@@ -25,9 +25,14 @@ export interface Square {
   col: number;
 }
 
-export interface Layout {
-  rows: number;
-  cols: number;
-  grid: Square[][];
+export interface Supermarket {
+  name: string;
+  layout: Square[][];
+  products: Product[];
 }
 
+// export interface Layout {
+//   rows: number;
+//   cols: number;
+//   grid: Square[][];
+// }

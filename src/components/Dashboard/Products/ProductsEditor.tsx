@@ -10,40 +10,36 @@ interface ProductsEditorProps {
 }
 
 const ProductsEditor = ({ mode }: ProductsEditorProps) => {
-  const {
-    selectedSquare,
-    setSelectedSquare,
-    setLayout,
-    products,
-    setProducts,
-  } = useDashboard();
+  const { selectedSquare, setSelectedSquare, supermarket, setSupermarket } =
+    useDashboard();
   const [searchTerm, setSearchTerm] = useState("");
   const [editProduct, setEditProduct] = useState<Product | null>(null);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
 
   const addProduct = (newProduct: Product) => {
-    setProducts([...products, newProduct]);
+    setSupermarket((prev) => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        products: [...prev.products, newProduct],
+      };
+    });
   };
 
   const removeProduct = (productId: number) => {
-    setProducts((prevProducts) =>
-      prevProducts.filter((p) => p.id !== productId)
-    );
-
-    setLayout((prevLayout) => {
-      if (!prevLayout) return null;
-
-      const updatedGrid = prevLayout.grid.map((row) =>
-        row.map((square) => ({
-          ...square,
-          products: square.products.filter((p) => p.id !== productId),
-        }))
-      );
-
+    // Remove from global products list
+    setSupermarket((prev) => {
+      if (!prev) return null;
       return {
-        rows: prevLayout.rows,
-        cols: prevLayout.cols,
-        grid: updatedGrid,
+        ...prev,
+        products: prev.products.filter((p) => p.id !== productId),
+        // Also remove from any square that might have this product
+        layout: prev.layout.map((row) =>
+          row.map((square) => ({
+            ...square,
+            products: square.products.filter((p) => p.id !== productId),
+          }))
+        ),
       };
     });
 
@@ -56,26 +52,23 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
   };
 
   const updateProduct = (updatedProduct: Product) => {
-    setProducts((prevProducts) =>
-      prevProducts.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
-    );
-
-    setLayout((prevLayout) => {
-      if (!prevLayout) return null;
-
-      const updatedGrid = prevLayout.grid.map((row) =>
-        row.map((square) => ({
-          ...square,
-          products: square.products.map((p) =>
-            p.id === updatedProduct.id ? updatedProduct : p
-          ),
-        }))
-      );
-
+    // Update in global products list
+    setSupermarket((prev) => {
+      if (!prev) return null;
       return {
-        rows: prevLayout.rows,
-        cols: prevLayout.cols,
-        grid: updatedGrid,
+        ...prev,
+        products: prev.products.map((p) =>
+          p.id === updatedProduct.id ? updatedProduct : p
+        ),
+        // Also update in any square that might have this product
+        layout: prev.layout.map((row) =>
+          row.map((square) => ({
+            ...square,
+            products: square.products.map((p) =>
+              p.id === updatedProduct.id ? updatedProduct : p
+            ),
+          }))
+        ),
       };
     });
 
@@ -95,23 +88,22 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
       ? selectedSquare.products.filter((p) => p.id !== product.id)
       : [...selectedSquare.products, product];
 
+    // Update selected square
     setSelectedSquare({ ...selectedSquare, products: updatedProducts });
 
-    setLayout((prevLayout) => {
-      if (!prevLayout) return null;
-
-      const updatedGrid = prevLayout.grid.map((row) =>
-        row.map((square) =>
-          square.row === selectedSquare.row && square.col === selectedSquare.col
-            ? { ...square, products: updatedProducts }
-            : square
-        )
-      );
-
+    // Update supermarket layout
+    setSupermarket((prev) => {
+      if (!prev) return null;
       return {
-        rows: prevLayout.rows,
-        cols: prevLayout.cols,
-        grid: updatedGrid,
+        ...prev,
+        layout: prev.layout.map((row) =>
+          row.map((square) =>
+            square.row === selectedSquare.row &&
+            square.col === selectedSquare.col
+              ? { ...square, products: updatedProducts }
+              : square
+          )
+        ),
       };
     });
   };

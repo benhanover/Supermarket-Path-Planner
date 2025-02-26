@@ -1,13 +1,13 @@
 // src/components/Dashboard/DashboardContext/dashboardApi.ts
 import axios from "axios";
-import { Product } from "../types";
+import { Product, Supermarket } from "../types";
 import { Dispatch, SetStateAction } from "react";
 
 /**
  * Fetches products from the API
  */
 export const fetchProducts = async (
-  setProducts: Dispatch<SetStateAction<Product[]>>,
+  setSupermarket: Dispatch<SetStateAction<Supermarket | null>>,
   setLoading: Dispatch<SetStateAction<boolean>>
 ) => {
   setLoading(true);
@@ -15,7 +15,14 @@ export const fetchProducts = async (
     const response = await axios.get<Product[]>(
       "https://fakestoreapi.com/products"
     );
-    setProducts(response.data);
+
+    setSupermarket((currentSupermarket) => {
+      if (!currentSupermarket) return null;
+      return {
+        ...currentSupermarket,
+        products: response.data,
+      };
+    });
   } catch (error) {
     console.error("Error fetching products:", error);
   } finally {
