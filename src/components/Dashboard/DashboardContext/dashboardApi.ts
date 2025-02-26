@@ -1,12 +1,23 @@
 // src/components/Dashboard/DashboardContext/dashboardApi.ts
 import axios from "axios";
-import { Product, Supermarket } from "../types";
+import { Product, Supermarket, Square } from "../types";
 import { Dispatch, SetStateAction } from "react";
+import { generateClient } from "aws-amplify/api";
+import { getCurrentUser } from "aws-amplify/auth";
+import type { Schema } from "../../../../amplify/data/resource";
+
+const client = generateClient<Schema>();
+
+type SetErrorFunction = (
+  error: { message: string; source: string } | null
+) => void;
+type SetIsSavingFunction = Dispatch<SetStateAction<boolean>>;
+type SetSelectedSquareFunction = Dispatch<SetStateAction<Square | null>>;
 
 /**
- * Fetches products from the API
+ * Fetches products from an external API for demo purposes
  */
-export const fetchProducts = async (
+export const fetchSampleProducts = async (
   setSupermarket: Dispatch<SetStateAction<Supermarket | null>>,
   setLoading: Dispatch<SetStateAction<boolean>>
 ) => {
@@ -20,12 +31,293 @@ export const fetchProducts = async (
       if (!currentSupermarket) return null;
       return {
         ...currentSupermarket,
-        products: response.data,
+        products: response.data.map((product) => ({
+          ...product,
+          id: product.id.toString(),
+        })),
       };
     });
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching sample products:", error);
   } finally {
     setLoading(false);
   }
+};
+
+/**
+ * Saves the supermarket layout to the database
+ */
+export const saveLayout = async (
+  supermarket: Supermarket | null,
+  supermarketId: string | null,
+  layoutToSave: Square[][] | undefined,
+  user: any,
+  setSupermarketId: Dispatch<SetStateAction<string | null>>,
+  setError: SetErrorFunction,
+  setIsSaving: SetIsSavingFunction
+) => {
+  if (!supermarket) return;
+
+  try {
+    setError(null);
+    setIsSaving(true);
+
+    // Use the provided layout parameter if available, otherwise use the current state
+    const layoutData = layoutToSave || supermarket.layout;
+    // Format the layout data as a string for storage
+    const layoutString = JSON.stringify(layoutData);
+    console.log("Saving layout:", layoutString.substring(0, 100) + "...");
+
+    if (supermarketId) {
+      // Update the existing supermarket
+      await client.models.Supermarket.update({
+        id: supermarketId,
+        layout: layoutString,
+      });
+    } else {
+      // Create a new supermarket if we don't have an ID
+      console.log("Creating new supermarket");
+      const currentUser = await getCurrentUser();
+      const newSupermarket = await client.models.Supermarket.create({
+        name: supermarket.name,
+        address: user?.address || "Address not set",
+        layout: layoutString,
+        owner: currentUser.userId,
+      });
+
+      setSupermarketId(newSupermarket.id);
+    }
+
+    // Keep the saving indicator visible briefly so users can see it worked
+    setTimeout(() => {
+      setIsSaving(false);
+    }, 500);
+  } catch (error) {
+    setIsSaving(false);
+    handleApiError(error, "saveLayout", setError);
+    throw error;
+  }
+};
+
+/**
+ * Adds a product to the database
+ */
+export const addProduct = async (
+  product: Omit<Product, "id">,
+  supermarketId: string | null,
+  saveLayoutFunction: () => Promise<void>,
+  setSupermarket: Dispatch<SetStateAction<Supermarket | null>>,
+  setError: SetErrorFunction,
+  setIsSaving: SetIsSavingFunction
+) => {
+  if (!supermarketId) {
+    // If we don't have a supermarket ID yet, create the supermarket first
+    try {
+      await saveLayoutFunction();
+    } catch (error) {
+      handleApiError(error, "addProduct (saveLayout)", setError);
+      throw error;
+    }
+
+    // Check again after saving layout
+    if (!supermarketId) {
+      const error = new Error("Failed to create supermarket");
+      handleApiError(error, "addProduct", setError);
+      throw error;
+    }
+  }
+
+  try {
+    setError(null);
+    setIsSaving(true);
+
+    console.log("Creating product in database:", product.title);
+
+    // Create the product in the database with proper typing
+    const newProduct = await client.models.Product.create({
+      title: product.title,
+      price: product.price,
+      category: product.category || "uncategorized",
+      description: product.description || "",
+      image: product.image || "",
+      rating: JSON.stringify(product.rating || { rate: 0, count: 0 }),
+      supermarketID: supermarketId,
+    });
+
+    console.log("Product created with IDdd:", newProduct);
+
+    // Format product for local state
+    const formattedProduct: Product = {
+      ...newProduct,
+      id: newProduct.data.id,
+      rating: product.rating || { rate: 0, count: 0 },
+    };
+
+    // Update the local state with the new product
+    setSupermarket((prev) => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        products: [...prev.products, formattedProduct],
+      };
+    });
+
+    setTimeout(() => {
+      setIsSaving(false);
+    }, 500);
+
+    return newProduct.data.id;
+  } catch (error) {
+    setIsSaving(false);
+    handleApiError(error, "addProduct", setError);
+    throw error;
+  }
+};
+
+/**
+ * Updates a product in the database
+ */
+export const updateProductData = async (
+  product: Product,
+  supermarketId: string | null,
+  setSupermarket: Dispatch<SetStateAction<Supermarket | null>>,
+  setSelectedSquare: SetSelectedSquareFunction,
+  selectedSquare: Square | null,
+  setError: SetErrorFunction,
+  setIsSaving: SetIsSavingFunction
+) => {
+  if (!supermarketId) {
+    const error = new Error("No supermarket ID for product update");
+    handleApiError(error, "updateProductData", setError);
+    throw error;
+  }
+
+  try {
+    setError(null);
+    setIsSaving(true);
+
+    console.log("Updating product in database:", product.id);
+
+    // Update the product in the database
+    await client.models.Product.update({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      category: product.category || "uncategorized",
+      description: product.description || "",
+      image: product.image || "",
+      rating: JSON.stringify(product.rating || { rate: 0, count: 0 }),
+      supermarketID: supermarketId,
+    });
+
+    // Update local state
+    setSupermarket((prev) => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        products: prev.products.map((p) => (p.id === product.id ? product : p)),
+        // Also update in any square that has this product
+        layout: prev.layout.map((row) =>
+          row.map((square) => ({
+            ...square,
+            products: square.products.map((p) =>
+              p.id === product.id ? product : p
+            ),
+          }))
+        ),
+      };
+    });
+
+    // Update selected square if it contains this product
+    if (selectedSquare) {
+      const updatedProducts = selectedSquare.products.map((p) =>
+        p.id === product.id ? product : p
+      );
+      setSelectedSquare({ ...selectedSquare, products: updatedProducts });
+    }
+
+    setTimeout(() => {
+      setIsSaving(false);
+    }, 500);
+  } catch (error) {
+    setIsSaving(false);
+    handleApiError(error, "updateProductData", setError);
+    throw error;
+  }
+};
+
+/**
+ * Removes a product from the database
+ */
+export const removeProduct = async (
+  productId: string,
+  setSupermarket: Dispatch<SetStateAction<Supermarket | null>>,
+  setSelectedSquare: SetSelectedSquareFunction,
+  selectedSquare: Square | null,
+  setError: SetErrorFunction,
+  setIsSaving: SetIsSavingFunction
+) => {
+  try {
+    setError(null);
+    setIsSaving(true);
+
+    console.log("Removing product from database:", productId);
+
+    // Delete the product from the database
+    await client.models.Product.delete({ id: productId });
+
+    // Update local state
+    setSupermarket((prev) => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        products: prev.products.filter((p) => p.id !== productId),
+        // Also remove from any square that has this product
+        layout: prev.layout.map((row) =>
+          row.map((square) => ({
+            ...square,
+            products: square.products.filter((p) => p.id !== productId),
+          }))
+        ),
+      };
+    });
+
+    // Update selected square if it contains this product
+    if (selectedSquare) {
+      const updatedProducts = selectedSquare.products.filter(
+        (p) => p.id !== productId
+      );
+      setSelectedSquare({ ...selectedSquare, products: updatedProducts });
+    }
+
+    setTimeout(() => {
+      setIsSaving(false);
+    }, 500);
+  } catch (error) {
+    setIsSaving(false);
+    handleApiError(error, "removeProduct", setError);
+    throw error;
+  }
+};
+
+/**
+ * Helper function to handle API errors
+ */
+const handleApiError = (
+  error: unknown,
+  source: string,
+  setError: SetErrorFunction
+) => {
+  console.error(`Error in ${source}:`, error);
+  let message = "An unexpected error occurred";
+
+  if (error instanceof Error) {
+    message = error.message;
+  } else if (typeof error === "string") {
+    message = error;
+  } else if (error && typeof error === "object" && "message" in error) {
+    message = String((error as any).message);
+  }
+
+  setError({ message, source });
 };

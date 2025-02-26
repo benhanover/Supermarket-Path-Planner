@@ -8,9 +8,15 @@ import {
 import { SquareType, Square, EditableAction, Supermarket } from "../types";
 import { useAppContext } from "../../../context/AppContext";
 import { handleSquareClick as handleSquareClickAction } from "./dashboardActions";
+import {
+  fetchSampleProducts,
+  saveLayout as saveLayoutApi,
+  addProduct as addProductApi,
+  updateProductData as updateProductApi,
+  removeProduct as removeProductApi,
+} from "./dashboardApi";
 import { generateClient } from "aws-amplify/api";
 import { getCurrentUser } from "aws-amplify/auth";
-import axios from "axios";
 import { Product } from "../types";
 import type { Schema } from "../../../../amplify/data/resource";
 
@@ -171,7 +177,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
           });
 
           // Fetch sample products for testing
-          fetchSampleProducts();
+          fetchSampleProducts(setSupermarket, setLoading);
         }
       } catch (error) {
         handleError(error, "loadSupermarketData");
@@ -192,221 +198,76 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [saveTimeout]);
 
-  // Fetch sample products if needed
-  const fetchSampleProducts = async () => {
-    try {
-      setError(null);
-      const response = await axios.get<Product[]>(
-        "https://fakestoreapi.com/products"
-      );
-      setSupermarket((prev) => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          products: response.data.map((product) => ({
-            ...product,
-            id: product.id.toString(), // Convert to string for compatibility
-          })),
-        };
-      });
-    } catch (error) {
-      handleError(error, "fetchSampleProducts");
-    }
-  };
-
-  // Save layout to backend
+  // Wrapper around the API saveLayout function
   const saveLayout = async (layoutToSave?: Square[][]) => {
     if (!supermarket) return;
-
     try {
-      setError(null);
-      setIsSaving(true); // Show saving indicator
-
-      // Use the provided layout parameter if available, otherwise use the current state
-      const layoutData = layoutToSave || supermarket.layout;
-      // Format the layout data as a string for storage
-      const layoutString = JSON.stringify(layoutData);
-      console.log("Saving layout:", layoutString.substring(0, 100) + "...");
-
-      if (supermarketId) {
-        // Update the existing supermarket
-        await client.models.Supermarket.update({
-          id: supermarketId,
-          layout: layoutString,
-        });
-      } else {
-        // Create a new supermarket if we don't have an ID
-        console.log("Creating new supermarket");
-        const currentUser = await getCurrentUser();
-        const newSupermarket = await client.models.Supermarket.create({
-          name: supermarket.name,
-          address: user?.address || "Address not set",
-          layout: layoutString,
-          owner: currentUser.userId,
-        });
-
-        setSupermarketId(newSupermarket.id);
-      }
-
-      // Keep the saving indicator visible briefly so users can see it worked
-      setTimeout(() => {
-        setIsSaving(false);
-      }, 500);
+      await saveLayoutApi(
+        supermarket,
+        supermarketId,
+        layoutToSave,
+        user,
+        setSupermarketId,
+        setError,
+        setIsSaving
+      );
     } catch (error) {
-      setIsSaving(false); // Hide indicator on error
-      handleError(error, "saveLayout");
-      throw error; // Re-throw for caller to handle
+      // Error handling is done within the API function
+      console.error("Error in saveLayout:", error);
     }
   };
 
-  // Add a product to the backend
+  // Wrapper around the API addProduct function
   const addProduct = async (product: Omit<Product, "id">) => {
-    if (!supermarketId) {
-      // If we don't have a supermarket ID yet, create the supermarket first
-      try {
-        await saveLayout();
-      } catch (error) {
-        handleError(error, "addProduct (saveLayout)");
-        throw error;
-      }
-
-      if (!supermarketId) {
-        const error = new Error("Failed to create supermarket");
-        handleError(error, "addProduct");
-        throw error;
-      }
-    }
-
     try {
-      setError(null);
-      setIsSaving(true); // Show saving indicator
-
-      // Create the product in the database
-      const newProduct = await client.models.Product.create({
-        title: product.title,
-        price: product.price,
-        category: product.category,
-        description: product.description,
-        image: product.image,
-        rating: JSON.stringify(product.rating),
-        supermarketID: supermarketId,
-      });
-
-      // Update the local state with the new product
-      setSupermarket((prev) => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          products: [
-            ...prev.products,
-            { ...newProduct, rating: product.rating },
-          ],
-        };
-      });
-
-      setTimeout(() => {
-        setIsSaving(false);
-      }, 500);
-
-      return newProduct.id;
+      return await addProductApi(
+        product,
+        supermarketId,
+        saveLayout,
+        setSupermarket,
+        setError,
+        setIsSaving
+      );
     } catch (error) {
-      setIsSaving(false);
-      handleError(error, "addProduct");
+      // Error handling is done within the API function
+      console.error("Error in addProduct:", error);
       throw error;
     }
   };
 
-  // Update a product in the backend
+  // Wrapper around the API updateProductData function
   const updateProductData = async (product: Product) => {
     try {
-      setError(null);
-      setIsSaving(true);
-
-      // Update the product in the database
-      await client.models.Product.update({
-        id: product.id,
-        title: product.title,
-        price: product.price,
-        image: product.image,
-      });
-
-      // Update local state
-      setSupermarket((prev) => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          products: prev.products.map((p) =>
-            p.id === product.id ? product : p
-          ),
-          // Also update in any square that has this product
-          layout: prev.layout.map((row) =>
-            row.map((square) => ({
-              ...square,
-              products: square.products.map((p) =>
-                p.id === product.id ? product : p
-              ),
-            }))
-          ),
-        };
-      });
-
-      // Update selected square if it contains this product
-      if (selectedSquare) {
-        const updatedProducts = selectedSquare.products.map((p) =>
-          p.id === product.id ? product : p
-        );
-        setSelectedSquare({ ...selectedSquare, products: updatedProducts });
-      }
-
-      setTimeout(() => {
-        setIsSaving(false);
-      }, 500);
+      await updateProductApi(
+        product,
+        supermarketId,
+        setSupermarket,
+        setSelectedSquare,
+        selectedSquare,
+        setError,
+        setIsSaving
+      );
     } catch (error) {
-      setIsSaving(false);
-      handleError(error, "updateProductData");
+      // Error handling is done within the API function
+      console.error("Error in updateProductData:", error);
       throw error;
     }
   };
 
-  // Remove a product from the backend
+  // Wrapper around the API removeProduct function
   const removeProduct = async (productId: string) => {
     try {
-      setError(null);
-      setIsSaving(true);
-
-      // Delete the product from the database
-      await client.models.Product.delete({ id: productId });
-
-      // Update local state
-      setSupermarket((prev) => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          products: prev.products.filter((p) => p.id !== productId),
-          // Also remove from any square that has this product
-          layout: prev.layout.map((row) =>
-            row.map((square) => ({
-              ...square,
-              products: square.products.filter((p) => p.id !== productId),
-            }))
-          ),
-        };
-      });
-
-      // Update selected square if it contains this product
-      if (selectedSquare) {
-        const updatedProducts = selectedSquare.products.filter(
-          (p) => p.id !== productId
-        );
-        setSelectedSquare({ ...selectedSquare, products: updatedProducts });
-      }
-
-      setTimeout(() => {
-        setIsSaving(false);
-      }, 500);
+      await removeProductApi(
+        productId,
+        setSupermarket,
+        setSelectedSquare,
+        selectedSquare,
+        setError,
+        setIsSaving
+      );
     } catch (error) {
-      setIsSaving(false);
-      handleError(error, "removeProduct");
+      // Error handling is done within the API function
+      console.error("Error in removeProduct:", error);
       throw error;
     }
   };
