@@ -35,6 +35,7 @@ interface DashboardContextType {
     React.SetStateAction<"layout" | "products" | "product_square">
   >;
   loading: boolean;
+  isSaving: boolean;
   saveLayout: (layoutToSave?: Square[][]) => Promise<void>;
   addProduct: (product: Omit<Product, "id">) => Promise<string>;
   updateProductData: (product: Product) => Promise<void>;
@@ -65,6 +66,8 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     "layout" | "products" | "product_square"
   >("layout");
   const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
   const [error, setError] = useState<{
     message: string;
     source: string;
@@ -180,6 +183,15 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     loadSupermarketData();
   }, [user]);
 
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimeout) {
+        clearTimeout(saveTimeout);
+      }
+    };
+  }, [saveTimeout]);
+
   // Fetch sample products if needed
   const fetchSampleProducts = async () => {
     try {
@@ -208,6 +220,8 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       setError(null);
+      setIsSaving(true); // Show saving indicator
+
       // Use the provided layout parameter if available, otherwise use the current state
       const layoutData = layoutToSave || supermarket.layout;
       // Format the layout data as a string for storage
@@ -233,7 +247,13 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
 
         setSupermarketId(newSupermarket.id);
       }
+
+      // Keep the saving indicator visible briefly so users can see it worked
+      setTimeout(() => {
+        setIsSaving(false);
+      }, 500);
     } catch (error) {
+      setIsSaving(false); // Hide indicator on error
       handleError(error, "saveLayout");
       throw error; // Re-throw for caller to handle
     }
@@ -259,6 +279,8 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       setError(null);
+      setIsSaving(true); // Show saving indicator
+
       // Create the product in the database
       const newProduct = await client.models.Product.create({
         title: product.title,
@@ -282,8 +304,13 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         };
       });
 
+      setTimeout(() => {
+        setIsSaving(false);
+      }, 500);
+
       return newProduct.id;
     } catch (error) {
+      setIsSaving(false);
       handleError(error, "addProduct");
       throw error;
     }
@@ -293,6 +320,8 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const updateProductData = async (product: Product) => {
     try {
       setError(null);
+      setIsSaving(true);
+
       // Update the product in the database
       await client.models.Product.update({
         id: product.id,
@@ -328,7 +357,12 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         );
         setSelectedSquare({ ...selectedSquare, products: updatedProducts });
       }
+
+      setTimeout(() => {
+        setIsSaving(false);
+      }, 500);
     } catch (error) {
+      setIsSaving(false);
       handleError(error, "updateProductData");
       throw error;
     }
@@ -338,6 +372,8 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const removeProduct = async (productId: string) => {
     try {
       setError(null);
+      setIsSaving(true);
+
       // Delete the product from the database
       await client.models.Product.delete({ id: productId });
 
@@ -364,7 +400,12 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         );
         setSelectedSquare({ ...selectedSquare, products: updatedProducts });
       }
+
+      setTimeout(() => {
+        setIsSaving(false);
+      }, 500);
     } catch (error) {
+      setIsSaving(false);
       handleError(error, "removeProduct");
       throw error;
     }
@@ -400,14 +441,19 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
             };
           });
 
-          // Auto-save the updated layout
-          const debounceTimeout = setTimeout(() => {
+          // Clear existing timeout if there is one
+          if (saveTimeout) {
+            clearTimeout(saveTimeout);
+          }
+
+          // Set new debounced save timeout
+          const newTimeout = setTimeout(() => {
             saveLayout(updatedLayout).catch((error) => {
               handleError(error, "handleSquareClick (saveLayout)");
             });
           }, 1000);
 
-          return () => clearTimeout(debounceTimeout);
+          setSaveTimeout(newTimeout);
         } else {
           // For other actions, use the original implementation
           handleSquareClickAction(
@@ -427,7 +473,14 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         handleError(error, "handleSquareClick");
       }
     },
-    [supermarket, activeAction, selectedType, setEditMode, setActiveTab]
+    [
+      supermarket,
+      activeAction,
+      selectedType,
+      setEditMode,
+      setActiveTab,
+      saveTimeout,
+    ]
   );
 
   // Loading state
@@ -452,6 +505,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         activeTab,
         setActiveTab,
         loading,
+        isSaving,
         saveLayout,
         addProduct,
         updateProductData,
@@ -470,6 +524,13 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
           >
             ×
           </button>
+        </div>
+      )}
+      {/* Saving indicator - pointer-events-none ensures it doesn't interfere with drag operations */}
+      {isSaving && (
+        <div className="fixed bottom-4 left-4 bg-blue-100 border border-blue-300 text-blue-800 px-3 py-2 rounded-lg shadow-md z-40 flex items-center space-x-2 pointer-events-none">
+          <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-sm font-medium">Saving changes...</span>
         </div>
       )}
       {children}
