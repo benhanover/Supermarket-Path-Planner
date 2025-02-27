@@ -1,5 +1,4 @@
 // src/components/Dashboard/DashboardContext/dashboardApi.ts
-import axios from "axios";
 import { Product, Supermarket, Square } from "../types";
 import { Dispatch, SetStateAction } from "react";
 import { generateClient } from "aws-amplify/api";
@@ -13,36 +12,6 @@ type SetErrorFunction = (
 ) => void;
 type SetIsSavingFunction = Dispatch<SetStateAction<boolean>>;
 type SetSelectedSquareFunction = Dispatch<SetStateAction<Square | null>>;
-
-/**
- * Fetches products from an external API for demo purposes
- */
-export const fetchSampleProducts = async (
-  setSupermarket: Dispatch<SetStateAction<Supermarket | null>>,
-  setLoading: Dispatch<SetStateAction<boolean>>
-) => {
-  setLoading(true);
-  try {
-    const response = await axios.get<Product[]>(
-      "https://fakestoreapi.com/products"
-    );
-
-    setSupermarket((currentSupermarket) => {
-      if (!currentSupermarket) return null;
-      return {
-        ...currentSupermarket,
-        products: response.data.map((product) => ({
-          ...product,
-          id: product.id.toString(),
-        })),
-      };
-    });
-  } catch (error) {
-    console.error("Error fetching sample products:", error);
-  } finally {
-    setLoading(false);
-  }
-};
 
 /**
  * Saves the supermarket layout to the database
@@ -80,7 +49,6 @@ export const saveLayout = async (
       const currentUser = await getCurrentUser();
       const newSupermarket = await client.models.Supermarket.create({
         name: supermarket.name,
-        address: user?.address || "Address not set",
         layout: layoutString,
         owner: currentUser.userId,
       });

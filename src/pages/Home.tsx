@@ -1,37 +1,18 @@
-import { signOut, updateUserAttributes } from "aws-amplify/auth";
+import { signOut } from "aws-amplify/auth";
 import { useAppContext } from "../context/AppContext";
 import Dashboard from "../components/Dashboard/Dashboard";
 import InitializeLayout from "../components/InitializeLayout";
-import { User } from "../types";
 const Home: React.FC = () => {
-  const { user, setUser, loading } = useAppContext();
+  const { loading, supermarket } = useAppContext();
 
   const resetSupermarket = async () => {
     try {
-      await updateUserAttributes({
-        userAttributes: {
-          "custom:supermarket_name": "",
-          "custom:layout_rows": "",
-          "custom:layout_cols": "",
-        },
-      });
-
-      // Update local user state
-      setUser((prevUser) => {
-        if (!prevUser) return null;
-        return {
-          ...prevUser,
-          supermarketName: "",
-          layoutRows: 0,
-          layoutCols: 0,
-        } satisfies User;
-      });
-
-      window.location.reload();
+      console.log("needs implementation");
     } catch (error) {
       console.error("Failed to reset supermarket:", error);
     }
   };
+
   const handleSignOut = async () => {
     try {
       await signOut();
@@ -50,11 +31,6 @@ const Home: React.FC = () => {
     );
   }
 
-  // Check if supermarket is initialized by verifying if essential fields are populated
-  const isInitialized = Boolean(
-    user?.supermarketName && user?.layoutRows && user?.layoutCols
-  );
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100">
       <header className="bg-white shadow-md p-4">
@@ -64,7 +40,7 @@ const Home: React.FC = () => {
               🛒
             </span>
             <h1 className="text-xl font-bold text-green-700">
-              {user?.supermarketName || "Supermarket Planner"}
+              {"Supermarket Planner"}
             </h1>
           </div>
 
@@ -86,7 +62,7 @@ const Home: React.FC = () => {
       </header>
 
       <main className="max-w-7xl mx-auto p-4 mt-8">
-        {isInitialized ? <Dashboard /> : <InitializeLayout />}
+        {supermarket ? <Dashboard /> : <InitializeLayout />}
       </main>
     </div>
   );

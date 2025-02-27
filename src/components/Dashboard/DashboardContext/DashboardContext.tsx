@@ -5,24 +5,20 @@ import {
   ReactNode,
   useCallback,
 } from "react";
-import { SquareType, Square, EditableAction, Supermarket } from "../types";
+import { SquareType, Square, EditableAction } from "../types";
 import { useAppContext } from "../../../context/AppContext";
 import { handleSquareClick as handleSquareClickAction } from "./dashboardActions";
 import {
-  fetchSampleProducts,
+  // fetchSampleProducts,
   saveLayout as saveLayoutApi,
   addProduct as addProductApi,
   updateProductData as updateProductApi,
   removeProduct as removeProductApi,
 } from "./dashboardApi";
 import { generateClient } from "aws-amplify/api";
-import { getCurrentUser } from "aws-amplify/auth";
 import { Product } from "../types";
-import type { Schema } from "../../../../amplify/data/resource";
 
 interface DashboardContextType {
-  supermarket: Supermarket | null;
-  setSupermarket: React.Dispatch<React.SetStateAction<Supermarket | null>>;
   selectedType: SquareType;
   setSelectedType: (type: SquareType) => void;
   editMode: boolean;
@@ -46,8 +42,6 @@ interface DashboardContextType {
   addProduct: (product: Omit<Product, "id">) => Promise<string>;
   updateProductData: (product: Product) => Promise<void>;
   removeProduct: (productId: string) => Promise<void>;
-  supermarketId: string | null;
-  error: { message: string; source: string } | null;
 }
 
 // Create the context
@@ -55,13 +49,20 @@ export const DashboardContext = createContext<DashboardContextType | undefined>(
   undefined
 );
 
-const client = generateClient<Schema>();
-
 // Provider component
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
-  const { user, loading: userLoading } = useAppContext();
-  const [supermarket, setSupermarket] = useState<Supermarket | null>(null);
-  const [supermarketId, setSupermarketId] = useState<string | null>(null);
+  const {
+    user,
+    loading: userLoading,
+    supermarket,
+    setSupermarket,
+    supermarketId,
+    setSupermarketId,
+    error,
+    setError,
+    handleError,
+  } = useAppContext();
+
   const [selectedType, setSelectedType] = useState<SquareType>("empty");
   const [editMode, setEditMode] = useState(false);
   const [activeAction, setActiveAction] = useState<EditableAction>(
@@ -74,120 +75,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
-  const [error, setError] = useState<{
-    message: string;
-    source: string;
-  } | null>(null);
-
-  // Function to handle errors in a consistent way
-  const handleError = (error: unknown, source: string) => {
-    console.error(`Error in ${source}:`, error);
-    let message = "An unexpected error occurred";
-
-    if (error instanceof Error) {
-      message = error.message;
-    } else if (typeof error === "string") {
-      message = error;
-    } else if (error && typeof error === "object" && "message" in error) {
-      message = String((error as any).message);
-    }
-
-    setError({ message, source });
-
-    // Auto-clear error after 10 seconds
-    setTimeout(() => setError(null), 10000);
-  };
-
-  // Load supermarket data from backend
-  useEffect(() => {
-    const loadSupermarketData = async () => {
-      if (!user) return;
-
-      try {
-        setLoading(true);
-        setError(null);
-
-        // First try to list all supermarkets
-        const allSupermarkets = await client.models.Supermarket.list();
-
-        // Get current user
-        const currentUser = await getCurrentUser();
-
-        // Find the supermarket that belongs to this user
-        const userSupermarket = allSupermarkets.data.find(
-          (market) => market.owner === currentUser.userId
-        );
-
-        if (userSupermarket) {
-          console.log("Found user's supermarket:", userSupermarket.id);
-          setSupermarketId(userSupermarket.id);
-
-          // Parse layout from string
-          let parsedLayout;
-          try {
-            // It's stored as a string in the database
-            parsedLayout = JSON.parse(userSupermarket.layout);
-          } catch (jsonError) {
-            handleError(jsonError, "loadSupermarketData (JSON parsing)");
-            // Create a default layout if parsing fails
-            parsedLayout = Array.from({ length: user.layoutRows }, (_, row) =>
-              Array.from({ length: user.layoutCols }, (_, col) => ({
-                type: "empty" as SquareType,
-                products: [],
-                row,
-                col,
-              }))
-            );
-          }
-
-          // Get products for this supermarket
-          const products = await client.models.Product.list({
-            filter: {
-              supermarketID: {
-                eq: userSupermarket.id,
-              },
-            },
-          });
-
-          // Set up the supermarket state
-          setSupermarket({
-            name: userSupermarket.name,
-            layout: parsedLayout,
-            products: products.data,
-          });
-        } else {
-          console.log("No supermarket found");
-          handleError(new Error("No supermarket found"), "loadSupermarketData");
-          // Create a default supermarket in memory
-          const emptyLayout = Array.from(
-            { length: user.layoutRows },
-            (_, row) =>
-              Array.from({ length: user.layoutCols }, (_, col) => ({
-                type: "empty" as SquareType,
-                products: [],
-                row,
-                col,
-              }))
-          );
-
-          setSupermarket({
-            name: user.supermarketName || "My Supermarket",
-            layout: emptyLayout,
-            products: [],
-          });
-
-          // Fetch sample products for testing
-          fetchSampleProducts(setSupermarket, setLoading);
-        }
-      } catch (error) {
-        handleError(error, "loadSupermarketData");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadSupermarketData();
-  }, [user]);
 
   // Clean up timeout on unmount
   useEffect(() => {
@@ -352,8 +239,8 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   return (
     <DashboardContext.Provider
       value={{
-        supermarket,
-        setSupermarket,
+        // supermarket,
+        // setSupermarket,
         selectedType,
         setSelectedType,
         editMode,
@@ -371,8 +258,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         addProduct,
         updateProductData,
         removeProduct,
-        supermarketId,
-        error,
+        // supermarketId,
       }}
     >
       {error && (

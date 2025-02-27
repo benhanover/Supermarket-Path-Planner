@@ -1,8 +1,10 @@
+import { useAppContext } from "../../../context/AppContext";
 import { useDashboard } from "../DashboardContext/useDashboard";
 import { Product } from "../types";
 
 const DisplaySquare = () => {
-  const { selectedSquare, setSelectedSquare, supermarket } = useDashboard();
+  const { selectedSquare, setSelectedSquare } = useDashboard();
+  const { supermarket } = useAppContext();
   if (!selectedSquare || !supermarket) return null;
 
   // Get the actual products from the IDs
