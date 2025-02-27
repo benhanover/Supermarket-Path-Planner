@@ -1,5 +1,5 @@
 export interface Product {
-  id: number;
+  id: string;
   title: string;
   price: number;
   category: string;
@@ -20,7 +20,7 @@ export type SquareType =
 
 export interface Square {
   type: SquareType;
-  products: Product[];
+  productIds: String[];
   row: number;
   col: number;
 }

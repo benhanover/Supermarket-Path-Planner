@@ -222,10 +222,11 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
   const {
     selectedSquare,
     setSelectedSquare,
-    supermarket,
     setSupermarket,
     removeProduct,
+    supermarket,
     isSaving,
+    saveLayout,
   } = useDashboard();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -247,32 +248,45 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
     }
   };
 
-  const toggleProductSelection = (product: Product) => {
+  const toggleProductSelection = async (product: Product) => {
     if (mode !== "square" || !selectedSquare) return;
 
-    const isSelected = selectedSquare.products.some((p) => p.id === product.id);
-    const updatedProducts = isSelected
-      ? selectedSquare.products.filter((p) => p.id !== product.id)
-      : [...selectedSquare.products, product];
+    // Check if product is already in the square
+    const isSelected = selectedSquare.productIds.includes(product.id);
+    const updatedProductIds = isSelected
+      ? selectedSquare.productIds.filter((id) => id !== product.id)
+      : [...selectedSquare.productIds, product.id];
 
     // Update selected square
-    setSelectedSquare({ ...selectedSquare, products: updatedProducts });
+    setSelectedSquare({ ...selectedSquare, productIds: updatedProductIds });
 
-    // Update supermarket layout
+    // Create the updated layout directly
+    const updatedLayout = supermarket?.layout.map((row) =>
+      row.map((square) =>
+        square.row === selectedSquare.row && square.col === selectedSquare.col
+          ? { ...square, productIds: updatedProductIds }
+          : square
+      )
+    );
+
+    // Update supermarket layout in state
     setSupermarket((prev) => {
       if (!prev) return null;
       return {
         ...prev,
-        layout: prev.layout.map((row) =>
-          row.map((square) =>
-            square.row === selectedSquare.row &&
-            square.col === selectedSquare.col
-              ? { ...square, products: updatedProducts }
-              : square
-          )
-        ),
+        layout: updatedLayout,
       };
     });
+
+    // Save the updated layout directly using the layout we just created
+    // This way we don't depend on the updated state being available yet
+    if (updatedLayout) {
+      try {
+        await saveLayout(updatedLayout);
+      } catch (error) {
+        console.error("Failed to save product selection:", error);
+      }
+    }
   };
 
   return (
@@ -332,7 +346,7 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
         renderProduct={(product) => {
           const isSelected =
             mode === "square" &&
-            selectedSquare?.products.some((p) => p.id === product.id);
+            selectedSquare?.productIds.includes(product.id);
 
           return (
             <div

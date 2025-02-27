@@ -216,24 +216,14 @@ export const updateProductData = async (
       return {
         ...prev,
         products: prev.products.map((p) => (p.id === product.id ? product : p)),
-        // Also update in any square that has this product
-        layout: prev.layout.map((row) =>
-          row.map((square) => ({
-            ...square,
-            products: square.products.map((p) =>
-              p.id === product.id ? product : p
-            ),
-          }))
-        ),
+        // We don't need to update anything in the layout since we're using IDs now
+        // The actual product data is only stored in the products array
       };
     });
 
-    // Update selected square if it contains this product
-    if (selectedSquare) {
-      const updatedProducts = selectedSquare.products.map((p) =>
-        p.id === product.id ? product : p
-      );
-      setSelectedSquare({ ...selectedSquare, products: updatedProducts });
+    // Update selected square if it contains this product (no need to update, just preserve the reference)
+    if (selectedSquare && selectedSquare.productIds.includes(product.id)) {
+      setSelectedSquare({ ...selectedSquare }); // Just trigger a re-render by creating a new object
     }
 
     setTimeout(() => {
@@ -272,22 +262,22 @@ export const removeProduct = async (
       return {
         ...prev,
         products: prev.products.filter((p) => p.id !== productId),
-        // Also remove from any square that has this product
+        // Update the layout to remove the product ID from any square that has it
         layout: prev.layout.map((row) =>
           row.map((square) => ({
             ...square,
-            products: square.products.filter((p) => p.id !== productId),
+            productIds: square.productIds.filter((id) => id !== productId),
           }))
         ),
       };
     });
 
     // Update selected square if it contains this product
-    if (selectedSquare) {
-      const updatedProducts = selectedSquare.products.filter(
-        (p) => p.id !== productId
+    if (selectedSquare && selectedSquare.productIds.includes(productId)) {
+      const updatedProductIds = selectedSquare.productIds.filter(
+        (id) => id !== productId
       );
-      setSelectedSquare({ ...selectedSquare, products: updatedProducts });
+      setSelectedSquare({ ...selectedSquare, productIds: updatedProductIds });
     }
 
     setTimeout(() => {

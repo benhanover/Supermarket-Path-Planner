@@ -49,7 +49,7 @@ const InitializeLayout: React.FC = () => {
         (_, row) =>
           Array.from({ length: formData.layoutCols }, (_, col) => ({
             type: "empty",
-            products: [],
+            productIds: [],
             row,
             col,
           }))
