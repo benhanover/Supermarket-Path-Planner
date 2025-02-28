@@ -1,5 +1,9 @@
-import type { Square, SquareType } from "./square";
-import type { Product } from "./product";
-import type { Layout } from "./layout";
+import type { Square, SquareType, Product, Supermarket } from "./base";
+export enum EditableAction {
+  None = "none",
+  ModifyLayout = "modify_layout",
+  EditProducts = "edit_products",
+  ChangeLayoutSize = "change_layout_size",
+}
 
-export type { Square, SquareType, Product, Layout };
+export type { Square, SquareType, Product, Supermarket };

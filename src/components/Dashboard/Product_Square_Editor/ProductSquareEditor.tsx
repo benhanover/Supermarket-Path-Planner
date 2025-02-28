@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useDashboard } from "../DashboardContext";
+import { useDashboard } from "../DashboardContext/useDashboard";
+import { EditableAction } from "../types";
 import DisplaySquare from "./DisplaySquare";
 import ProductsEditor from "../Products/ProductsEditor";
-import { EditableAction } from "../DashboardContext";
 
 const ProductSquareEditor = () => {
   const [showProductsEditor, setShowProductsEditor] = useState(false);

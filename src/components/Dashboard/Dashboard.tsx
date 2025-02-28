@@ -1,4 +1,5 @@
-import { DashboardProvider, useDashboard } from "./DashboardContext";
+import { useDashboard } from "./DashboardContext/useDashboard";
+import DashboardProvider from "./DashboardContext/DashboardContext";
 import LayoutEditor from "./Layout/LayoutEditor";
 import ProductsEditor from "./Products/ProductsEditor";
 import ProductSquareEditor from "./Product_Square_Editor/ProductSquareEditor";

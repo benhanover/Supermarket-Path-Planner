@@ -1,9 +1,8 @@
-import { useDashboard, EditableAction } from "../DashboardContext";
 import { useAppContext } from "../../../context/AppContext";
+import { useDashboard } from "../DashboardContext/useDashboard";
+import { EditableAction } from "../types";
 import { SquareType } from "../types";
 import { useEffect, useState } from "react";
-import { User } from "../../../types";
-import { updateUserAttributes } from "aws-amplify/auth";
 
 // Square types with colors for UI
 const squareTypes: { type: SquareType; color: string; label: string }[] = [
@@ -22,14 +21,13 @@ const SidebarMenu = () => {
     setActiveAction,
     editMode,
     setEditMode,
-    setLayout,
+    saveLayout,
   } = useDashboard();
-
-  const { user, setUser } = useAppContext(); // ✅ Get user and setter from AppContext
+  const { setSupermarket } = useAppContext();
 
   const [showSizePrompt, setShowSizePrompt] = useState(false);
-  const [newRows, setNewRows] = useState<number | "">(user?.layoutRows || 50);
-  const [newCols, setNewCols] = useState<number | "">(user?.layoutCols || 30);
+  const [newRows, setNewRows] = useState<number | "">();
+  const [newCols, setNewCols] = useState<number | "">();
 
   // Close active actions when switching to Preview Mode
   useEffect(() => {
@@ -38,7 +36,7 @@ const SidebarMenu = () => {
     }
   }, [editMode, setActiveAction]);
 
-  // ✅ Function to confirm new layout size
+  // Function to confirm new layout size
   const confirmLayoutSize = async () => {
     if (!newRows || !newCols) {
       alert("Please enter valid numbers for rows and columns.");
@@ -54,38 +52,28 @@ const SidebarMenu = () => {
     try {
       console.log("Updating layout size to Rows:", newRows, "Cols:", newCols);
 
-      // Update user attributes in Cognito
-      await updateUserAttributes({
-        userAttributes: {
-          "custom:layout_rows": newRows.toString(),
-          "custom:layout_cols": newCols.toString(),
-        },
-      });
+      // Create the new layout
+      const newLayout = Array.from({ length: Number(newRows) }, (_, row) =>
+        Array.from({ length: Number(newCols) }, (_, col) => ({
+          type: "empty" as const,
+          productIds: [], // Make sure you're using productIds, not products
+          row,
+          col,
+        }))
+      );
 
-      // Update user state in AppContext with proper typing
-      setUser((prevUser) => {
-        if (!prevUser) return null;
+      // Update supermarket state in AppContext
+      setSupermarket((prevSupermarket) => {
+        if (!prevSupermarket) return null;
 
         return {
-          ...prevUser,
-          layoutRows: Number(newRows),
-          layoutCols: Number(newCols),
-        } satisfies User; // This ensures the returned object matches the User type
+          ...prevSupermarket,
+          layout: newLayout,
+        };
       });
 
-      // Update layout state in DashboardContext
-      setLayout({
-        rows: Number(newRows),
-        cols: Number(newCols),
-        grid: Array.from({ length: Number(newRows) }, (_, row) =>
-          Array.from({ length: Number(newCols) }, (_, col) => ({
-            type: "empty" as const,
-            products: [],
-            row,
-            col,
-          }))
-        ),
-      });
+      // Save the layout to the database
+      await saveLayout(newLayout);
 
       setShowSizePrompt(false);
       setActiveAction(EditableAction.None);
@@ -93,7 +81,6 @@ const SidebarMenu = () => {
       console.error("Failed to update layout size:", error);
     }
   };
-
   return (
     <div
       className={`p-6 border-r flex flex-col gap-4 w-64 transition-all duration-300

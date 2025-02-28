@@ -1,5 +1,7 @@
+import { memo } from "react";
 import { Square as SquareType } from "../types";
-import { useDashboard } from "../DashboardContext";
+import { useDashboard } from "../DashboardContext/useDashboard";
+import { EditableAction } from "../types";
 
 interface SquareProps {
   square: SquareType;
@@ -7,11 +9,8 @@ interface SquareProps {
   onMouseEnter: (row: number, col: number) => void;
 }
 
-const Square: React.FC<SquareProps> = ({
-  square,
-  onMouseDown,
-  onMouseEnter,
-}) => {
+// Use memo to prevent unnecessary re-renders
+const Square = memo(({ square, onMouseDown, onMouseEnter }: SquareProps) => {
   const { activeAction } = useDashboard();
 
   const getColor = () => {
@@ -29,25 +28,47 @@ const Square: React.FC<SquareProps> = ({
     }
   };
 
+  const handleMouseDown = () => {
+    onMouseDown(square.row, square.col);
+  };
+
+  const handleMouseEnter = () => {
+    onMouseEnter(square.row, square.col);
+  };
+
+  // Determine if square should be interactive based on active action
+  const isInteractive =
+    activeAction === EditableAction.ModifyLayout ||
+    (activeAction === EditableAction.EditProducts &&
+      square.type === "products");
+
   return (
     <div
       className={`w-full h-full ${getColor()} border rounded-md transition-all 
       ${
-        activeAction === "edit_products" && square.type !== "products"
-          ? "opacity-30 pointer-events-none"
+        activeAction === EditableAction.EditProducts &&
+        square.type !== "products"
+          ? "opacity-30"
           : ""
       }
       ${
-        activeAction === "edit_products" && square.type === "products"
-          ? "hover:scale-115"
+        activeAction === EditableAction.EditProducts &&
+        square.type === "products"
+          ? "hover:scale-110 cursor-pointer"
+          : isInteractive
+          ? "cursor-pointer hover:opacity-80"
           : ""
-      }`}
-      onMouseDown={() => onMouseDown(square.row, square.col)}
-      onMouseEnter={() => {
-        onMouseEnter(square.row, square.col);
-      }}
+      }
+      `}
+      onMouseDown={handleMouseDown}
+      onMouseEnter={handleMouseEnter}
+      data-square-type={square.type}
+      data-position={`${square.row},${square.col}`}
     ></div>
   );
-};
+});
+
+// Add a display name for debugging
+Square.displayName = "Square";
 
 export default Square;
