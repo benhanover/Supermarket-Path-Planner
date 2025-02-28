@@ -1,16 +1,20 @@
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "../context/AppContext";
 
 export default function LandingPage() {
   const { user } = useAuthenticator((context) => [context.user]);
+  const { setUser } = useAppContext();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
+      // Explicitly set the user in the AppContext
+      setUser(user);
       navigate("/home");
     }
-  }, [user, navigate]);
+  }, [user, navigate, setUser]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-600 to-purple-500 px-4">
