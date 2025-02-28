@@ -5,14 +5,6 @@ import InitializeLayout from "../components/InitializeLayout";
 const Home: React.FC = () => {
   const { loading, supermarket } = useAppContext();
 
-  const resetSupermarket = async () => {
-    try {
-      console.log("needs implementation");
-    } catch (error) {
-      console.error("Failed to reset supermarket:", error);
-    }
-  };
-
   const handleSignOut = async () => {
     try {
       await signOut();
@@ -43,15 +35,6 @@ const Home: React.FC = () => {
               {"Supermarket Planner"}
             </h1>
           </div>
-
-          {process.env.NODE_ENV === "development" && (
-            <button
-              onClick={resetSupermarket}
-              className="px-4 py-2 mr-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
-            >
-              Reset Store
-            </button>
-          )}
           <button
             onClick={handleSignOut}
             className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"

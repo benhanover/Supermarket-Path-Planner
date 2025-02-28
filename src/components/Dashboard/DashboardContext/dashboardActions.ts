@@ -15,7 +15,6 @@ export const handleSquareClick = (
   activeAction: EditableAction,
   selectedType: SquareType,
   setSelectedSquare: Dispatch<SetStateAction<Square | null>>,
-  setEditMode: Dispatch<SetStateAction<boolean>>,
   setActiveTab: Dispatch<
     SetStateAction<"layout" | "products" | "product_square">
   >

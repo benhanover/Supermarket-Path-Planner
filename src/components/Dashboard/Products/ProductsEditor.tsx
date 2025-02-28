@@ -61,13 +61,15 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
     );
 
     // Update supermarket layout in state
-    setSupermarket((prev) => {
-      if (!prev) return null;
-      return {
-        ...prev,
-        layout: updatedLayout,
-      };
-    });
+    if (updatedLayout) {
+      setSupermarket((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          layout: updatedLayout,
+        };
+      });
+    }
 
     // Save the updated layout directly using the layout we just created
     // This way we don't depend on the updated state being available yet

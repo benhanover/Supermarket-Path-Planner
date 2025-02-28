@@ -6,7 +6,7 @@ import Square from "./Square";
 const SQUARE_SIZE = 24; // Adjust for bigger squares
 
 const Layout = () => {
-  const { handleSquareClick, editMode, activeAction } = useDashboard();
+  const { handleSquareClick, editMode } = useDashboard();
   const { supermarket } = useAppContext();
   const [isDragging, setIsDragging] = useState(false);
 

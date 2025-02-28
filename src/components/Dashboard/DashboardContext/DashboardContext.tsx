@@ -15,7 +15,6 @@ import {
   updateProductData as updateProductApi,
   removeProduct as removeProductApi,
 } from "./dashboardApi";
-import { generateClient } from "aws-amplify/api";
 import { Product } from "../types";
 
 interface DashboardContextType {
@@ -36,7 +35,6 @@ interface DashboardContextType {
   setActiveTab: React.Dispatch<
     React.SetStateAction<"layout" | "products" | "product_square">
   >;
-  loading: boolean;
   isSaving: boolean;
   saveLayout: (layoutToSave?: Square[][]) => Promise<void>;
   addProduct: (product: Omit<Product, "id">) => Promise<string>;
@@ -52,12 +50,9 @@ export const DashboardContext = createContext<DashboardContextType | undefined>(
 // Provider component
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const {
-    user,
     loading: userLoading,
     supermarket,
     setSupermarket,
-    supermarketId,
-    setSupermarketId,
     error,
     setError,
     handleError,
@@ -72,7 +67,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const [activeTab, setActiveTab] = useState<
     "layout" | "products" | "product_square"
   >("layout");
-  const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
 
@@ -89,15 +83,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const saveLayout = async (layoutToSave?: Square[][]) => {
     if (!supermarket) return;
     try {
-      await saveLayoutApi(
-        supermarket,
-        supermarketId,
-        layoutToSave,
-        user,
-        setSupermarketId,
-        setError,
-        setIsSaving
-      );
+      await saveLayoutApi(supermarket, layoutToSave, setError, setIsSaving);
     } catch (error) {
       // Error handling is done within the API function
       console.error("Error in saveLayout:", error);
@@ -109,7 +95,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     try {
       return await addProductApi(
         product,
-        supermarketId,
+        supermarket,
         saveLayout,
         setSupermarket,
         setError,
@@ -127,7 +113,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     try {
       await updateProductApi(
         product,
-        supermarketId,
+        supermarket,
         setSupermarket,
         setSelectedSquare,
         selectedSquare,
@@ -166,7 +152,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
 
       try {
         // Create a copy of the current layout
-        let updatedLayout: Square[][] | null = null;
+        let updatedLayout: Square[][] | undefined = undefined;
 
         if (activeAction === EditableAction.ModifyLayout) {
           // Create a deep copy of the layout
@@ -213,7 +199,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
             activeAction,
             selectedType,
             setSelectedSquare,
-            setEditMode,
             setActiveTab
           );
         }
@@ -252,13 +237,11 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         setSelectedSquare,
         activeTab,
         setActiveTab,
-        loading,
         isSaving,
         saveLayout,
         addProduct,
         updateProductData,
         removeProduct,
-        // supermarketId,
       }}
     >
       {error && (

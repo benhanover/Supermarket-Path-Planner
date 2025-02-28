@@ -5,10 +5,6 @@ export interface Product {
   category: string;
   description: string;
   image: string;
-  rating: {
-    rate: number;
-    count: number;
-  };
 }
 
 export type SquareType =
@@ -26,6 +22,8 @@ export interface Square {
 }
 
 export interface Supermarket {
+  id: string;
+  owner: string;
   name: string;
   layout: Square[][];
   products: Product[];

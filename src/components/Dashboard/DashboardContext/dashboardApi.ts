@@ -2,7 +2,6 @@
 import { Product, Supermarket, Square } from "../types";
 import { Dispatch, SetStateAction } from "react";
 import { generateClient } from "aws-amplify/api";
-import { getCurrentUser } from "aws-amplify/auth";
 import type { Schema } from "../../../../amplify/data/resource";
 
 const client = generateClient<Schema>();
@@ -18,10 +17,7 @@ type SetSelectedSquareFunction = Dispatch<SetStateAction<Square | null>>;
  */
 export const saveLayout = async (
   supermarket: Supermarket | null,
-  supermarketId: string | null,
   layoutToSave: Square[][] | undefined,
-  user: any,
-  setSupermarketId: Dispatch<SetStateAction<string | null>>,
   setError: SetErrorFunction,
   setIsSaving: SetIsSavingFunction
 ) => {
@@ -37,23 +33,15 @@ export const saveLayout = async (
     const layoutString = JSON.stringify(layoutData);
     console.log("Saving layout:", layoutString.substring(0, 100) + "...");
 
-    if (supermarketId) {
+    if (supermarket.id) {
       // Update the existing supermarket
       await client.models.Supermarket.update({
-        id: supermarketId,
+        id: supermarket.id,
         layout: layoutString,
       });
     } else {
       // Create a new supermarket if we don't have an ID
-      console.log("Creating new supermarket");
-      const currentUser = await getCurrentUser();
-      const newSupermarket = await client.models.Supermarket.create({
-        name: supermarket.name,
-        layout: layoutString,
-        owner: currentUser.userId,
-      });
-
-      setSupermarketId(newSupermarket.id);
+      console.log("no supermarket found??");
     }
 
     // Keep the saving indicator visible briefly so users can see it worked
@@ -72,13 +60,13 @@ export const saveLayout = async (
  */
 export const addProduct = async (
   product: Omit<Product, "id">,
-  supermarketId: string | null,
+  supermarket: Supermarket | null,
   saveLayoutFunction: () => Promise<void>,
   setSupermarket: Dispatch<SetStateAction<Supermarket | null>>,
   setError: SetErrorFunction,
   setIsSaving: SetIsSavingFunction
 ) => {
-  if (!supermarketId) {
+  if (!supermarket?.id) {
     // If we don't have a supermarket ID yet, create the supermarket first
     try {
       await saveLayoutFunction();
@@ -88,7 +76,7 @@ export const addProduct = async (
     }
 
     // Check again after saving layout
-    if (!supermarketId) {
+    if (!supermarket?.id) {
       const error = new Error("Failed to create supermarket");
       handleApiError(error, "addProduct", setError);
       throw error;
@@ -102,23 +90,25 @@ export const addProduct = async (
     console.log("Creating product in database:", product.title);
 
     // Create the product in the database with proper typing
-    const newProduct = await client.models.Product.create({
+    const response = await client.models.Product.create({
       title: product.title,
       price: product.price,
       category: product.category || "uncategorized",
       description: product.description || "",
       image: product.image || "",
-      rating: JSON.stringify(product.rating || { rate: 0, count: 0 }),
-      supermarketID: supermarketId,
+      supermarketID: supermarket.id,
     });
+    const newProduct = response.data;
 
     console.log("Product created with IDdd:", newProduct);
 
     // Format product for local state
+    if (!newProduct?.id) {
+      throw new Error("Failed to create product");
+    }
     const formattedProduct: Product = {
       ...newProduct,
-      id: newProduct.data.id,
-      rating: product.rating || { rate: 0, count: 0 },
+      id: newProduct.id,
     };
 
     // Update the local state with the new product
@@ -134,7 +124,7 @@ export const addProduct = async (
       setIsSaving(false);
     }, 500);
 
-    return newProduct.data.id;
+    return newProduct?.id;
   } catch (error) {
     setIsSaving(false);
     handleApiError(error, "addProduct", setError);
@@ -147,14 +137,14 @@ export const addProduct = async (
  */
 export const updateProductData = async (
   product: Product,
-  supermarketId: string | null,
+  supermarket: Supermarket | null,
   setSupermarket: Dispatch<SetStateAction<Supermarket | null>>,
   setSelectedSquare: SetSelectedSquareFunction,
   selectedSquare: Square | null,
   setError: SetErrorFunction,
   setIsSaving: SetIsSavingFunction
 ) => {
-  if (!supermarketId) {
+  if (!supermarket?.id) {
     const error = new Error("No supermarket ID for product update");
     handleApiError(error, "updateProductData", setError);
     throw error;
@@ -174,8 +164,7 @@ export const updateProductData = async (
       category: product.category || "uncategorized",
       description: product.description || "",
       image: product.image || "",
-      rating: JSON.stringify(product.rating || { rate: 0, count: 0 }),
-      supermarketID: supermarketId,
+      supermarketID: supermarket.id,
     });
 
     // Update local state
