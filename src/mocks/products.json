@@ -1,0 +1,354 @@
+{
+  "products": [
+    {
+      "title": "Organic Bananas",
+      "price": 2.99,
+      "category": "Fresh Produce",
+      "description": "Ripe, yellow organic bananas from certified organic farms",
+      "image": "https://example.com/banana.jpg"
+    },
+    {
+      "title": "Whole Milk",
+      "price": 3.49,
+      "category": "Dairy",
+      "description": "Fresh, locally sourced whole milk from grass-fed cows",
+      "image": "https://example.com/milk.jpg"
+    },
+    {
+      "title": "Organic Eggs",
+      "price": 4.99,
+      "category": "Dairy",
+      "description": "Free-range, organic large brown eggs",
+      "image": "https://example.com/eggs.jpg"
+    },
+    {
+      "title": "Bread Loaf",
+      "price": 2.79,
+      "category": "Bakery",
+      "description": "Freshly baked whole wheat bread, sliced and packaged",
+      "image": "https://example.com/bread.jpg"
+    },
+    {
+      "title": "Chicken Breast",
+      "price": 6.99,
+      "category": "Meat",
+      "description": "Boneless, skinless chicken breasts, individually packaged",
+      "image": "https://example.com/chicken.jpg"
+    },
+    {
+      "title": "Ground Beef",
+      "price": 5.49,
+      "category": "Meat",
+      "description": "Lean ground beef, 85% lean, perfect for burgers",
+      "image": "https://example.com/groundbeef.jpg"
+    },
+    {
+      "title": "Salmon Fillet",
+      "price": 12.99,
+      "category": "Seafood",
+      "description": "Fresh wild-caught salmon fillet, skin-on",
+      "image": "https://example.com/salmon.jpg"
+    },
+    {
+      "title": "Pasta Sauce",
+      "price": 2.99,
+      "category": "Pantry",
+      "description": "Classic marinara pasta sauce, made with ripe tomatoes",
+      "image": "https://example.com/pastasauce.jpg"
+    },
+    {
+      "title": "Spaghetti Pasta",
+      "price": 1.49,
+      "category": "Pantry",
+      "description": "Long, thin spaghetti pasta made from durum wheat",
+      "image": "https://example.com/spaghetti.jpg"
+    },
+    {
+      "title": "Olive Oil",
+      "price": 6.99,
+      "category": "Pantry",
+      "description": "Extra virgin olive oil, cold-pressed, 100% pure",
+      "image": "https://example.com/oliveoil.jpg"
+    },
+    {
+      "title": "Cheddar Cheese",
+      "price": 3.79,
+      "category": "Dairy",
+      "description": "Sharp cheddar cheese block, aged to perfection",
+      "image": "https://example.com/cheddar.jpg"
+    },
+    {
+      "title": "Greek Yogurt",
+      "price": 3.49,
+      "category": "Dairy",
+      "description": "Creamy, protein-rich Greek yogurt, plain",
+      "image": "https://example.com/greekyogurt.jpg"
+    },
+    {
+      "title": "Apples",
+      "price": 4.99,
+      "category": "Fresh Produce",
+      "description": "Crisp Gala apples, fresh and locally sourced",
+      "image": "https://example.com/apples.jpg"
+    },
+    {
+      "title": "Spinach",
+      "price": 2.49,
+      "category": "Fresh Produce",
+      "description": "Fresh organic baby spinach, pre-washed",
+      "image": "https://example.com/spinach.jpg"
+    },
+    {
+      "title": "Orange Juice",
+      "price": 3.99,
+      "category": "Beverages",
+      "description": "100% pure squeezed orange juice, no added sugar",
+      "image": "https://example.com/orangejuice.jpg"
+    },
+    {
+      "title": "Almond Milk",
+      "price": 3.29,
+      "category": "Beverages",
+      "description": "Unsweetened almond milk, dairy-free alternative",
+      "image": "https://example.com/almondmilk.jpg"
+    },
+    {
+      "title": "Peanut Butter",
+      "price": 2.99,
+      "category": "Pantry",
+      "description": "Creamy natural peanut butter, no added sugar",
+      "image": "https://example.com/peanutbutter.jpg"
+    },
+    {
+      "title": "Rice",
+      "price": 3.49,
+      "category": "Pantry",
+      "description": "Long-grain white rice, bulk packaging",
+      "image": "https://example.com/rice.jpg"
+    },
+    {
+      "title": "Black Beans",
+      "price": 1.29,
+      "category": "Pantry",
+      "description": "Canned black beans, low sodium",
+      "image": "https://example.com/blackbeans.jpg"
+    },
+    {
+      "title": "Frozen Pizza",
+      "price": 4.99,
+      "category": "Frozen Foods",
+      "description": "Margherita frozen pizza, thin crust",
+      "image": "https://example.com/frozenpizza.jpg"
+    },
+    {
+      "title": "Ice Cream",
+      "price": 4.49,
+      "category": "Frozen Foods",
+      "description": "Vanilla bean ice cream, premium quality",
+      "image": "https://example.com/icecream.jpg"
+    },
+    {
+      "title": "Broccoli",
+      "price": 2.29,
+      "category": "Fresh Produce",
+      "description": "Fresh broccoli crowns, packed with nutrients",
+      "image": "https://example.com/broccoli.jpg"
+    },
+    {
+      "title": "Tomatoes",
+      "price": 3.49,
+      "category": "Fresh Produce",
+      "description": "Ripe, vine-ripened red tomatoes",
+      "image": "https://example.com/tomatoes.jpg"
+    },
+    {
+      "title": "Tortilla Chips",
+      "price": 2.79,
+      "category": "Snacks",
+      "description": "Crispy corn tortilla chips, lightly salted",
+      "image": "https://example.com/tortillachips.jpg"
+    },
+    {
+      "title": "Salsa",
+      "price": 2.49,
+      "category": "Condiments",
+      "description": "Medium heat salsa, fresh ingredients",
+      "image": "https://example.com/salsa.jpg"
+    },
+    {
+      "title": "Cereal",
+      "price": 3.99,
+      "category": "Breakfast",
+      "description": "Whole grain breakfast cereal, low sugar",
+      "image": "https://example.com/cereal.jpg"
+    },
+    {
+      "title": "Coffee",
+      "price": 8.99,
+      "category": "Beverages",
+      "description": "Medium roast ground coffee, 100% Arabica",
+      "image": "https://example.com/coffee.jpg"
+    },
+    {
+      "title": "Chocolate Bar",
+      "price": 1.99,
+      "category": "Sweets",
+      "description": "Dark chocolate bar with 70% cocoa content",
+      "image": "https://example.com/chocolatebar.jpg"
+    },
+    {
+      "title": "Butter",
+      "price": 3.29,
+      "category": "Dairy",
+      "description": "Unsalted butter, made from fresh cream",
+      "image": "https://example.com/butter.jpg"
+    },
+    {
+      "title": "Frozen Vegetables",
+      "price": 2.49,
+      "category": "Frozen Foods",
+      "description": "Mixed vegetable blend, ready to cook",
+      "image": "https://example.com/frozenvegetables.jpg"
+    },
+    {
+      "title": "Carrots",
+      "price": 1.99,
+      "category": "Fresh Produce",
+      "description": "Fresh whole carrots, organic",
+      "image": "https://example.com/carrots.jpg"
+    },
+    {
+      "title": "Honey",
+      "price": 4.99,
+      "category": "Pantry",
+      "description": "Pure raw honey, locally sourced",
+      "image": "https://example.com/honey.jpg"
+    },
+    {
+      "title": "Canned Tuna",
+      "price": 1.79,
+      "category": "Pantry",
+      "description": "Solid white albacore tuna in water",
+      "image": "https://example.com/cannedtuna.jpg"
+    },
+    {
+      "title": "Sour Cream",
+      "price": 2.49,
+      "category": "Dairy",
+      "description": "Full-fat sour cream, rich and creamy",
+      "image": "https://example.com/sourcream.jpg"
+    },
+    {
+      "title": "BBQ Sauce",
+      "price": 2.29,
+      "category": "Condiments",
+      "description": "Classic BBQ sauce, tangy and sweet",
+      "image": "https://example.com/bbqsauce.jpg"
+    },
+    {
+      "title": "Protein Bars",
+      "price": 5.99,
+      "category": "Snacks",
+      "description": "Chocolate chip protein bars, high protein",
+      "image": "https://example.com/proteinbars.jpg"
+    },
+    {
+      "title": "Paper Towels",
+      "price": 4.49,
+      "category": "Household",
+      "description": "Absorbent paper towel rolls, 6 pack",
+      "image": "https://example.com/papertowels.jpg"
+    },
+    {
+      "title": "Dish Soap",
+      "price": 2.99,
+      "category": "Household",
+      "description": "Concentrated dish liquid, grease-cutting formula",
+      "image": "https://example.com/dishsoap.jpg"
+    },
+    {
+      "title": "Laundry Detergent",
+      "price": 7.99,
+      "category": "Household",
+      "description": "Liquid laundry detergent, hypoallergenic",
+      "image": "https://example.com/laundrydetergent.jpg"
+    },
+    {
+      "title": "Potato Chips",
+      "price": 2.99,
+      "category": "Snacks",
+      "description": "Classic salted potato chips",
+      "image": "https://example.com/potatochips.jpg"
+    },
+    {
+      "title": "Popcorn",
+      "price": 2.49,
+      "category": "Snacks",
+      "description": "Microwave popcorn, butter flavor",
+      "image": "https://example.com/popcorn.jpg"
+    },
+    {
+      "title": "Hot Sauce",
+      "price": 1.99,
+      "category": "Condiments",
+      "description": "Classic hot sauce, medium heat",
+      "image": "https://example.com/hotsauce.jpg"
+    },
+    {
+      "title": "Maple Syrup",
+      "price": 6.99,
+      "category": "Pantry",
+      "description": "Pure maple syrup, grade A dark color",
+      "image": "https://example.com/maplesyrup.jpg"
+    },
+    {
+      "title": "Tea Bags",
+      "price": 3.49,
+      "category": "Beverages",
+      "description": "English breakfast tea, 20 count",
+      "image": "https://example.com/teabags.jpg"
+    },
+    {
+      "title": "Pickles",
+      "price": 2.29,
+      "category": "Condiments",
+      "description": "Dill pickle spears, crunchy and tangy",
+      "image": "https://example.com/pickles.jpg"
+    },
+    {
+      "title": "Tofu",
+      "price": 2.79,
+      "category": "Refrigerated",
+      "description": "Extra firm tofu, plant-based protein",
+      "image": "https://example.com/tofu.jpg"
+    },
+    {
+      "title": "Hummus",
+      "price": 3.49,
+      "category": "Refrigerated",
+      "description": "Classic hummus, smooth and creamy",
+      "image": "https://example.com/hummus.jpg"
+    },
+    {
+      "title": "Garlic",
+      "price": 0.99,
+      "category": "Fresh Produce",
+      "description": "Fresh garlic bulbs, aromatic and flavorful",
+      "image": "https://example.com/garlic.jpg"
+    },
+    {
+      "title": "Onions",
+      "price": 1.29,
+      "category": "Fresh Produce",
+      "description": "Yellow onions, perfect for cooking",
+      "image": "https://example.com/onions.jpg"
+    },
+    {
+      "title": "Bell Peppers",
+      "price": 2.49,
+      "category": "Fresh Produce",
+      "description": "Colorful mixed bell peppers, red, yellow, and green",
+      "image": "https://example.com/bellpeppers.jpg"
+    }
+  ]
+}

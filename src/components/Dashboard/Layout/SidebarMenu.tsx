@@ -3,6 +3,7 @@ import { useDashboard } from "../DashboardContext/useDashboard";
 import { EditableAction } from "../types";
 import { SquareType } from "../types";
 import { useEffect, useState } from "react";
+import productsData from "../../../mocks/products.json";
 
 // Square types with colors for UI
 const squareTypes: { type: SquareType; color: string; label: string }[] = [
@@ -22,12 +23,14 @@ const SidebarMenu = () => {
     editMode,
     setEditMode,
     saveLayout,
+    addProduct,
   } = useDashboard();
-  const { setSupermarket } = useAppContext();
+  const { setSupermarket, supermarket, handleError } = useAppContext();
 
   const [showSizePrompt, setShowSizePrompt] = useState(false);
   const [newRows, setNewRows] = useState<number | "">();
   const [newCols, setNewCols] = useState<number | "">();
+  const [isPopulatingProducts, setIsPopulatingProducts] = useState(false);
 
   // Close active actions when switching to Preview Mode
   useEffect(() => {
@@ -35,6 +38,37 @@ const SidebarMenu = () => {
       setActiveAction(EditableAction.None);
     }
   }, [editMode, setActiveAction]);
+
+  // Function to populate products
+  const handlePopulateProducts = async () => {
+    if (!supermarket) {
+      handleError(new Error("No supermarket found"), "Populate Products");
+      return;
+    }
+
+    // Confirm before populating
+    const confirmPopulate = window.confirm(
+      "Are you sure you want to populate products? This will add all 50 products to your supermarket."
+    );
+
+    if (!confirmPopulate) return;
+
+    try {
+      setIsPopulatingProducts(true);
+
+      // Add products one by one
+      for (const product of productsData.products) {
+        await addProduct(product);
+      }
+
+      alert(`Successfully added ${productsData.products.length} products!`);
+    } catch (error) {
+      console.error("Error populating products:", error);
+      handleError(error, "Populate Products");
+    } finally {
+      setIsPopulatingProducts(false);
+    }
+  };
 
   // Function to confirm new layout size
   const confirmLayoutSize = async () => {
@@ -81,6 +115,7 @@ const SidebarMenu = () => {
       console.error("Failed to update layout size:", error);
     }
   };
+
   return (
     <div
       className={`p-6 border-r flex flex-col gap-4 w-64 transition-all duration-300
@@ -192,6 +227,20 @@ const SidebarMenu = () => {
                   : "Change Layout Size"}
               </button>
             )}
+
+          {/* Populate Products Button */}
+          <button
+            onClick={handlePopulateProducts}
+            disabled={isPopulatingProducts}
+            className={`p-3 rounded-lg font-semibold transition w-full
+              ${
+                isPopulatingProducts
+                  ? "bg-gray-500 cursor-not-allowed"
+                  : "bg-indigo-600 hover:bg-indigo-700 text-white"
+              }`}
+          >
+            {isPopulatingProducts ? "Populating..." : "Populate Products"}
+          </button>
         </>
       )}
 
@@ -222,7 +271,7 @@ const SidebarMenu = () => {
         </div>
       )}
 
-      {/* ✅ Restored Legend Section */}
+      {/* Legend Section */}
       <div className="mt-6">
         <h3 className="text-md font-bold">Legend</h3>
         <div className="flex flex-col gap-2 mt-2">
