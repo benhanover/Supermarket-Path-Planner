@@ -1,0 +1,1 @@
+make the amount of squares cusomtizable and saved under profile ? custom cognito

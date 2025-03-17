@@ -1,31 +1,39 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import LandingPage from "./LandingPage";
+import LandingPage from "./pages/LandingPage";
 import AboutPage from "./pages/AboutPage";
 import GoalPage from "./pages/GoalPage";
 import DocsPage from "./pages/DocsPage";
+import Home from "./pages/Home";
+import ProtectedRoute from "./components/ProtectedRoute";
+import ButtonsPanel from "./components/ButtonsPanel"; // ✅ Import ButtonsPanel
 
 const client = generateClient<Schema>();
 
-function App() {
-  const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
+const App = () => {
+  const [todos, setTodos] = useState<any[]>([]);
   const { user, signOut } = useAuthenticator();
 
   useEffect(() => {
-    if (!client.models?.Todo) {
-      console.error("❌ Error: Todo model is undefined");
-      return;
+    async function fetchTodos() {
+      try {
+        const result = await client.models.Todo.list({});
+        console.log("🔍 list() result:", result);
+
+        if (result && result.data) {
+          setTodos(result.data); // ✅ Correct data access
+        } else {
+          setTodos([]); // ✅ Keep empty if no data
+        }
+      } catch (error) {
+        console.error("❌ Error fetching todos:", error);
+      }
     }
 
-    const subscription = client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
-      error: (err) => console.error("❌ Subscription error:", err),
-    });
-
-    return () => subscription.unsubscribe(); // ביטול המנוי בעת יציאה מהעמוד
+    fetchTodos();
   }, []);
 
   function createTodo() {
@@ -44,12 +52,20 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/goal" element={<GoalPage />} />
         <Route path="/docs" element={<DocsPage />} />
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/todos"
           element={
@@ -81,6 +97,9 @@ function App() {
                 >
                   Sign Out
                 </button>
+
+                {/* ✅ Add ButtonsPanel below */}
+                <ButtonsPanel />
               </main>
             ) : (
               <h1 className="text-center text-2xl mt-10">
@@ -90,8 +109,8 @@ function App() {
           }
         />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
-}
+};
 
 export default App;
