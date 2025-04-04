@@ -252,14 +252,14 @@ const SidebarMenu = () => {
             type="number"
             placeholder="Rows"
             className="w-full p-2 mt-2 border rounded"
-            value={newRows}
+            value={newRows ?? ""}
             onChange={(e) => setNewRows(Number(e.target.value) || "")}
           />
           <input
             type="number"
             placeholder="Columns"
             className="w-full p-2 mt-2 border rounded"
-            value={newCols}
+            value={newCols ?? ""}
             onChange={(e) => setNewCols(Number(e.target.value) || "")}
           />
           <button
@@ -270,19 +270,6 @@ const SidebarMenu = () => {
           </button>
         </div>
       )}
-
-      {/* Legend Section */}
-      {/* <div className="mt-6">
-        <h3 className="text-md font-bold">Legend</h3>
-        <div className="flex flex-col gap-2 mt-2">
-          {squareTypes.map(({ color, label }) => (
-            <div key={label} className="flex items-center gap-2">
-              <div className={`w-4 h-4 ${color} border rounded-md`}></div>
-              <span className="text-sm">{label}</span>
-            </div>
-          ))}
-        </div>
-      </div> */}
     </div>
   );
 };
