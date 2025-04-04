@@ -8,53 +8,40 @@ const DashboardContent = () => {
   const { activeTab, setActiveTab } = useDashboard();
 
   return (
-    <div className="max-w-5xl w-full mx-auto p-6 bg-white shadow-lg rounded-xl">
-      {/* Navigation Tabs */}
-      <div className="flex space-x-4 border-b pb-2">
+    <div className="flex h-screen min-h-screen">
+      {/* Sidebar Navigation */}
+      <div className="w-56 bg-gray-900 text-white p-4 space-y-4">
         <button
-          className={`px-4 py-2 font-semibold transition rounded-t-lg relative 
-            ${
-              activeTab === "layout"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
+          className={`w-full text-left px-4 py-2 rounded-lg font-semibold transition hover:bg-gray-800 ${
+            activeTab === "layout" ? "bg-blue-600" : ""
+          }`}
           onClick={() => setActiveTab("layout")}
         >
-          Layout Editor 
+          Layout Editor
         </button>
         <button
-          className={`px-4 py-2 font-semibold transition rounded-t-lg relative 
-            ${
-              activeTab === "products"
-                ? "bg-green-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
+          className={`w-full text-left px-4 py-2 rounded-lg font-semibold transition hover:bg-gray-800 ${
+            activeTab === "products" ? "bg-green-600" : ""
+          }`}
           onClick={() => setActiveTab("products")}
         >
           Products Editor
         </button>
         <button
-          className={`px-4 py-2 font-semibold transition rounded-t-lg relative 
-            ${
-              activeTab === "product_square"
-                ? "bg-purple-600 text-white" /* ✅ Changed from green to purple */
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
+          className={`w-full text-left px-4 py-2 rounded-lg font-semibold transition hover:bg-gray-800 ${
+            activeTab === "product_square" ? "bg-purple-600" : ""
+          }`}
           onClick={() => setActiveTab("product_square")}
         >
           Product Square Editor
         </button>
       </div>
 
-      {/* Editor Sections */}
-      <div className={`${activeTab === "layout" ? "block" : "hidden"}`}>
-        <LayoutEditor />
-      </div>
-      <div className={`${activeTab === "products" ? "block" : "hidden"}`}>
-        <ProductsEditor mode="global" />
-      </div>
-      <div className={`${activeTab === "product_square" ? "block" : "hidden"}`}>
-        <ProductSquareEditor />
+      {/* Main Content */}
+      <div className="flex-1 p-6 bg-white shadow-lg rounded-xl ml-4 my-4">
+        {activeTab === "layout" && <LayoutEditor />}
+        {activeTab === "products" && <ProductsEditor mode="global" />}
+        {activeTab === "product_square" && <ProductSquareEditor />}
       </div>
     </div>
   );
