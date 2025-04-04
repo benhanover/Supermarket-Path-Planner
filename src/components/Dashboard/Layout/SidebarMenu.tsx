@@ -20,8 +20,6 @@ const SidebarMenu = () => {
     setSelectedType,
     activeAction,
     setActiveAction,
-    editMode,
-    setEditMode,
     saveLayout,
     addProduct,
   } = useDashboard();
@@ -31,13 +29,6 @@ const SidebarMenu = () => {
   const [newRows, setNewRows] = useState<number | "">();
   const [newCols, setNewCols] = useState<number | "">();
   const [isPopulatingProducts, setIsPopulatingProducts] = useState(false);
-
-  // Close active actions when switching to Preview Mode
-  useEffect(() => {
-    if (!editMode) {
-      setActiveAction(EditableAction.None);
-    }
-  }, [editMode, setActiveAction]);
 
   // Function to populate products
   const handlePopulateProducts = async () => {
@@ -118,131 +109,114 @@ const SidebarMenu = () => {
 
   return (
     <div
-      className={`p-6 border-r flex flex-col gap-4 w-64 transition-all duration-300
-        rounded-xl shadow-lg
-        ${editMode ? "bg-gray-800 text-white" : "bg-gray-100"}`}
+      className="p-6 border-r flex flex-col gap-4 w-64 transition-all
+       duration-300 rounded-xl shadow-lg bg-gray-800 text-white"
     >
-      {/* Toggle Edit Mode */}
-      <button
-        onClick={() => setEditMode(!editMode)}
-        className={`p-3 rounded-lg font-semibold transition w-full
-          ${
-            editMode
-              ? "bg-gray-600 hover:bg-gray-700 text-white"
-              : "bg-blue-600 hover:bg-blue-700 text-white"
-          }`}
-      >
-        {editMode ? "Switch to Preview Mode" : "Switch to Edit Mode"}
-      </button>
-
-      {/* Hide buttons when in Preview Mode */}
-      {editMode && (
-        <>
-          {/* Modify Layout Button */}
-          {activeAction !== EditableAction.EditProducts &&
-            activeAction !== EditableAction.ChangeLayoutSize && (
-              <button
-                onClick={() =>
-                  setActiveAction(
-                    activeAction === EditableAction.ModifyLayout
-                      ? EditableAction.None
-                      : EditableAction.ModifyLayout
-                  )
-                }
-                className={`p-3 rounded-lg font-semibold transition w-full
+      <>
+        {/* Modify Layout Button */}
+        {activeAction !== EditableAction.EditProducts &&
+          activeAction !== EditableAction.ChangeLayoutSize && (
+            <button
+              onClick={() =>
+                setActiveAction(
+                  activeAction === EditableAction.ModifyLayout
+                    ? EditableAction.None
+                    : EditableAction.ModifyLayout
+                )
+              }
+              className={`p-3 rounded-lg font-semibold transition w-full
                 ${
                   activeAction === EditableAction.ModifyLayout
                     ? "bg-red-500 hover:bg-red-600 text-white"
                     : "bg-blue-500 hover:bg-blue-600 text-white"
                 }`}
-              >
-                {activeAction === EditableAction.ModifyLayout
-                  ? "Cancel Layout Edit"
-                  : "Modify Layout"}
-              </button>
-            )}
-
-          {/* Square Type Selection */}
-          {activeAction === EditableAction.ModifyLayout && (
-            <div className="flex flex-col gap-2">
-              <h2 className="text-lg font-bold">Select Square Type</h2>
-              {squareTypes.map(({ type, color }) => (
-                <button
-                  key={type}
-                  className={`p-2 border rounded-lg transition w-full ${color} text-black hover:opacity-75
-                    ${selectedType === type ? "ring-2 ring-blue-500" : ""}`}
-                  onClick={() => setSelectedType(type)}
-                >
-                  {type}
-                </button>
-              ))}
-            </div>
+            >
+              {activeAction === EditableAction.ModifyLayout
+                ? "Cancel Layout Edit"
+                : "Modify Layout"}
+            </button>
           )}
 
-          {/* Edit Products Button */}
-          {activeAction !== EditableAction.ModifyLayout &&
-            activeAction !== EditableAction.ChangeLayoutSize && (
+        {/* Square Type Selection */}
+        {activeAction === EditableAction.ModifyLayout && (
+          <div className="flex flex-col gap-2">
+            <h2 className="text-lg font-bold">Select Square Type</h2>
+            {squareTypes.map(({ type, color }) => (
               <button
-                onClick={() =>
-                  setActiveAction(
-                    activeAction === EditableAction.EditProducts
-                      ? EditableAction.None
-                      : EditableAction.EditProducts
-                  )
-                }
-                className={`p-3 rounded-lg font-semibold transition w-full
+                key={type}
+                className={`p-2 border rounded-lg transition w-full ${color} text-black hover:opacity-75
+                    ${selectedType === type ? "ring-2 ring-blue-500" : ""}`}
+                onClick={() => setSelectedType(type)}
+              >
+                {type}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Edit Products Button */}
+        {activeAction !== EditableAction.ModifyLayout &&
+          activeAction !== EditableAction.ChangeLayoutSize && (
+            <button
+              onClick={() =>
+                setActiveAction(
+                  activeAction === EditableAction.EditProducts
+                    ? EditableAction.None
+                    : EditableAction.EditProducts
+                )
+              }
+              className={`p-3 rounded-lg font-semibold transition w-full
                 ${
                   activeAction === EditableAction.EditProducts
                     ? "bg-red-500 hover:bg-red-600 text-white"
                     : "bg-green-600 hover:bg-green-600 text-white"
                 }`}
-              >
-                {activeAction === EditableAction.EditProducts
-                  ? "Cancel Product Edit"
-                  : "Edit Products"}
-              </button>
-            )}
+            >
+              {activeAction === EditableAction.EditProducts
+                ? "Cancel Product Edit"
+                : "Edit Products"}
+            </button>
+          )}
 
-          {/* Change Layout Size Button */}
-          {activeAction !== EditableAction.ModifyLayout &&
-            activeAction !== EditableAction.EditProducts && (
-              <button
-                onClick={() => {
-                  setActiveAction(
-                    activeAction === EditableAction.ChangeLayoutSize
-                      ? EditableAction.None
-                      : EditableAction.ChangeLayoutSize
-                  );
-                  setShowSizePrompt(true);
-                }}
-                className={`p-3 rounded-lg font-semibold transition w-full
+        {/* Change Layout Size Button */}
+        {activeAction !== EditableAction.ModifyLayout &&
+          activeAction !== EditableAction.EditProducts && (
+            <button
+              onClick={() => {
+                setActiveAction(
+                  activeAction === EditableAction.ChangeLayoutSize
+                    ? EditableAction.None
+                    : EditableAction.ChangeLayoutSize
+                );
+                setShowSizePrompt(true);
+              }}
+              className={`p-3 rounded-lg font-semibold transition w-full
                 ${
                   activeAction === EditableAction.ChangeLayoutSize
                     ? "bg-red-500 hover:bg-red-600 text-white"
                     : "bg-purple-500 hover:bg-purple-600 text-white"
                 }`}
-              >
-                {activeAction === EditableAction.ChangeLayoutSize
-                  ? "Cancel Layout Change"
-                  : "Change Layout Size"}
-              </button>
-            )}
+            >
+              {activeAction === EditableAction.ChangeLayoutSize
+                ? "Cancel Layout Change"
+                : "Change Layout Size"}
+            </button>
+          )}
 
-          {/* Populate Products Button */}
-          <button
-            onClick={handlePopulateProducts}
-            disabled={isPopulatingProducts}
-            className={`p-3 rounded-lg font-semibold transition w-full
+        {/* Populate Products Button */}
+        <button
+          onClick={handlePopulateProducts}
+          disabled={isPopulatingProducts}
+          className={`p-3 rounded-lg font-semibold transition w-full
               ${
                 isPopulatingProducts
                   ? "bg-gray-500 cursor-not-allowed"
                   : "bg-indigo-600 hover:bg-indigo-700 text-white"
               }`}
-          >
-            {isPopulatingProducts ? "Populating..." : "Populate Products"}
-          </button>
-        </>
-      )}
+        >
+          {isPopulatingProducts ? "Populating..." : "Populate Products"}
+        </button>
+      </>
 
       {/* Layout Size Input Prompt */}
       {showSizePrompt && activeAction === EditableAction.ChangeLayoutSize && (
