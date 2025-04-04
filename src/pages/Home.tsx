@@ -32,7 +32,7 @@ const Home: React.FC = () => {
               🛒
             </span>
             <h1 className="text-xl font-bold text-green-700">
-              {"Supermarket Planner"}
+              {"Supermarket Path Planner"}
             </h1>
           </div>
           <button

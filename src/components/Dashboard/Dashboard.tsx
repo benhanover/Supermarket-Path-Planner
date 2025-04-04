@@ -20,7 +20,7 @@ const DashboardContent = () => {
             }`}
           onClick={() => setActiveTab("layout")}
         >
-          Layout Editor
+          Layout Editor 
         </button>
         <button
           className={`px-4 py-2 font-semibold transition rounded-t-lg relative 
