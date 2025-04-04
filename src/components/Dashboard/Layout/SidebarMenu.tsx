@@ -2,7 +2,7 @@ import { useAppContext } from "../../../context/AppContext";
 import { useDashboard } from "../DashboardContext/useDashboard";
 import { EditableAction } from "../types";
 import { SquareType } from "../types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import productsData from "../../../mocks/products.json";
 
 // Square types with colors for UI
