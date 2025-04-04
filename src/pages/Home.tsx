@@ -24,8 +24,8 @@ const Home: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-purple-100">
-      <header className="bg-purple-950 shadow-md p-4">
+    <div className="min-h-screen bg-gray-200">
+      <header className="bg-violet-900 shadow-md p-4">
         <div className="flex justify-between items-center w-full px-6">
           <div className="flex items-center space-x-2">
             <span

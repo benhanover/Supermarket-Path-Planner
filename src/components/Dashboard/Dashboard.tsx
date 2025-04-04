@@ -10,26 +10,26 @@ const DashboardContent = () => {
   return (
     <div className="flex h-screen min-h-screen">
       {/* Sidebar Navigation */}
-      <div className="w-56 bg-gray-900 text-white p-4 space-y-4">
+      <div className="w-56 bg-gray-200 text-purple p-4 space-y-4">
         <button
-          className={`w-full text-left px-4 py-2 rounded-lg font-semibold transition hover:bg-gray-800 ${
-            activeTab === "layout" ? "bg-blue-600" : ""
+          className={`w-full text-left px-4 py-2 rounded-lg font-semibold transition hover:bg-purple-200 ${
+            activeTab === "layout" ? "bg-purple-200" : ""
           }`}
           onClick={() => setActiveTab("layout")}
         >
           Layout Editor
         </button>
         <button
-          className={`w-full text-left px-4 py-2 rounded-lg font-semibold transition hover:bg-gray-800 ${
-            activeTab === "products" ? "bg-green-600" : ""
+          className={`w-full text-left px-4 py-2 rounded-lg font-semibold transition hover:bg-purple-200 ${
+            activeTab === "products" ? "bg-purple-200" : ""
           }`}
           onClick={() => setActiveTab("products")}
         >
           Products Editor
         </button>
         <button
-          className={`w-full text-left px-4 py-2 rounded-lg font-semibold transition hover:bg-gray-800 ${
-            activeTab === "product_square" ? "bg-purple-600" : ""
+          className={`w-full text-left px-4 py-2 rounded-lg font-semibold transition hover:bg-purple-200 ${
+            activeTab === "product_square" ? "bg-purple-200" : ""
           }`}
           onClick={() => setActiveTab("product_square")}
         >
@@ -38,7 +38,7 @@ const DashboardContent = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-6 bg-white shadow-lg rounded-xl ml-4 my-4">
+      <div className="w-370 p-6 bg-white shadow-lg rounded-xl ml-4 my-4">
         {activeTab === "layout" && <LayoutEditor />}
         {activeTab === "products" && <ProductsEditor mode="global" />}
         {activeTab === "product_square" && <ProductSquareEditor />}
