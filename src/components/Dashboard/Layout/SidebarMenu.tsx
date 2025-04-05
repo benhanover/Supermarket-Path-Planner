@@ -110,7 +110,7 @@ const SidebarMenu = () => {
   return (
     <div
       className="p-6 border-r flex flex-col gap-4 w-64 transition-all
-       duration-300 rounded-xl shadow-lg bg-gray-800 text-white"
+       duration-300 rounded-xl shadow-lg bg-gray-200 text-white"
     >
       <>
         {/* Modify Layout Button */}
@@ -127,8 +127,8 @@ const SidebarMenu = () => {
               className={`p-3 rounded-lg font-semibold transition w-full
                 ${
                   activeAction === EditableAction.ModifyLayout
-                    ? "bg-red-500 hover:bg-red-600 text-white"
-                    : "bg-blue-500 hover:bg-blue-600 text-white"
+                    ? "bg-purple-200 hover:bg-purple-200 text-black"
+                    : "bg-gray-400 hover:bg-purple-200 text-black"
                 }`}
             >
               {activeAction === EditableAction.ModifyLayout
@@ -140,7 +140,7 @@ const SidebarMenu = () => {
         {/* Square Type Selection */}
         {activeAction === EditableAction.ModifyLayout && (
           <div className="flex flex-col gap-2">
-            <h2 className="text-lg font-bold">Select Square Type</h2>
+            <h2 className="text-lg font-semibold text-black">Select Square Type</h2>
             {squareTypes.map(({ type, color }) => (
               <button
                 key={type}
@@ -168,8 +168,8 @@ const SidebarMenu = () => {
               className={`p-3 rounded-lg font-semibold transition w-full
                 ${
                   activeAction === EditableAction.EditProducts
-                    ? "bg-red-500 hover:bg-red-600 text-white"
-                    : "bg-green-600 hover:bg-green-600 text-white"
+                    ? "bg-purple-200 hover:bg-purple-200 text-black"
+                    : "bg-gray-400 hover:bg-purple-200 text-black"
                 }`}
             >
               {activeAction === EditableAction.EditProducts
@@ -193,8 +193,8 @@ const SidebarMenu = () => {
               className={`p-3 rounded-lg font-semibold transition w-full
                 ${
                   activeAction === EditableAction.ChangeLayoutSize
-                    ? "bg-red-500 hover:bg-red-600 text-white"
-                    : "bg-purple-500 hover:bg-purple-600 text-white"
+                    ? "bg-purple-200 hover:bg-purple-200 text-black"
+                    : "bg-gray-400 hover:bg-purple-200 text-black"
                 }`}
             >
               {activeAction === EditableAction.ChangeLayoutSize
@@ -211,7 +211,7 @@ const SidebarMenu = () => {
               ${
                 isPopulatingProducts
                   ? "bg-gray-500 cursor-not-allowed"
-                  : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                  : "bg-gray-400 hover:bg-purple-200 text-black"
               }`}
         >
           {isPopulatingProducts ? "Populating..." : "Populate Products"}
@@ -237,7 +237,7 @@ const SidebarMenu = () => {
             onChange={(e) => setNewCols(Number(e.target.value) || "")}
           />
           <button
-            className="mt-3 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+            className="mt-3 px-4 py-2 bg-blue-200 text-black rounded-lg hover:bg-blue-300"
             onClick={confirmLayoutSize}
           >
             Confirm
