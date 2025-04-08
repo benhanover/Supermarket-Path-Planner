@@ -3,7 +3,6 @@ import { useDashboard } from "../DashboardContext/useDashboard";
 import { EditableAction } from "../types";
 import { SquareType } from "../types";
 import { useState } from "react";
-import productsData from "../../../mocks/products.json";
 
 // Square types with colors for UI
 const squareTypes: { type: SquareType; color: string; label: string }[] = [
@@ -29,38 +28,6 @@ const SidebarMenu = () => {
   const [showSizePrompt, setShowSizePrompt] = useState(false);
   const [newRows, setNewRows] = useState<number | "">();
   const [newCols, setNewCols] = useState<number | "">();
-  const [isPopulatingProducts, setIsPopulatingProducts] = useState(false);
-
-  // Function to populate products
-  const handlePopulateProducts = async () => {
-    if (!supermarket) {
-      handleError(new Error("No supermarket found"), "Populate Products");
-      return;
-    }
-
-    // Confirm before populating
-    const confirmPopulate = window.confirm(
-      "Are you sure you want to populate products? This will add all 50 products to your supermarket."
-    );
-
-    if (!confirmPopulate) return;
-
-    try {
-      setIsPopulatingProducts(true);
-
-      // Add products one by one
-      for (const product of productsData.products) {
-        await addProduct(product);
-      }
-
-      alert(`Successfully added ${productsData.products.length} products!`);
-    } catch (error) {
-      console.error("Error populating products:", error);
-      handleError(error, "Populate Products");
-    } finally {
-      setIsPopulatingProducts(false);
-    }
-  };
 
   // Function to confirm new layout size
   const confirmLayoutSize = async () => {
@@ -206,20 +173,6 @@ const SidebarMenu = () => {
                 : "Change Layout Size"}
             </button>
           )}
-
-        {/* Populate Products Button */}
-        <button
-          onClick={handlePopulateProducts}
-          disabled={isPopulatingProducts}
-          className={`p-3 rounded-lg font-semibold transition w-full
-              ${
-                isPopulatingProducts
-                  ? "bg-gray-500 cursor-not-allowed"
-                  : "bg-gray-400 hover:bg-purple-200 text-black"
-              }`}
-        >
-          {isPopulatingProducts ? "Populating..." : "Populate Products"}
-        </button>
       </>
 
       {/* Layout Size Input Prompt */}
