@@ -20,6 +20,7 @@ const SidebarMenu = () => {
     setSelectedType,
     activeAction,
     setActiveAction,
+    setSelectedSquare,
     saveLayout,
     addProduct,
   } = useDashboard();
@@ -140,7 +141,9 @@ const SidebarMenu = () => {
         {/* Square Type Selection */}
         {activeAction === EditableAction.ModifyLayout && (
           <div className="flex flex-col gap-2">
-            <h2 className="text-lg font-semibold text-black">Select Square Type</h2>
+            <h2 className="text-lg font-semibold text-black">
+              Select Square Type
+            </h2>
             {squareTypes.map(({ type, color }) => (
               <button
                 key={type}
@@ -158,13 +161,14 @@ const SidebarMenu = () => {
         {activeAction !== EditableAction.ModifyLayout &&
           activeAction !== EditableAction.ChangeLayoutSize && (
             <button
-              onClick={() =>
-                setActiveAction(
-                  activeAction === EditableAction.EditProducts
-                    ? EditableAction.None
-                    : EditableAction.EditProducts
-                )
-              }
+              onClick={() => {
+                if (activeAction === EditableAction.EditProducts) {
+                  setActiveAction(EditableAction.None);
+                  setSelectedSquare(null); // ✅ Clear selected square
+                } else {
+                  setActiveAction(EditableAction.EditProducts);
+                }
+              }}
               className={`p-3 rounded-lg font-semibold transition w-full
                 ${
                   activeAction === EditableAction.EditProducts
