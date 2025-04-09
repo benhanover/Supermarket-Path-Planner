@@ -6,7 +6,7 @@ import Square from "./Square";
 const SQUARE_SIZE = 24; // Adjust for bigger squares
 
 const Layout = () => {
-  const { handleSquareClick, editMode } = useDashboard();
+  const { handleSquareClick } = useDashboard();
   const { supermarket } = useAppContext();
   const [isDragging, setIsDragging] = useState(false);
 
@@ -15,8 +15,6 @@ const Layout = () => {
   }
 
   const handleMouseDown = (row: number, col: number) => {
-    if (!editMode) return;
-
     setIsDragging(true);
     handleSquareClick(row, col, "mouse_down");
   };
@@ -42,15 +40,6 @@ const Layout = () => {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
       >
-        {/* Overlay only appears when in Edit Mode, but is invisible */}
-        {!editMode && (
-          <div className="absolute inset-0 bg-transparent flex items-center justify-center z-10 pointer-events-none">
-            <div className="p-4 bg-white rounded-lg shadow-md opacity-0">
-              <p className="text-gray-700">Preview Mode</p>
-            </div>
-          </div>
-        )}
-
         <div
           className="grid gap-0.5"
           style={{
