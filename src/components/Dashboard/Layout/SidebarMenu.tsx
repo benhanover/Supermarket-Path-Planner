@@ -21,9 +21,8 @@ const SidebarMenu = () => {
     setActiveAction,
     setSelectedSquare,
     saveLayout,
-    addProduct,
   } = useDashboard();
-  const { setSupermarket, supermarket, handleError } = useAppContext();
+  const { setSupermarket } = useAppContext();
 
   const [showSizePrompt, setShowSizePrompt] = useState(false);
   const [newRows, setNewRows] = useState<number | "">();
