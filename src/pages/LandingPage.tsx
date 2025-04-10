@@ -1,17 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { signOut } from "aws-amplify/auth";
 import { useAppContext } from "../context/AppContext";
-import Dashboard from "../components/Dashboard/Dashboard";
-import InitializeLayout from "../components/InitializeLayout";
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
-import AboutPage from "./AboutPage";
-import GoalPage from "./GoalPage";
-import DocsPage from "./DocsPage";
 
 const LandingPage: React.FC = () => {
-  const { loading, supermarket } = useAppContext();
+  const { loading } = useAppContext();
   const [showSignIn, setShowSignIn] = useState(false);
   const [activeTab, setActiveTab] = useState("home");
   const { user } = useAuthenticator();
@@ -23,14 +17,6 @@ const LandingPage: React.FC = () => {
     }
   }, [user]);
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      console.log("User logged out successfully");
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
-  };
 
   const renderTabContent = () => {
     switch (activeTab) {
