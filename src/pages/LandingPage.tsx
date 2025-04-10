@@ -4,7 +4,6 @@ import { signOut } from "aws-amplify/auth";
 import { useAppContext } from "../context/AppContext";
 import Dashboard from "../components/Dashboard/Dashboard";
 import InitializeLayout from "../components/InitializeLayout";
-import ButtonsPanel from "../components/ButtonsPanel";
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import AboutPage from "./AboutPage";
@@ -125,7 +124,6 @@ const LandingPage: React.FC = () => {
       {/* Feature Buttons Section */}
       <section className="py-12 bg-gradient-to-br from-purple-50 to-purple-100">
         <h3 className="text-center text-2xl font-bold text-purple-800 mb-8">Learn More</h3>
-        <ButtonsPanel />
       </section>
 
       {/* Footer */}
