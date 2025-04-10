@@ -6,7 +6,7 @@ import ProductsEditor from "../Products/ProductsEditor";
 
 const ProductSquareEditor = () => {
   const [showProductsEditor, setShowProductsEditor] = useState(false);
-  const { selectedSquare, setEditMode, setActiveTab, setActiveAction } =
+  const { selectedSquare, setActiveTab, setActiveAction } =
     useDashboard();
 
   if (!selectedSquare)
@@ -17,7 +17,6 @@ const ProductSquareEditor = () => {
         </h1>
         <button
           onClick={() => {
-            setEditMode(true);
             setActiveTab("layout");
             setActiveAction(EditableAction.EditProducts);
           }}

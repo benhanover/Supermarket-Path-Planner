@@ -14,7 +14,12 @@ const InitializeLayout: React.FC = () => {
     layoutRows: 20,
     layoutCols: 30,
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  /*
+   1. isSubmitting: A boolean that indicates whether a form submission is in progress
+      false untill someone presses the green "intialize supermarket" button
+   2. error: A string that holds any error message that might occur during submission
+  */
+  const [isSubmitting, setIsSubmitting] = useState(false); //
   const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,6 +32,10 @@ const InitializeLayout: React.FC = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    /*
+      when the user presses the green "intialize supermarket" button,
+      handleSubmit is called
+    */
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
@@ -61,6 +70,13 @@ const InitializeLayout: React.FC = () => {
       }
 
       setSupermarket({
+        /*
+          Updating Supermarket Data
+          After creating a supermarket in the database, it updates the app-wide state
+          
+          This update causes the Home component to re-render and show 
+          the Dashboard instead of InitializeLayout
+        */
         id: newSupermarket.id,
         owner: user.userId,
         name: formData.supermarketName,
@@ -73,6 +89,10 @@ const InitializeLayout: React.FC = () => {
       console.error("Failed to initialize supermarket:", error);
       setError("Failed to initialize supermarket. Please try again.");
     } finally {
+      /*
+        End of Submission
+        This happens whether the submission succeeded or failed
+      */
       setIsSubmitting(false);
     }
   };

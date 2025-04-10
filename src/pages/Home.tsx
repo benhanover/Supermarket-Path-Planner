@@ -24,27 +24,31 @@ const Home: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100">
-      <header className="bg-white shadow-md p-4">
-        <div className="flex justify-between items-center max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gray-200">
+      <header className="bg-violet-900 shadow-md p-4">
+        <div className="flex justify-between items-center w-full px-6">
           <div className="flex items-center space-x-2">
-            <span role="img" aria-label="cart" className="text-2xl">
+            <span
+              role="img"
+              aria-label="cart"
+              className="text-2xl text-gray-200"
+            >
               🛒
             </span>
-            <h1 className="text-xl font-bold text-green-700">
-              {"Supermarket Planner"}
+            <h1 className="text-2xl font-smibold text-gray-200">
+              {"Supermarket Path Planner"}
             </h1>
           </div>
           <button
             onClick={handleSignOut}
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+            className="text-3xl px-4 py-2 font-bold text-white rounded hover:bg-black transition"
           >
             Logout
           </button>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto p-4 mt-8">
+      <main className="flex min-h-screen">
         {supermarket ? <Dashboard /> : <InitializeLayout />}
       </main>
 

@@ -20,8 +20,6 @@ import { Product } from "../types";
 interface DashboardContextType {
   selectedType: SquareType;
   setSelectedType: (type: SquareType) => void;
-  editMode: boolean;
-  setEditMode: (editMode: boolean) => void;
   activeAction: EditableAction;
   setActiveAction: (action: EditableAction) => void;
   handleSquareClick: (
@@ -59,7 +57,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   } = useAppContext();
 
   const [selectedType, setSelectedType] = useState<SquareType>("empty");
-  const [editMode, setEditMode] = useState(false);
   const [activeAction, setActiveAction] = useState<EditableAction>(
     EditableAction.None
   );
@@ -210,7 +207,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
       supermarket,
       activeAction,
       selectedType,
-      setEditMode,
       setActiveTab,
       saveTimeout,
     ]
@@ -228,8 +224,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         // setSupermarket,
         selectedType,
         setSelectedType,
-        editMode,
-        setEditMode,
         activeAction,
         setActiveAction,
         handleSquareClick,

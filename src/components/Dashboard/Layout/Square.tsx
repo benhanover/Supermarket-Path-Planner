@@ -16,9 +16,9 @@ const Square = memo(({ square, onMouseDown, onMouseEnter }: SquareProps) => {
   const getColor = () => {
     switch (square.type) {
       case "products":
-        return "bg-green-500 border-gray-600";
+        return "bg-green-500 border-green-700";
       case "cash_register":
-        return "bg-yellow-500 border-green-700";
+        return "bg-yellow-500 border-yellow-500";
       case "entrance":
         return "bg-blue-500 border-blue-700";
       case "exit":
