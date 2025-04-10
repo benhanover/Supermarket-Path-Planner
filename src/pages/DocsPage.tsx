@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 
 const DocsPage = () => {
   return (
@@ -19,12 +18,6 @@ const DocsPage = () => {
           </a>
         </li>
       </ul>
-
-      <Link to="/" className="mt-6">
-        <button className="px-6 py-3 bg-white text-black rounded-lg shadow-lg hover:bg-gray-300">
-          Back to Home
-        </button>
-      </Link>
     </main>
   );
 };

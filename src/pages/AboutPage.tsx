@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 
 const AboutPage = () => {
   return (
@@ -10,12 +9,6 @@ const AboutPage = () => {
       <p className="mt-4 text-lg max-w-2xl text-center">
         The platform also allows store owners to update store layouts in real-time, ensuring accurate navigation for all customers.
       </p>
-      
-      <Link to="/" className="mt-6">
-        <button className="px-6 py-3 bg-white text-black rounded-lg shadow-lg hover:bg-gray-300">
-          Back to Home
-        </button>
-      </Link>
     </main>
   );
 };

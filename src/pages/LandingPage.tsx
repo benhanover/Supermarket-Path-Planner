@@ -1,68 +1,154 @@
-import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { signOut } from "aws-amplify/auth";
 import { useAppContext } from "../context/AppContext";
-import { Link } from "react-router-dom";
+import Dashboard from "../components/Dashboard/Dashboard";
+import InitializeLayout from "../components/InitializeLayout";
+import ButtonsPanel from "../components/ButtonsPanel";
+import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
+import "@aws-amplify/ui-react/styles.css";
+import AboutPage from "./AboutPage";
+import GoalPage from "./GoalPage";
+import DocsPage from "./DocsPage";
 
-export default function LandingPage() {
-  const { user } = useAuthenticator((context) => [context.user]);
-  const { setUser } = useAppContext();
+const LandingPage: React.FC = () => {
+  const { loading, supermarket } = useAppContext();
+  const [showSignIn, setShowSignIn] = useState(false);
+  const [activeTab, setActiveTab] = useState("home");
+  const { user } = useAuthenticator();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
-      // Explicitly set the user in the AppContext
-      setUser(user);
       navigate("/home");
     }
-  }, [user, navigate, setUser]);
+  }, [user]);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      console.log("User logged out successfully");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "about":
+        return (
+          <section className="py-12 px-6 bg-white animate-fade-in">
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 className="text-3xl font-bold text-purple-800 mb-4">About Us</h2>
+              <p className="text-gray-600 text-lg mb-6">
+                Our platform revolutionizes in-store navigation by providing real-time layout and product positioning tools.
+              </p>
+              <img src="/assets/about.png" alt="About Illustration" className="mx-auto rounded-lg shadow-md max-w-lg" />
+            </div>
+          </section>
+        );
+      case "goal":
+        return (
+          <section className="py-12 px-6 bg-white animate-fade-in">
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 className="text-3xl font-bold text-purple-800 mb-4">Our Goal</h2>
+              <p className="text-gray-600 text-lg mb-6">
+                Helping store owners and managers build better layouts for optimized shopping experiences.
+              </p>
+              <img src="/assets/goals.png" alt="Goal Illustration" className="mx-auto rounded-lg shadow-md max-w-lg" />
+            </div>
+          </section>
+        );
+      case "docs":
+        return (
+          <section className="py-12 px-6 bg-white animate-fade-in">
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 className="text-3xl font-bold text-purple-800 mb-4">Documentation</h2>
+              <p className="text-gray-600 text-lg mb-6">
+                Learn how to manage your supermarket layout and update your product catalog in real time.
+              </p>
+              <img src="/assets/docs.png" alt="Docs Illustration" className="mx-auto rounded-lg shadow-md max-w-lg" />
+            </div>
+          </section>
+        );
+      default:
+        return (
+          <section className="text-center py-16 px-6 bg-white animate-fade-in">
+            <h2 className="text-4xl font-bold text-purple-700 mb-4">Welcome to Your Smart Store Layout Tool</h2>
+            <p className="text-lg text-gray-600 max-w-xl mx-auto">
+              Designed for supermarket managers. Streamline your product arrangement,
+              optimize customer flow, and visualize your store with ease.
+            </p>
+            <div className="mt-8">
+              <img src="/assets/layout-preview.png" alt="App Preview" className="mx-auto rounded shadow-md max-w-xl" />
+            </div>
+          </section>
+        );
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-green-500"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-600 to-purple-500 px-4">
-      {/* Full-width Card with Min Width */}
-      <div className="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-3xl min-w-[560px]">
-        <h1 className="text-4xl font-extrabold text-center mb-4 text-gray-800 flex items-center justify-center gap-2">
-          <span role="img" aria-label="cart">
-            🛒
-          </span>{" "}
-          Supermarket Planner
-        </h1>
-        <p className="text-center text-gray-600 mb-6">
-          Easily design and manage your supermarket layout.
-        </p>
-
-        {!user && (
-          <div className="flex justify-center w-full">
-            <div className="w-full max-w-md">
-              <Authenticator className="!w-full" />
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 font-sans">
+      {/* Navigation Header */}
+      <header className="bg-white shadow-sm p-4 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <img src="/assets/shopping-cart.png" alt="Logo" className="h-8 w-8" />
+            <h1 className="text-xl font-bold text-purple-800">Supermarket Planner</h1>
           </div>
-        )}
-      </div>
-      <div className="flex justify-center space-x-4 mt-8">
-        <Link to="/about" className="flex flex-col items-center space-y-2">
-          <button className="bg-white text-black p-3 rounded-lg shadow-lg hover:bg-gray-200">
-            <img src="/assets/shopping-cart.png" alt="Info" className="w-16 h-16" />
-          </button>
-          <span className="text-xs font-bold text-gray-700">General Info</span>
-        </Link>
+          <nav className="space-x-4">
+            <button onClick={() => { setActiveTab("home"); setShowSignIn(false); }} className="text-gray-700 hover:text-purple-700 font-medium">Home</button>
+            <button onClick={() => setActiveTab("about")} className="text-gray-700 hover:text-purple-700 font-medium">About</button>
+            <button onClick={() => setActiveTab("goal")} className="text-gray-700 hover:text-purple-700 font-medium">Goal</button>
+            <button onClick={() => setActiveTab("docs")} className="text-gray-700 hover:text-purple-700 font-medium">Store Map</button>
+            <button
+              onClick={() => setShowSignIn(true)}
+              className="ml-4 px-4 py-1 text-white bg-purple-600 rounded hover:bg-purple-700 transition"
+            >
+              Sign In
+            </button>
+          </nav>
+        </div>
+      </header>
 
-        <Link to="/goal" className="flex flex-col items-center space-y-2">
-          <button className="bg-white text-black p-3 rounded-lg shadow-lg hover:bg-gray-200">
-            <img src="/assets/directional-sign.png" alt="Goal" className="w-16 h-16" />
-          </button>
-          <span className="text-xs font-bold text-gray-700">Our Goal</span>
-        </Link>
+      {/* Main Dynamic Content */}
+      {renderTabContent()}
 
-        <Link to="/docs" className="flex flex-col items-center space-y-2">
-          <button className="bg-white text-black p-3 rounded-lg shadow-lg hover:bg-gray-200">
-            <img src="/assets/store-map.png" alt="Map" className="w-16 h-16" />
-          </button>
-          <span className="text-xs font-bold text-gray-700">Store Map</span>
-        </Link>
-      </div>
+      {/* Feature Buttons Section */}
+      <section className="py-12 bg-gradient-to-br from-purple-50 to-purple-100">
+        <h3 className="text-center text-2xl font-bold text-purple-800 mb-8">Learn More</h3>
+        <ButtonsPanel />
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-white shadow-inner py-4 text-center text-sm text-gray-500 mt-12">
+        &copy; {new Date().getFullYear()} Supermarket Planner. All rights reserved.
+      </footer>
+
+      {/* Embedded Authenticator Modal */}
+      {showSignIn && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
+            <button
+              className="absolute top-2 right-2 text-sm text-gray-600 hover:text-gray-900"
+              onClick={() => setShowSignIn(false)}
+            >
+              ✕
+            </button>
+            <Authenticator />
+          </div>
+        </div>
+      )}
     </div>
-    
-    
   );
-}
+};
+
+export default LandingPage;
