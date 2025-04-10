@@ -81,7 +81,7 @@ const LandingPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-puprle-600 to-purple-700 font-sans">
       {/* Navigation Header */}
       <header className="bg-white shadow-sm p-4 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -120,7 +120,7 @@ const LandingPage: React.FC = () => {
       {/* Embedded Authenticator Modal */}
       {showSignIn && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
+          <div className="p-6 rounded-lg shadow-lg max-w-md w-full relative">
             <button
               className="absolute top-2 right-2 text-sm text-gray-600 hover:text-gray-900"
               onClick={() => setShowSignIn(false)}
