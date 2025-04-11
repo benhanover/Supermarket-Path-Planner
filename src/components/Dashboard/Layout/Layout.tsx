@@ -34,9 +34,9 @@ const Layout = () => {
   };
 
   return (
-    <div className="flex justify-center items-center w-full h-full overflow-hidden">
+    <div className="flex justify-center items-center w-full h-full">
       <div
-        className="p-4 overflow-auto border border-gray-300 shadow-lg rounded-lg bg-white relative"
+        className="p-4 overflow-auto border border-gray-300 shadow-lg rounded-lg bg-white"
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
       >

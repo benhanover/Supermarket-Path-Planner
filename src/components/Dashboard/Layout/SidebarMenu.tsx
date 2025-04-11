@@ -21,6 +21,8 @@ const SidebarMenu = () => {
     setActiveAction,
     setSelectedSquare,
     saveLayout,
+    activeTab,
+    setActiveTab
   } = useDashboard();
   const { setSupermarket } = useAppContext();
 
@@ -75,130 +77,155 @@ const SidebarMenu = () => {
   };
 
   return (
-    <div
-      className="p-6 border-r flex flex-col gap-4 w-64 transition-all
-       duration-300 rounded-xl shadow-lg bg-gray-200 text-white"
-    >
-      <>
-        {/* Modify Layout Button */}
-        {activeAction !== EditableAction.EditProducts &&
-          activeAction !== EditableAction.ChangeLayoutSize && (
-            <button
-              onClick={() =>
-                setActiveAction(
-                  activeAction === EditableAction.ModifyLayout
-                    ? EditableAction.None
-                    : EditableAction.ModifyLayout
-                )
-              }
-              className={`p-3 rounded-lg font-semibold transition w-full
-                ${
-                  activeAction === EditableAction.ModifyLayout
-                    ? "bg-purple-200 hover:bg-purple-200 text-black"
-                    : "bg-gray-400 hover:bg-purple-200 text-black"
-                }`}
-            >
-              {activeAction === EditableAction.ModifyLayout
-                ? "Cancel Layout Edit"
-                : "Modify Layout"}
-            </button>
-          )}
+    <div className="w-64 bg-gray-200 p-6 flex flex-col gap-4 shadow-lg rounded-xl ml-4 my-4">
+      {/* Editor Selection Tabs - moved from Dashboard.tsx */}
+      <div className="mb-6 space-y-2">
+        <h2 className="text-lg font-bold text-gray-700 mb-3">Dashboard</h2>
+        <button
+          className={`w-full text-left px-4 py-2 rounded-lg font-semibold transition hover:bg-purple-200 ${activeTab === "layout" ? "bg-purple-200" : ""
+            }`}
+          onClick={() => setActiveTab("layout")}
+        >
+          Layout Editor
+        </button>
+        <button
+          className={`w-full text-left px-4 py-2 rounded-lg font-semibold transition hover:bg-purple-200 ${activeTab === "products" ? "bg-purple-200" : ""
+            }`}
+          onClick={() => setActiveTab("products")}
+        >
+          Products Editor
+        </button>
+        <button
+          className={`w-full text-left px-4 py-2 rounded-lg font-semibold transition hover:bg-purple-200 ${activeTab === "product_square" ? "bg-purple-200" : ""
+            }`}
+          onClick={() => setActiveTab("product_square")}
+        >
+          Product Square Editor
+        </button>
+      </div>
 
-        {/* Square Type Selection */}
-        {activeAction === EditableAction.ModifyLayout && (
-          <div className="flex flex-col gap-2">
-            <h2 className="text-lg font-semibold text-black">
-              Select Square Type
-            </h2>
-            {squareTypes.map(({ type, color }) => (
+      {/* Show Layout Controls only when Layout tab is active */}
+      {activeTab === "layout" && (
+        <>
+          <h2 className="text-lg font-bold text-gray-700">Layout Controls</h2>
+
+          {/* Modify Layout Button */}
+          {activeAction !== EditableAction.EditProducts &&
+            activeAction !== EditableAction.ChangeLayoutSize && (
               <button
-                key={type}
-                className={`p-2 border rounded-lg transition w-full ${color} text-black hover:opacity-75
-                    ${selectedType === type ? "ring-2 ring-blue-500" : ""}`}
-                onClick={() => setSelectedType(type)}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Edit Products Button */}
-        {activeAction !== EditableAction.ModifyLayout &&
-          activeAction !== EditableAction.ChangeLayoutSize && (
-            <button
-              onClick={() => {
-                if (activeAction === EditableAction.EditProducts) {
-                  setActiveAction(EditableAction.None);
-                  setSelectedSquare(null); // ✅ Clear selected square
-                } else {
-                  setActiveAction(EditableAction.EditProducts);
+                onClick={() =>
+                  setActiveAction(
+                    activeAction === EditableAction.ModifyLayout
+                      ? EditableAction.None
+                      : EditableAction.ModifyLayout
+                  )
                 }
-              }}
-              className={`p-3 rounded-lg font-semibold transition w-full
-                ${
-                  activeAction === EditableAction.EditProducts
+                className={`p-3 rounded-lg font-semibold transition w-full
+                  ${activeAction === EditableAction.ModifyLayout
                     ? "bg-purple-200 hover:bg-purple-200 text-black"
                     : "bg-gray-400 hover:bg-purple-200 text-black"
-                }`}
-            >
-              {activeAction === EditableAction.EditProducts
-                ? "Cancel Product Edit"
-                : "Edit Products"}
-            </button>
+                  }`}
+              >
+                {activeAction === EditableAction.ModifyLayout
+                  ? "Cancel Layout Edit"
+                  : "Modify Layout"}
+              </button>
+            )}
+
+          {/* Square Type Selection */}
+          {activeAction === EditableAction.ModifyLayout && (
+            <div className="flex flex-col gap-2">
+              <h2 className="text-lg font-semibold text-black">
+                Select Square Type
+              </h2>
+              {squareTypes.map(({ type, color }) => (
+                <button
+                  key={type}
+                  className={`p-2 border rounded-lg transition w-full ${color} text-black hover:opacity-75
+                      ${selectedType === type ? "ring-2 ring-blue-500" : ""}`}
+                  onClick={() => setSelectedType(type)}
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
           )}
 
-        {/* Change Layout Size Button */}
-        {activeAction !== EditableAction.ModifyLayout &&
-          activeAction !== EditableAction.EditProducts && (
-            <button
-              onClick={() => {
-                setActiveAction(
-                  activeAction === EditableAction.ChangeLayoutSize
-                    ? EditableAction.None
-                    : EditableAction.ChangeLayoutSize
-                );
-                setShowSizePrompt(true);
-              }}
-              className={`p-3 rounded-lg font-semibold transition w-full
-                ${
-                  activeAction === EditableAction.ChangeLayoutSize
+          {/* Edit Products Button */}
+          {activeAction !== EditableAction.ModifyLayout &&
+            activeAction !== EditableAction.ChangeLayoutSize && (
+              <button
+                onClick={() => {
+                  if (activeAction === EditableAction.EditProducts) {
+                    setActiveAction(EditableAction.None);
+                    setSelectedSquare(null); // ✅ Clear selected square
+                  } else {
+                    setActiveAction(EditableAction.EditProducts);
+                  }
+                }}
+                className={`p-3 rounded-lg font-semibold transition w-full
+                  ${activeAction === EditableAction.EditProducts
                     ? "bg-purple-200 hover:bg-purple-200 text-black"
                     : "bg-gray-400 hover:bg-purple-200 text-black"
-                }`}
-            >
-              {activeAction === EditableAction.ChangeLayoutSize
-                ? "Cancel Layout Change"
-                : "Change Layout Size"}
-            </button>
-          )}
-      </>
+                  }`}
+              >
+                {activeAction === EditableAction.EditProducts
+                  ? "Cancel Product Edit"
+                  : "Edit Products"}
+              </button>
+            )}
 
-      {/* Layout Size Input Prompt */}
-      {showSizePrompt && activeAction === EditableAction.ChangeLayoutSize && (
-        <div className="p-4 border rounded-lg bg-gray-200 text-black mt-4">
-          <h3 className="text-md font-bold">Enter New Layout Size</h3>
-          <input
-            type="number"
-            placeholder="Rows"
-            className="w-full p-2 mt-2 border rounded"
-            value={newRows ?? ""}
-            onChange={(e) => setNewRows(Number(e.target.value) || "")}
-          />
-          <input
-            type="number"
-            placeholder="Columns"
-            className="w-full p-2 mt-2 border rounded"
-            value={newCols ?? ""}
-            onChange={(e) => setNewCols(Number(e.target.value) || "")}
-          />
-          <button
-            className="mt-3 px-4 py-2 bg-blue-200 text-black rounded-lg hover:bg-blue-300"
-            onClick={confirmLayoutSize}
-          >
-            Confirm
-          </button>
-        </div>
+          {/* Change Layout Size Button */}
+          {activeAction !== EditableAction.ModifyLayout &&
+            activeAction !== EditableAction.EditProducts && (
+              <button
+                onClick={() => {
+                  setActiveAction(
+                    activeAction === EditableAction.ChangeLayoutSize
+                      ? EditableAction.None
+                      : EditableAction.ChangeLayoutSize
+                  );
+                  setShowSizePrompt(true);
+                }}
+                className={`p-3 rounded-lg font-semibold transition w-full
+                  ${activeAction === EditableAction.ChangeLayoutSize
+                    ? "bg-purple-200 hover:bg-purple-200 text-black"
+                    : "bg-gray-400 hover:bg-purple-200 text-black"
+                  }`}
+              >
+                {activeAction === EditableAction.ChangeLayoutSize
+                  ? "Cancel Layout Change"
+                  : "Change Layout Size"}
+              </button>
+            )}
+
+          {/* Layout Size Input Prompt */}
+          {showSizePrompt && activeAction === EditableAction.ChangeLayoutSize && (
+            <div className="p-4 border rounded-lg bg-gray-200 text-black mt-4">
+              <h3 className="text-md font-bold">Enter New Layout Size</h3>
+              <input
+                type="number"
+                placeholder="Rows"
+                className="w-full p-2 mt-2 border rounded"
+                value={newRows ?? ""}
+                onChange={(e) => setNewRows(Number(e.target.value) || "")}
+              />
+              <input
+                type="number"
+                placeholder="Columns"
+                className="w-full p-2 mt-2 border rounded"
+                value={newCols ?? ""}
+                onChange={(e) => setNewCols(Number(e.target.value) || "")}
+              />
+              <button
+                className="mt-3 px-4 py-2 bg-blue-200 text-black rounded-lg hover:bg-blue-300"
+                onClick={confirmLayoutSize}
+              >
+                Confirm
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
