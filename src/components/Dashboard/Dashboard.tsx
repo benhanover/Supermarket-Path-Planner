@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useDashboard } from "./DashboardContext/useDashboard";
 import DashboardProvider from "./DashboardContext/DashboardContext";
 import Layout from "./Layout/Layout";
@@ -7,18 +8,47 @@ import ProductSquareEditor from "./Product_Square_Editor/ProductSquareEditor";
 
 const DashboardContent = () => {
   const { activeTab } = useDashboard();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Toggle sidebar for mobile view
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
 
   return (
-    <div className="flex h-screen min-h-screen">
-      {/* Unified Sidebar Navigation - now outside the white content area */}
-      <SidebarMenu />
+    <div className="flex flex-col md:flex-row h-screen w-full overflow-hidden">
+      {/* Mobile sidebar toggle button */}
+      <button
+        className="md:hidden bg-purple-600 text-white p-2 m-2 rounded-md fixed top-16 left-2 z-30"
+        onClick={toggleSidebar}
+        aria-label="Toggle Menu"
+      >
+        {sidebarOpen ? "✕" : "☰"}
+      </button>
 
-      {/* Main Content - white content area without the sidebar */}
-      <div className="flex-1 p-6 bg-white shadow-lg rounded-xl mx-4 my-4">
+      {/* Responsive Sidebar */}
+      <div
+        className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0 transform transition-transform duration-300 fixed md:relative z-20 h-full md:h-auto md:flex-shrink-0`}
+      >
+        <SidebarMenu closeSidebar={() => setSidebarOpen(false)} />
+      </div>
+
+      {/* Main Content - white content area */}
+      <div className={`flex-1 p-2 md:p-6 bg-white shadow-lg rounded-lg m-2 md:mx-4 md:my-4 overflow-auto transition-all duration-300 ${sidebarOpen ? "md:ml-0" : "ml-0"
+        }`}>
         {activeTab === "layout" && <Layout />}
         {activeTab === "products" && <ProductsEditor mode="global" />}
         {activeTab === "product_square" && <ProductSquareEditor />}
       </div>
+
+      {/* Backdrop overlay for mobile */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+      )}
     </div>
   );
 };

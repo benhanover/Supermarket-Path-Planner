@@ -59,21 +59,21 @@ const EditProductModal = ({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded-lg w-3/4 max-w-lg shadow-lg">
-        <h2 className="text-lg font-semibold mb-4">Edit Product</h2>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
+      <div className="bg-white p-4 md:p-6 rounded-lg w-full max-w-lg shadow-lg max-h-[90vh] overflow-y-auto">
+        <h2 className="text-base md:text-lg font-semibold mb-3 md:mb-4">Edit Product</h2>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+          <div className="mb-3 md:mb-4 p-2 md:p-3 bg-red-100 text-red-700 rounded text-xs md:text-sm">
             {error}
           </div>
         )}
 
         <label className="block mb-2">
-          <span className="text-gray-700">Product Title *</span>
+          <span className="text-xs md:text-sm text-gray-700">Product Title *</span>
           <input
             type="text"
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-xs md:text-sm"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
@@ -81,10 +81,10 @@ const EditProductModal = ({
         </label>
 
         <label className="block mb-2">
-          <span className="text-gray-700">Price *</span>
+          <span className="text-xs md:text-sm text-gray-700">Price *</span>
           <input
             type="number"
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-xs md:text-sm"
             value={price}
             onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
             step="0.01"
@@ -94,19 +94,19 @@ const EditProductModal = ({
         </label>
 
         <label className="block mb-2">
-          <span className="text-gray-700">Category</span>
+          <span className="text-xs md:text-sm text-gray-700">Category</span>
           <input
             type="text"
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-xs md:text-sm"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           />
         </label>
 
         <label className="block mb-2">
-          <span className="text-gray-700">Description</span>
+          <span className="text-xs md:text-sm text-gray-700">Description</span>
           <textarea
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-xs md:text-sm"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
@@ -114,31 +114,31 @@ const EditProductModal = ({
         </label>
 
         <label className="block mb-2">
-          <span className="text-gray-700">Image URL</span>
+          <span className="text-xs md:text-sm text-gray-700">Image URL</span>
           <input
             type="text"
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-xs md:text-sm"
             value={image}
             onChange={(e) => setImage(e.target.value)}
           />
         </label>
 
-        <div className="flex justify-end mt-4">
+        <div className="flex justify-end mt-3 md:mt-4">
           <button
-            className="px-4 py-2 bg-gray-400 text-white rounded mr-2 hover:bg-gray-500"
+            className="px-3 md:px-4 py-1 md:py-2 bg-gray-400 text-white rounded mr-2 hover:bg-gray-500 text-xs md:text-sm"
             onClick={onClose}
             disabled={isSubmitting || isSaving}
           >
             Cancel
           </button>
           <button
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center"
+            className="px-3 md:px-4 py-1 md:py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center text-xs md:text-sm"
             onClick={handleSave}
             disabled={isSubmitting || isSaving}
           >
             {(isSubmitting || isSaving) && (
               <svg
-                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                className="animate-spin -ml-1 mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4 text-white"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"

@@ -23,6 +23,14 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [editProduct, setEditProduct] = useState<Product | null>(null);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
+  const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
+
+  const handleImageError = (productId: string) => {
+    setImgErrors(prev => ({
+      ...prev,
+      [productId]: true
+    }));
+  };
 
   const handleDeleteProduct = async (productId: string) => {
     if (
@@ -83,23 +91,22 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-md">
-      <h2 className="text-lg font-bold">
+    <div className="p-2 md:p-4 bg-white rounded-lg shadow-md">
+      <h2 className="text-base md:text-lg font-bold mb-2 md:mb-4">
         {mode === "square" ? "Edit Square Products" : "Manage All Products"}
       </h2>
 
       {mode === "global" && (
         <button
           onClick={() => setShowAddProductModal(true)}
-          className={`px-4 py-2 bg-green-500 text-white rounded mb-4 hover:bg-green-600 flex items-center ${
-            isSaving ? "opacity-70 cursor-not-allowed" : ""
-          }`}
+          className={`px-3 md:px-4 py-1 md:py-2 bg-green-500 text-white rounded mb-2 md:mb-4 hover:bg-green-600 flex items-center text-sm md:text-base ${isSaving ? "opacity-70 cursor-not-allowed" : ""
+            }`}
           disabled={isSaving}
         >
           {isSaving ? (
             <>
               <svg
-                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                className="animate-spin -ml-1 mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4 text-white"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -129,7 +136,7 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
       <input
         type="text"
         placeholder="Search products..."
-        className="w-full p-2 mb-4 border rounded"
+        className="w-full p-2 mb-3 md:mb-4 border rounded text-sm md:text-base"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
@@ -144,11 +151,10 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
           return (
             <div
               key={product.id}
-              className={`p-2 border rounded-lg cursor-pointer transition relative ${
-                isSelected
+              className={`p-2 border rounded-lg cursor-pointer transition relative ${isSelected
                   ? "bg-yellow-200 border-yellow-400"
                   : "hover:bg-gray-100"
-              }`}
+                }`}
               onClick={
                 mode === "square"
                   ? () => toggleProductSelection(product)
@@ -156,33 +162,34 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
               }
             >
               <img
-                src={product.image}
+                src={imgErrors[product.id] ? "/assets/product-placeholder.png" : (product.image || "/assets/product-placeholder.png")}
                 alt={product.title}
-                className="h-16 w-16 object-cover rounded mb-2 mx-auto"
+                className="h-12 w-12 md:h-16 md:w-16 object-cover rounded mb-1 md:mb-2 mx-auto"
+                onError={() => handleImageError(product.id)}
               />
-              <p className="text-sm font-semibold">{product.title}</p>
-              <p className="text-gray-600 font-medium">
+              <p className="text-xs md:text-sm font-semibold truncate">{product.title}</p>
+              <p className="text-xs md:text-sm text-gray-600 font-medium">
                 ${product.price.toFixed(2)}
               </p>
               {product.category && (
-                <span className="text-xs bg-gray-200 rounded-full px-2 py-1 mt-1 inline-block">
+                <span className="text-xs bg-gray-200 rounded-full px-1 md:px-2 py-0.5 md:py-1 mt-1 inline-block truncate max-w-full">
                   {product.category}
                 </span>
               )}
 
               {mode === "square" && isSelected && (
-                <span className="absolute top-2 right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded">
+                <span className="absolute top-1 right-1 md:top-2 md:right-2 bg-yellow-500 text-white text-xs px-1 md:px-2 py-0.5 md:py-1 rounded">
                   Selected
                 </span>
               )}
               {mode === "global" && (
-                <div className="flex justify-between mt-2">
+                <div className="flex justify-between mt-1 md:mt-2 gap-1">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       setEditProduct(product);
                     }}
-                    className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600 disabled:opacity-50"
+                    className="px-1 md:px-3 py-0.5 md:py-1 bg-blue-500 text-white rounded text-xs md:text-sm hover:bg-blue-600 disabled:opacity-50"
                     disabled={isSaving}
                   >
                     Edit
@@ -192,7 +199,7 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
                       e.stopPropagation();
                       handleDeleteProduct(product.id);
                     }}
-                    className="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600 disabled:opacity-50"
+                    className="px-1 md:px-3 py-0.5 md:py-1 bg-red-500 text-white rounded text-xs md:text-sm hover:bg-red-600 disabled:opacity-50"
                     disabled={isSaving}
                   >
                     Delete

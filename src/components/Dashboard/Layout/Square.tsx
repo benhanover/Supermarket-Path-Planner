@@ -7,10 +7,11 @@ interface SquareProps {
   square: SquareType;
   onMouseDown: (row: number, col: number) => void;
   onMouseEnter: (row: number, col: number) => void;
+  onTouchStart: () => void;
 }
 
 // Use memo to prevent unnecessary re-renders
-const Square = memo(({ square, onMouseDown, onMouseEnter }: SquareProps) => {
+const Square = memo(({ square, onMouseDown, onMouseEnter, onTouchStart }: SquareProps) => {
   const { activeAction } = useDashboard();
 
   const getColor = () => {
@@ -44,24 +45,23 @@ const Square = memo(({ square, onMouseDown, onMouseEnter }: SquareProps) => {
 
   return (
     <div
-      className={`w-full h-full ${getColor()} border rounded-md transition-all 
-      ${
-        activeAction === EditableAction.EditProducts &&
-        square.type !== "products"
+      className={`w-full h-full ${getColor()} border rounded-md transition-all
+      ${activeAction === EditableAction.EditProducts &&
+          square.type !== "products"
           ? "opacity-30"
           : ""
-      }
-      ${
-        activeAction === EditableAction.EditProducts &&
-        square.type === "products"
-          ? "hover:scale-110 cursor-pointer"
+        }
+      ${activeAction === EditableAction.EditProducts &&
+          square.type === "products"
+          ? "hover:scale-110 cursor-pointer active:scale-105"
           : isInteractive
-          ? "cursor-pointer hover:opacity-80"
-          : ""
-      }
+            ? "cursor-pointer hover:opacity-80 active:opacity-70"
+            : ""
+        }
       `}
       onMouseDown={handleMouseDown}
       onMouseEnter={handleMouseEnter}
+      onTouchStart={onTouchStart}
       data-square-type={square.type}
       data-position={`${square.row},${square.col}`}
     ></div>
