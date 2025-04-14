@@ -10,6 +10,9 @@ import { getCurrentUser, AuthUser } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
 import type { Schema } from "../../amplify/data/resource";
 
+const AppContext = createContext<AppContextType | undefined>(undefined);
+const client = generateClient<Schema>();
+
 interface AppContextType {
   user: AuthUser | null;
   setUser: React.Dispatch<React.SetStateAction<AuthUser | null>>;
@@ -23,17 +26,11 @@ interface AppContextType {
   handleError: (error: unknown, source: string) => void;
 }
 
-const AppContext = createContext<AppContextType | undefined>(undefined);
-const client = generateClient<Schema>();
-
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [loading, setLoading] = useState(true);
   const [supermarket, setSupermarket] = useState<Supermarket | null>(null);
-  const [error, setError] = useState<{
-    message: string;
-    source: string;
-  } | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<{ message: string; source: string } | null>(null);
 
   const handleError = (error: unknown, source: string) => {
     console.error(`Error in ${source}:`, error);
@@ -49,73 +46,44 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
     setError({ message, source });
 
-    // Auto-clear error after 10 seconds
     setTimeout(() => setError(null), 10000);
   };
 
   useEffect(() => {
-    // Set loading to true initially
-    setLoading(true);
+    const loadUserAndSupermarketData = async () => {
+      setLoading(true);
 
-    const loadUserData = async () => {
       try {
+        // Load User
         const currentUser = await getCurrentUser().catch(() => null);
-        if (currentUser) {
-          console.log("User authenticated, setting user state");
-          setUser(currentUser);
-        } else {
-          console.log("No authenticated user found");
-          setUser(null);
+        setUser(currentUser);
+
+        if (!currentUser) {
+          return; // No user → skip supermarket fetch
         }
-      } catch (error) {
-        console.error("Error fetching user:", error);
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    loadUserData();
-  }, []);
-
-  useEffect(() => {
-    const loadSupermarketData = async () => {
-      if (!user || loading) return;
-
-      try {
-        console.log("Loading supermarket data for user:", user.userId);
-        setLoading(true);
-        setError(null);
-
-        // Get all supermarkets
+        // Load Supermarket
         const allSupermarkets = await client.models.Supermarket.list();
-        console.log(allSupermarkets);
-
-        // Find the supermarket that belongs to this user
         const userSupermarket = allSupermarkets.data.find(
-          (market) => market.owner === user.userId
+          (market) => market.owner === currentUser.userId
         );
 
         if (userSupermarket) {
           let parsedLayout;
+
           try {
-            if (typeof userSupermarket.layout === "string") {
-              parsedLayout = JSON.parse(userSupermarket.layout);
-            }
+            parsedLayout =
+              typeof userSupermarket.layout === "string"
+                ? JSON.parse(userSupermarket.layout)
+                : userSupermarket.layout;
           } catch (jsonError) {
             handleError(jsonError, "loadSupermarketData (JSON parsing)");
           }
 
-          // Get products for this supermarket
           const products = await client.models.Product.list({
-            filter: {
-              supermarketID: {
-                eq: userSupermarket.id,
-              },
-            },
+            filter: { supermarketID: { eq: userSupermarket.id } },
           });
 
-          // Set up the supermarket state
           setSupermarket({
             id: userSupermarket.id,
             owner: userSupermarket.owner,
@@ -123,27 +91,25 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
             layout: parsedLayout,
             products: products.data,
           });
-        } else {
-          console.log("No supermarket found for user");
         }
       } catch (error) {
-        handleError(error, "loadSupermarketData");
+        handleError(error, "loadUserAndSupermarketData");
       } finally {
         setLoading(false);
       }
     };
 
-    loadSupermarketData();
-  }, [user]);
+    loadUserAndSupermarketData();
+  }, []);
 
   return (
     <AppContext.Provider
       value={{
         user,
         setUser,
-        loading,
         supermarket,
         setSupermarket,
+        loading,
         error,
         setError,
         handleError,

@@ -98,21 +98,21 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
             }`}
           onClick={() => handleTabChange("layout")}
         >
-          Layout Editor
+          🎨 Layout Editor
         </button>
         <button
           className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-purple-200 text-sm md:text-base ${activeTab === "products" ? "bg-purple-200" : ""
             }`}
           onClick={() => handleTabChange("products")}
         >
-          Products Editor
+          🛠 Products Editor
         </button>
         <button
           className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-purple-200 text-sm md:text-base ${activeTab === "product_square" ? "bg-purple-200" : ""
             }`}
           onClick={() => handleTabChange("product_square")}
         >
-          Product Square Editor
+          🔍 Product Square Editor
         </button>
       </div>
 
