@@ -16,7 +16,7 @@ const DashboardContent = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen w-full overflow-hidden">
+    <div className="flex flex-col md:flex-row h-screen w-full overflow-auto">
       {/* Mobile sidebar toggle button */}
       <button
         className="md:hidden bg-purple-600 text-white p-2 m-2 rounded-md fixed top-16 left-2 z-30"
@@ -35,7 +35,7 @@ const DashboardContent = () => {
       </div>
 
       {/* Main Content - white content area */}
-      <div className={`flex-1 p-2 md:p-6 bg-white shadow-lg rounded-lg m-2 md:mx-4 md:my-4 overflow-auto transition-all duration-300 ${sidebarOpen ? "md:ml-0" : "ml-0"
+      <div className={`flex-1 p-2 md:p-6 bg-white shadow-lg rounded-lg m-2 md:mx-4 md:my-4 overflow-auto transition-all duration-300"
         }`}>
         {activeTab === "layout" && <Layout />}
         {activeTab === "products" && <ProductsEditor mode="global" />}

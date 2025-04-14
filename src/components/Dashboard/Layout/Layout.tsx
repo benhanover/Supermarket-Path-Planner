@@ -13,9 +13,11 @@ const Layout = () => {
   useEffect(() => {
     const adjustSquareSize = () => {
       const width = window.innerWidth;
-      if (width < 640) { // sm
+      if (width < 640) {
+        // sm
         setSquareSize(16); // smaller squares for mobile
-      } else if (width < 768) { // md
+      } else if (width < 768) {
+        // md
         setSquareSize(20); // slightly larger for small tablets
       } else {
         setSquareSize(24); // default for larger screens
@@ -26,10 +28,10 @@ const Layout = () => {
     adjustSquareSize();
 
     // Add event listener
-    window.addEventListener('resize', adjustSquareSize);
+    window.addEventListener("resize", adjustSquareSize);
 
     // Clean up
-    return () => window.removeEventListener('resize', adjustSquareSize);
+    return () => window.removeEventListener("resize", adjustSquareSize);
   }, []);
 
   if (!supermarket) {
@@ -60,9 +62,9 @@ const Layout = () => {
   };
 
   return (
-    <div className="flex justify-center items-center w-full h-full overflow-hidden">
+    <div className="flex justify-center items-center w-full h-full overflow-auto">
       <div
-        className="p-2 md:p-4 overflow-auto border border-gray-300 shadow-lg rounded-lg bg-white max-w-full"
+        className="p-2 md:p-4 overflow-auto border border-gray-300 shadow-lg rounded-lg bg-white max-w-full max-h-[80vh]"
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
         onTouchEnd={handleMouseUp}
@@ -70,8 +72,12 @@ const Layout = () => {
         <div
           className="grid gap-px md:gap-0.5"
           style={{
-            gridTemplateColumns: `repeat(${supermarket.layout[0].length}, minmax(${squareSize / 2}px, ${squareSize}px))`,
-            gridTemplateRows: `repeat(${supermarket.layout.length}, minmax(${squareSize / 2}px, ${squareSize}px))`,
+            gridTemplateColumns: `repeat(${
+              supermarket.layout[0].length
+            }, minmax(${squareSize / 2}px, ${squareSize}px))`,
+            gridTemplateRows: `repeat(${supermarket.layout.length}, minmax(${
+              squareSize / 2
+            }px, ${squareSize}px))`,
           }}
         >
           {supermarket.layout.map((row, rowIndex) =>
