@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
@@ -25,70 +24,63 @@ const LandingPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 to-purple-700 font-sans">
+    <div className="relative min-h-screen font-sans overflow-hidden">
+      {/* Background Blob */}
+      <img
+        src="/bg-blue.svg"
+        alt="background blob"
+        className="absolute top-0 left-0 w-full h-full object-cover -z-10"
+      />
+
       {/* Navigation Header */}
-      <header className="bg-white shadow-sm p-4 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <img src="/assets/shopping-cart.png" alt="Logo" className="h-8 w-8" />
-            <h1 className="text-xl font-bold text-purple-800">Supermarket Planner</h1>
-          </div>
-          <nav className="space-x-4">
-            <Link to="/" className="text-gray-700 hover:text-purple-700 font-medium">Home</Link>
-            <Link to="/about" className="text-gray-700 hover:text-purple-700 font-medium">About</Link>
-            <Link to="/goal" className="text-gray-700 hover:text-purple-700 font-medium">Goal</Link>
-            <Link to="/docs" className="text-gray-700 hover:text-purple-700 font-medium">Store Map</Link>
-            <Link
-              to="/signin"
-              className="ml-4 px-4 py-1 text-white bg-purple-600 rounded hover:bg-purple-700 transition"
-            >
-              Sign In
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-6">
+        <h1 className="text-2xl font-bold text-black">
+          🛒 Supermarket Path Planner
+        </h1>
 
-      {/* Main Content */}
-      <section className="text-center py-16 px-6 bg-white animate-fade-in">
-        <h2 className="text-4xl font-bold text-purple-700 mb-4">Welcome to Your Smart Store Layout Tool</h2>
-        <p className="text-lg text-gray-600 max-w-xl mx-auto">
-          Designed for supermarket managers. Streamline your product arrangement,
-          optimize customer flow, and visualize your store with ease.
-        </p>
-        <div className="mt-8">
-          <img src="/assets/layout-preview.png" alt="App Preview" className="mx-auto rounded shadow-md max-w-xl" />
-        </div>
-      </section>
-
-      {/* Feature Buttons Section */}
-      <section className="py-12 bg-gradient-to-br from-purple-50 to-purple-100">
-        <h3 className="text-center text-2xl font-bold text-purple-800 mb-8">Learn More</h3>
-        <div className="flex justify-center space-x-6">
+        <nav className="space-x-8">
+          <Link
+            to="/"
+            className="text-black hover:text-cyan-800 font-medium"
+          >
+            Home
+          </Link>
           <Link
             to="/about"
-            className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition shadow-md"
+            className="text-black hover:text-cyan-800 font-medium"
           >
-            About Us
+            About
           </Link>
           <Link
             to="/goal"
-            className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition shadow-md"
+            className="text-black hover:text-cyan-800 font-medium"
           >
-            Our Goals
+            Goal
           </Link>
           <Link
             to="/docs"
-            className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition shadow-md"
+            className="text-black hover:text-cyan-800 font-medium"
           >
-            Documentation
+            Store Map
           </Link>
-        </div>
-      </section>
+          <Link
+            to="/signin"
+            className="ml-4 px-4 py-1 text-black bg-cyan-800 rounded hover:bg-gray-500 transition"
+          >
+            Sign In
+          </Link>
+        </nav>
+      </div>
 
-      {/* Footer */}
-      <footer className="bg-white shadow-inner py-4 text-center text-sm text-gray-500 mt-12">
-        &copy; {new Date().getFullYear()} Supermarket Planner. All rights reserved.
-      </footer>
+      {/* Main Content */}
+      <section className="text-center py-40 px-6 animate-scale-in">
+        <h2 className="text-5xl font-bold text-black mb-4">
+          Smarter Shopping Starts Here
+        </h2>
+        <p className="text-2xl text-black max-w-xl mx-auto">
+          Optimize your shopping route with ease ✨
+        </p>
+      </section>
     </div>
   );
 };
