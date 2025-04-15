@@ -3,14 +3,16 @@ import { useAppContext } from "../context/AppContext";
 import Dashboard from "../components/Dashboard/Dashboard";
 import InitializeLayout from "../components/InitializeLayout";
 import { useState } from "react";
+import Loader from "../components/Loader";
 
 const Home: React.FC = () => {
-  const { loading, supermarket } = useAppContext();
+  const { loading, supermarket, setUser } = useAppContext();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleSignOut = async () => {
     try {
       await signOut();
+      setUser(null)
       console.log("User logged out successfully");
     } catch (error) {
       console.error("Error signing out:", error);
@@ -63,9 +65,7 @@ const Home: React.FC = () => {
 
       <main className="flex min-h-screen">
         {loading ? (
-          <div className="flex justify-center items-center w-full">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-green-500"></div>
-          </div>
+          <Loader message="Home.tsx" />
         ) : supermarket ? (
           <Dashboard />
         ) : (

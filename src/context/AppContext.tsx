@@ -19,6 +19,7 @@ interface AppContextType {
   supermarket: Supermarket | null;
   setSupermarket: React.Dispatch<React.SetStateAction<Supermarket | null>>;
   loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   error: { message: string; source: string } | null;
   setError: React.Dispatch<
     React.SetStateAction<{ message: string; source: string } | null>
@@ -102,6 +103,60 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     loadUserAndSupermarketData();
   }, []);
 
+  useEffect(() => {
+    const loadSupermarketForUser = async () => {
+      setLoading(true);
+
+      try {
+        // Load User
+        const currentUser = await getCurrentUser().catch(() => null);
+
+        if (!currentUser) {
+          console.log("No user found in loadSupermarketForUser");
+          setLoading(false);
+          return
+        }
+
+        // Load Supermarket
+        const allSupermarkets = await client.models.Supermarket.list();
+        const userSupermarket = allSupermarkets.data.find(
+          (market) => market.owner === currentUser?.userId
+        );
+
+        if (userSupermarket) {
+          let parsedLayout;
+
+          try {
+            parsedLayout =
+              typeof userSupermarket.layout === "string"
+                ? JSON.parse(userSupermarket.layout)
+                : userSupermarket.layout;
+          } catch (jsonError) {
+            handleError(jsonError, "loadSupermarketData (JSON parsing)");
+          }
+
+          const products = await client.models.Product.list({
+            filter: { supermarketID: { eq: userSupermarket.id } },
+          });
+
+          setSupermarket({
+            id: userSupermarket.id,
+            owner: userSupermarket.owner,
+            name: userSupermarket.name,
+            layout: parsedLayout,
+            products: products.data,
+          });
+        }
+      } catch (error) {
+        handleError(error, "loadSupermarketForUser");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSupermarketForUser();
+  }, [user]);
+
   return (
     <AppContext.Provider
       value={{
@@ -110,6 +165,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         supermarket,
         setSupermarket,
         loading,
+        setLoading,
         error,
         setError,
         handleError,

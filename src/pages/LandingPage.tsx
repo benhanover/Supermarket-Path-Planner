@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
+import Loader from "../components/Loader";
 
 const LandingPage: React.FC = () => {
   const { loading } = useAppContext();
@@ -17,9 +18,7 @@ const LandingPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-green-500"></div>
-      </div>
+      <Loader message="LoadingPage" />
     );
   }
 
