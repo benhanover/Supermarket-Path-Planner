@@ -4,13 +4,16 @@ import { useNavigate } from "react-router-dom";
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { Link } from "react-router-dom";
+import { useAppContext } from "../context/AppContext";
 
 const SignInPage: React.FC = () => {
+  const { setUser } = useAppContext();
   const { user } = useAuthenticator();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
+      setUser(user)
       navigate("/home");
     }
   }, [user, navigate]);

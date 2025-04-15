@@ -48,7 +48,7 @@ export const DashboardContext = createContext<DashboardContextType | undefined>(
 // Provider component
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const {
-    loading: userLoading,
+    loading,
     supermarket,
     setSupermarket,
     error,
@@ -212,10 +212,10 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     ]
   );
 
-  // Loading state
-  if (userLoading || !supermarket) {
-    return <div className="text-center text-gray-600 text-lg">Loading...</div>;
-  }
+  // // Loading state
+  // if (loading || !supermarket) {
+  //   return <div className="text-center text-gray-600 text-lg">Loading...</div>;
+  // }
 
   return (
     <DashboardContext.Provider

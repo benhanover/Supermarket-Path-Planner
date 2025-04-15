@@ -1,5 +1,5 @@
 @import "tailwindcss";
 
-body {
+/* body {
   @apply bg-gradient-to-b from-green-50 to-green-100 text-gray-900 font-sans;
-}
+} */
