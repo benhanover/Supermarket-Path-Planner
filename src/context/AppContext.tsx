@@ -19,6 +19,7 @@ interface AppContextType {
   supermarket: Supermarket | null;
   setSupermarket: React.Dispatch<React.SetStateAction<Supermarket | null>>;
   loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   error: { message: string; source: string } | null;
   setError: React.Dispatch<
     React.SetStateAction<{ message: string; source: string } | null>
@@ -164,6 +165,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         supermarket,
         setSupermarket,
         loading,
+        setLoading,
         error,
         setError,
         handleError,

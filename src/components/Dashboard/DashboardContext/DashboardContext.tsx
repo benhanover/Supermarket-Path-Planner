@@ -48,7 +48,6 @@ export const DashboardContext = createContext<DashboardContextType | undefined>(
 // Provider component
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const {
-    loading,
     supermarket,
     setSupermarket,
     error,

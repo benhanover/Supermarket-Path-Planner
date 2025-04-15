@@ -6,7 +6,7 @@ import { useState } from "react";
 import Loader from "../components/Loader";
 
 const Home: React.FC = () => {
-  const { loading, supermarket, setSupermarket, setUser } = useAppContext();
+  const { loading, supermarket, setUser } = useAppContext();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleSignOut = async () => {

@@ -5,11 +5,14 @@ import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { Link } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
+import Loader from "../components/Loader";
 
 const SignInPage: React.FC = () => {
-  const { setUser } = useAppContext();
+  const { setUser, loading } = useAppContext();
   const { user } = useAuthenticator();
   const navigate = useNavigate();
+
+
 
   useEffect(() => {
     if (user) {
@@ -18,6 +21,11 @@ const SignInPage: React.FC = () => {
     }
   }, [user, navigate]);
 
+  if (loading) {
+    return (
+      <Loader message="SignInPage" />
+    )
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 to-purple-700 font-sans">
       {/* Navigation Header */}
