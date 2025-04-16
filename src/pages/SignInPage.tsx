@@ -31,7 +31,7 @@ const SignInPage: React.FC = () => {
           <Link to="/about" className="text-black hover:text-cyan-800 font-medium">About</Link>
           <Link to="/goal" className="text-black hover:text-cyan-800 font-medium">Goal</Link>
           {/* <Link to="/docs" className="text-black hover:text-cyan-800 font-medium">Store Map</Link> */}
-          <Link to="/signin" className="ml-4 px-4 py-1 text-black bg-cyan-800 rounded hover:bg-gray-500 transition">Sign In</Link>
+          <Link to="/signin" className="ml-4 px-4 py-1 text-black bg-cyan-700 rounded hover:bg-cyan-800 transition">Sign In</Link>
         </nav>
       </div>
 

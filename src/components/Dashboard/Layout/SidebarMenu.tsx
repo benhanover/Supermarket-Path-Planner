@@ -134,7 +134,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
                 }
                 className={`p-2 md:p-3 rounded-lg font-semibold transition w-full text-sm md:text-base
                   ${activeAction === EditableAction.ModifyLayout
-                    ? "bg-blue-200 hover:bg-blue-200 text-black"
+                    ? "bg-blue-200 hover:bg-blue-300 text-black"
                     : "bg-gray-400 hover:bg-blue-200 text-black"
                   }`}
               >
@@ -179,7 +179,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
                 }}
                 className={`p-2 md:p-3 rounded-lg font-semibold transition w-full text-sm md:text-base
                   ${activeAction === EditableAction.EditProducts
-                    ? "bg-blue-200 hover:bg-blue-200 text-black"
+                    ? "bg-blue-200 hover:bg-blue-300 text-black"
                     : "bg-gray-400 hover:bg-blue-200 text-black"
                   }`}
               >
@@ -203,7 +203,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
                 }}
                 className={`p-2 md:p-3 rounded-lg font-semibold transition w-full text-sm md:text-base
                   ${activeAction === EditableAction.ChangeLayoutSize
-                    ? "bg-blue-200 hover:bg-blue-200 text-black"
+                    ? "bg-blue-200 hover:bg-blue-300 text-black"
                     : "bg-gray-400 hover:bg-blue-200 text-black"
                   }`}
               >
@@ -232,7 +232,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
                 onChange={(e) => setNewCols(Number(e.target.value) || "")}
               />
               <button
-                className="mt-2 md:mt-3 px-3 md:px-4 py-1 md:py-2 bg-emerald-300 text-black rounded-lg hover:bg-blue-300 text-sm"
+                className="mt-2 md:mt-3 px-3 md:px-4 py-1 md:py-2 bg-emerald-300 text-black rounded-lg hover:bg-emerald-400 text-sm"
                 onClick={confirmLayoutSize}
               >
                 Confirm

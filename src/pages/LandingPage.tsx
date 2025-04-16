@@ -62,7 +62,7 @@ const LandingPage: React.FC = () => {
           </Link> */}
           <Link
             to="/signin"
-            className="ml-4 px-4 py-1 text-black bg-cyan-800 rounded hover:bg-gray-500 transition"
+            className="ml-4 px-4 py-1 text-black bg-cyan-700 rounded hover:bg-cyan-800 transition"
           >
             Sign In
           </Link>
