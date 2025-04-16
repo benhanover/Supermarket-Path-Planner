@@ -106,7 +106,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const loadSupermarketForUser = async () => {
       setLoading(true);
-
       try {
         // Load User
         const currentUser = await getCurrentUser().catch(() => null);
@@ -114,6 +113,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         if (!currentUser) {
           console.log("No user found in loadSupermarketForUser");
           setLoading(false);
+          setSupermarket(null);
           return
         }
 
