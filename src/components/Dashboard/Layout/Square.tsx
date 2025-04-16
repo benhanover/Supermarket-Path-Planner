@@ -10,7 +10,7 @@ interface SquareProps {
   onTouchStart: () => void;
 }
 
-// Use memo to prevent unnecessary re-renders
+// Use memo to prevent unnecessary re-renderss
 const Square = memo(
   ({ square, onMouseDown, onMouseEnter, onTouchStart }: SquareProps) => {
     const { activeAction } = useDashboard();
