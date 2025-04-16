@@ -1,46 +1,61 @@
-// src/pages/GoalPage.tsx
 import { Link } from "react-router-dom";
 
 const GoalPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 to-purple-700 font-sans">
-      {/* Navigation Header */}
-      <header className="bg-white shadow-sm p-4 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <img src="/assets/shopping-cart.png" alt="Logo" className="h-8 w-8" />
-            <h1 className="text-xl font-bold text-purple-800">Supermarket Planner</h1>
-          </div>
-          <nav className="space-x-4">
-            <Link to="/" className="text-gray-700 hover:text-purple-700 font-medium">Home</Link>
-            <Link to="/about" className="text-gray-700 hover:text-purple-700 font-medium">About</Link>
-            <Link to="/goal" className="text-gray-700 hover:text-purple-700 font-medium">Goal</Link>
-            <Link to="/docs" className="text-gray-700 hover:text-purple-700 font-medium">Store Map</Link>
-            <Link
-              to="/signin"
-              className="ml-4 px-4 py-1 text-white bg-purple-600 rounded hover:bg-purple-700 transition"
-            >
-              Sign In
-            </Link>
-          </nav>
-        </div>
-      </header>
+    <div className="relative min-h-screen font-sans overflow-hidden">
+      <img
+        src="/bg-blue.svg"
+        alt="background blob"
+        className="absolute top-0 left-0 w-full h-full object-cover -z-10"
+      />
 
-      {/* Goal Content */}
-      <section className="py-12 px-6 bg-white animate-fade-in">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-purple-800 mb-4">Our Goal</h2>
-          <p className="text-gray-600 text-lg mb-6">
-            Helping store owners and managers build better layouts for optimized shopping experiences.
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-6">
+        <h1 className="text-2xl font-bold text-black">
+          🛒 Supermarket Path Planner
+        </h1>
+
+        <nav className="space-x-8">
+          <Link to="/" className="text-black hover:text-cyan-800 font-medium">
+            Home
+          </Link>
+          <Link
+            to="/about"
+            className="text-black hover:text-cyan-800 font-medium"
+          >
+            About
+          </Link>
+          <Link
+            to="/goal"
+            className="text-black hover:text-cyan-800 font-medium"
+          >
+            Goal
+          </Link>
+          {/* <Link to="/docs" className="text-black hover:text-cyan-800 font-medium">Store Map</Link> */}
+          <Link
+            to="/signin"
+            className="ml-4 px-4 py-1 text-black bg-cyan-800 rounded hover:bg-gray-500 transition"
+          >
+            Sign In
+          </Link>
+        </nav>
+      </div>
+
+      <section className="py-12 px-6 animate-fade-in text-center">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-black mb-6">🎯Our Goal</h2>
+          <p className="text-black text-2xl leading-relaxed mb-6">
+            Our goal is to make your grocery shopping experience smoother,
+            smarter, and more enjoyable 🛒 We know how frustrating it can be to
+            zigzag through crowded aisles, forgetting items or doubling back.
+            That’s why we created a tool that builds the fastest, most efficient
+            path through your supermarket — based entirely on your shopping list
+            🧾 Whether you're picking up a few essentials or restocking for the
+            week, our app helps you shop with confidence and clarity. Less
+            wandering. No guesswork. Just a smarter way to shop ✨
           </p>
-          <img src="/assets/goals.png" alt="Goal Illustration" className="mx-auto rounded-lg shadow-md max-w-lg" />
+          {/* <img src="/assets/goals.png" alt="Goal Illustration" className="mx-auto rounded-lg shadow-md max-w-lg" /> */}
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-white shadow-inner py-4 text-center text-sm text-gray-500 mt-12">
-        &copy; {new Date().getFullYear()} Supermarket Planner. All rights reserved.
-      </footer>
     </div>
   );
 };

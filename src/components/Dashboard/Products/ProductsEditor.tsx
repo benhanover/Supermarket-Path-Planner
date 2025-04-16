@@ -99,7 +99,7 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
       {mode === "global" && (
         <button
           onClick={() => setShowAddProductModal(true)}
-          className={`px-3 md:px-4 py-1 md:py-2 bg-green-500 text-white rounded mb-2 md:mb-4 hover:bg-green-600 flex items-center text-sm md:text-base ${isSaving ? "opacity-70 cursor-not-allowed" : ""
+          className={`px-3 md:px-4 py-1 md:py-2 bg-emerald-500 text-white rounded mb-2 md:mb-4 hover:bg-emerald-600 flex items-center text-sm md:text-base ${isSaving ? "opacity-70 cursor-not-allowed" : ""
             }`}
           disabled={isSaving}
         >
@@ -189,7 +189,7 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
                       e.stopPropagation();
                       setEditProduct(product);
                     }}
-                    className="px-1 md:px-3 py-0.5 md:py-1 bg-blue-500 text-white rounded text-xs md:text-sm hover:bg-blue-600 disabled:opacity-50"
+                    className="px-1 md:px-3 py-0.5 md:py-1 bg-sky-500 text-white rounded text-xs md:text-sm hover:bg-sky-600 disabled:opacity-50"
                     disabled={isSaving}
                   >
                     Edit
@@ -199,7 +199,7 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
                       e.stopPropagation();
                       handleDeleteProduct(product.id);
                     }}
-                    className="px-1 md:px-3 py-0.5 md:py-1 bg-red-500 text-white rounded text-xs md:text-sm hover:bg-red-600 disabled:opacity-50"
+                    className="px-1 md:px-3 py-0.5 md:py-1 bg-rose-600 text-white rounded text-xs md:text-sm hover:bg-rose-700 disabled:opacity-50"
                     disabled={isSaving}
                   >
                     Delete

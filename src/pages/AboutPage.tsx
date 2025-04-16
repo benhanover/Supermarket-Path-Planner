@@ -10,35 +10,32 @@ const AboutPage: React.FC = () => {
       />
 
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-6">
-        <h1 className="text-2xl font-bold text-gray-700">
+        <h1 className="text-2xl font-bold text-black">
           🛒 Supermarket Path Planner
         </h1>
 
         <nav className="space-x-8">
-          <Link
-            to="/"
-            className="text-gray-700 hover:text-cyan-800 font-medium"
-          >
+          <Link to="/" className="text-black hover:text-cyan-800 font-medium">
             Home
           </Link>
           <Link
             to="/about"
-            className="text-gray-700 hover:text-cyan-800 font-medium"
+            className="text-black hover:text-cyan-800 font-medium"
           >
             About
           </Link>
           <Link
             to="/goal"
-            className="text-gray-700 hover:text-cyan-800 font-medium"
+            className="text-black hover:text-cyan-800 font-medium"
           >
             Goal
           </Link>
-          <Link
+          {/* <Link
             to="/docs"
-            className="text-gray-700 hover:text-cyan-800 font-medium"
+            className="text-black hover:text-cyan-800 font-medium"
           >
             Store Map
-          </Link>
+          </Link> */}
           <Link
             to="/signin"
             className="ml-4 px-4 py-1 text-black bg-cyan-800 rounded hover:bg-gray-500 transition"
@@ -50,20 +47,24 @@ const AboutPage: React.FC = () => {
 
       <section className="py-12 px-6 animate-fade-in text-center">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-black mb-4">About Us</h2>
+          <h2 className="text-3xl font-bold text-black mb-6">🛍️ About Us</h2>
 
-          <p className="text-black text-2xl mb-6">
+          {/* <p className="text-black text-2xl mb-6">
             Shopping shouldn't feel like a maze!
+          </p> */}
+
+          <p className="text-black text-2xl leading-relaxed mb-6">
+            At Supermarket Path Planner, we believe shopping should feel simple
+            — not like solving a maze🕵️‍♀️. Our team is passionate about helping
+            people save time and shop smarter. We’ve built a tool that
+            transforms your grocery list into a clear, optimized path through
+            the store 🧾🗺️ No more wandering, no more “where was that again?”
+            Just a smooth, guided experience that helps you get in, get what you
+            need, and get on with your day. 🚀
           </p>
 
           <p className="text-black text-2xl mb-6">
-            At Supermarket Path Planner, we help you find what you need —
-            faster. Customers get smart routes for their grocery lists 🧾, and
-            store owners get easy tools to manage their layout in real-time.
-          </p>
-          
-          <p className="text-black text-2xl mb-6">
-            Less wandering. More winning. Happy shopping! ✨
+            It’s shopping — but smarter ✨
           </p>
 
           {/* <img src="/assets/about.png" alt="About Illustration" className="mx-auto rounded-lg shadow-md max-w-lg" /> */}

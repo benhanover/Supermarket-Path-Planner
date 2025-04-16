@@ -12,7 +12,7 @@ const Home: React.FC = () => {
   const handleSignOut = async () => {
     try {
       await signOut();
-      setUser(null)
+      setUser(null);
       console.log("User logged out successfully");
     } catch (error) {
       console.error("Error signing out:", error);
@@ -21,7 +21,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-200">
-      <header className="bg-violet-900 shadow-md p-2 md:p-4">
+      <header className="bg-cyan-800 shadow-md p-2 md:p-4">
         <div className="flex justify-between items-center w-full px-2 md:px-6">
           <div className="flex items-center space-x-2">
             <span
@@ -31,7 +31,7 @@ const Home: React.FC = () => {
             >
               🛒
             </span>
-            <h1 className="text-lg md:text-2xl font-semibold text-gray-200 truncate">
+            <h1 className="text-lg md:text-2xl font-semibold text-white truncate">
               Supermarket Path Planner
             </h1>
           </div>

@@ -78,7 +78,7 @@ const InitializeLayout: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto p-4 md:p-8 bg-white rounded-xl shadow-lg my-4">
+    <div className="w-full max-w-xl mx-auto p-4 md:p-8 bg-white rounded-xl shadow-lg my-4 h-full">
       <h1 className="text-xl md:text-2xl font-bold text-center mb-4 md:mb-6">
         Initialize Your Supermarket
       </h1>
@@ -172,7 +172,7 @@ const InitializeLayout: React.FC = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-xs md:text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-green-300"
+            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-xs md:text-sm font-medium text-white bg-cyan-700 hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-green-300"
           >
             {isSubmitting ? "Initializing..." : "Initialize Supermarket"}
           </button>

@@ -27,7 +27,7 @@ const DisplaySquare = () => {
       {/* Close Button */}
       <button
         onClick={() => setSelectedSquare(null)}
-        className="absolute top-1 right-1 md:top-2 md:right-2 bg-red-500 text-white rounded-full w-5 h-5 md:w-6 md:h-6 flex items-center justify-center hover:bg-red-600 transition text-xs md:text-sm"
+        className="absolute top-1 right-1 md:top-2 md:right-2 bg-rose-600 text-white rounded-full w-5 h-5 md:w-6 md:h-6 flex items-center justify-center hover:bg-rose-700 transition text-xs md:text-sm"
       >
         ✕
       </button>

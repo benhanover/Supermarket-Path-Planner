@@ -7,10 +7,10 @@ import { useState } from "react";
 // Square types with colors for UI
 const squareTypes: { type: SquareType; color: string; label: string }[] = [
   { type: "empty", color: "bg-gray-300", label: "Empty" },
-  { type: "products", color: "bg-green-500", label: "Products" },
-  { type: "cash_register", color: "bg-yellow-500", label: "Cash Register" },
-  { type: "entrance", color: "bg-blue-600", label: "Entrance" },
-  { type: "exit", color: "bg-red-600", label: "Exit" },
+  { type: "products", color: "bg-green-300", label: "Products" },
+  { type: "cash_register", color: "bg-amber-200", label: "Cash Register" },
+  { type: "entrance", color: "bg-blue-400", label: "Entrance" },
+  { type: "exit", color: "bg-rose-400", label: "Exit" },
 ];
 
 interface SidebarMenuProps {
@@ -94,21 +94,21 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
       <div className="mb-4 space-y-2">
         <h2 className="text-lg font-bold text-gray-700 mb-3">Dashboard</h2>
         <button
-          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-purple-200 text-sm md:text-base ${activeTab === "layout" ? "bg-purple-200" : ""
+          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${activeTab === "layout" ? "bg-blue-200" : ""
             }`}
           onClick={() => handleTabChange("layout")}
         >
           🎨 Layout Editor
         </button>
         <button
-          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-purple-200 text-sm md:text-base ${activeTab === "products" ? "bg-purple-200" : ""
+          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${activeTab === "products" ? "bg-blue-200" : ""
             }`}
           onClick={() => handleTabChange("products")}
         >
           🛠 Products Editor
         </button>
         <button
-          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-purple-200 text-sm md:text-base ${activeTab === "product_square" ? "bg-purple-200" : ""
+          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${activeTab === "product_square" ? "bg-blue-200" : ""
             }`}
           onClick={() => handleTabChange("product_square")}
         >
@@ -134,8 +134,8 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
                 }
                 className={`p-2 md:p-3 rounded-lg font-semibold transition w-full text-sm md:text-base
                   ${activeAction === EditableAction.ModifyLayout
-                    ? "bg-purple-200 hover:bg-purple-200 text-black"
-                    : "bg-gray-400 hover:bg-purple-200 text-black"
+                    ? "bg-blue-200 hover:bg-blue-200 text-black"
+                    : "bg-gray-400 hover:bg-blue-200 text-black"
                   }`}
               >
                 {activeAction === EditableAction.ModifyLayout
@@ -179,8 +179,8 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
                 }}
                 className={`p-2 md:p-3 rounded-lg font-semibold transition w-full text-sm md:text-base
                   ${activeAction === EditableAction.EditProducts
-                    ? "bg-purple-200 hover:bg-purple-200 text-black"
-                    : "bg-gray-400 hover:bg-purple-200 text-black"
+                    ? "bg-blue-200 hover:bg-blue-200 text-black"
+                    : "bg-gray-400 hover:bg-blue-200 text-black"
                   }`}
               >
                 {activeAction === EditableAction.EditProducts
@@ -203,8 +203,8 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
                 }}
                 className={`p-2 md:p-3 rounded-lg font-semibold transition w-full text-sm md:text-base
                   ${activeAction === EditableAction.ChangeLayoutSize
-                    ? "bg-purple-200 hover:bg-purple-200 text-black"
-                    : "bg-gray-400 hover:bg-purple-200 text-black"
+                    ? "bg-blue-200 hover:bg-blue-200 text-black"
+                    : "bg-gray-400 hover:bg-blue-200 text-black"
                   }`}
               >
                 {activeAction === EditableAction.ChangeLayoutSize
@@ -232,7 +232,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
                 onChange={(e) => setNewCols(Number(e.target.value) || "")}
               />
               <button
-                className="mt-2 md:mt-3 px-3 md:px-4 py-1 md:py-2 bg-blue-200 text-black rounded-lg hover:bg-blue-300 text-sm"
+                className="mt-2 md:mt-3 px-3 md:px-4 py-1 md:py-2 bg-emerald-300 text-black rounded-lg hover:bg-blue-300 text-sm"
                 onClick={confirmLayoutSize}
               >
                 Confirm

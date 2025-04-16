@@ -20,7 +20,7 @@ const ProductSquareEditor = () => {
             setActiveTab("layout");
             setActiveAction(EditableAction.EditProducts);
           }}
-          className="px-3 md:px-5 py-1 md:py-2 bg-blue-600 text-white text-sm md:text-base font-medium rounded-lg shadow-md hover:bg-blue-700 transition"
+          className="px-3 md:px-5 py-1 md:py-2 bg-sky-500 text-white text-sm md:text-base font-medium rounded-lg shadow-md hover:bg-sky-600 transition"
         >
           Choose Product Square
         </button>
@@ -32,7 +32,7 @@ const ProductSquareEditor = () => {
       <DisplaySquare />
       <button
         onClick={() => setShowProductsEditor(!showProductsEditor)}
-        className="px-3 md:px-5 py-1 md:py-2 bg-green-600 text-white text-sm md:text-base font-medium rounded-lg shadow-md hover:bg-green-700 transition"
+        className="px-3 md:px-5 py-1 md:py-2 bg-emerald-500 text-white text-sm md:text-base font-medium rounded-lg shadow-md hover:bg-emerald-600 transition"
       >
         {showProductsEditor ? "Hide Products" : "Add or Remove Products"}
       </button>

@@ -17,13 +17,13 @@ const Square = memo(({ square, onMouseDown, onMouseEnter, onTouchStart }: Square
   const getColor = () => {
     switch (square.type) {
       case "products":
-        return "bg-green-500 border-green-700";
+        return "bg-green-300 border-green-300";
       case "cash_register":
-        return "bg-yellow-500 border-yellow-500";
+        return "bg-amber-200 border-amber-200";
       case "entrance":
-        return "bg-blue-500 border-blue-700";
+        return "bg-blue-400 border-blue-400";
       case "exit":
-        return "bg-red-500 border-red-700";
+        return "bg-rose-400 border-red-400";
       default:
         return "bg-gray-200 border-gray-300";
     }

@@ -3,7 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
-import Loader from "../components/Loader";
 
 const LandingPage: React.FC = () => {
   const { loading } = useAppContext();
@@ -18,7 +17,9 @@ const LandingPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Loader message="LoadingPage" />
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-green-500"></div>
+      </div>
     );
   }
 
@@ -38,10 +39,7 @@ const LandingPage: React.FC = () => {
         </h1>
 
         <nav className="space-x-8">
-          <Link
-            to="/"
-            className="text-black hover:text-cyan-800 font-medium"
-          >
+          <Link to="/" className="text-black hover:text-cyan-800 font-medium">
             Home
           </Link>
           <Link
@@ -56,12 +54,12 @@ const LandingPage: React.FC = () => {
           >
             Goal
           </Link>
-          <Link
+          {/* <Link
             to="/docs"
             className="text-black hover:text-cyan-800 font-medium"
           >
             Store Map
-          </Link>
+          </Link> */}
           <Link
             to="/signin"
             className="ml-4 px-4 py-1 text-black bg-cyan-800 rounded hover:bg-gray-500 transition"

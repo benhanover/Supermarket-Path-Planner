@@ -125,14 +125,14 @@ const EditProductModal = ({
 
         <div className="flex justify-end mt-3 md:mt-4">
           <button
-            className="px-3 md:px-4 py-1 md:py-2 bg-gray-400 text-white rounded mr-2 hover:bg-gray-500 text-xs md:text-sm"
+            className="px-3 md:px-4 py-1 md:py-2 bg-gray-400 text-black rounded mr-2 hover:bg-gray-500 text-xs md:text-sm"
             onClick={onClose}
             disabled={isSubmitting || isSaving}
           >
             Cancel
           </button>
           <button
-            className="px-3 md:px-4 py-1 md:py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center text-xs md:text-sm"
+            className="px-3 md:px-4 py-1 md:py-2 bg-emerald-300 text-black rounded hover:bg-emerald-400 flex items-center text-xs md:text-sm"
             onClick={handleSave}
             disabled={isSubmitting || isSaving}
           >
