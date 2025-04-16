@@ -5,6 +5,9 @@ import { useAppContext } from "../../../context/AppContext";
 import { Product } from "../types";
 import EditProductModal from "./EditProductModal";
 import AddProductModal from "./AddProductModal";
+import { StorageImage } from '@aws-amplify/ui-react-storage';
+
+
 
 interface ProductsEditorProps {
   mode: "square" | "global";
@@ -23,14 +26,7 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [editProduct, setEditProduct] = useState<Product | null>(null);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
-  const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
 
-  const handleImageError = (productId: string) => {
-    setImgErrors(prev => ({
-      ...prev,
-      [productId]: true
-    }));
-  };
 
   const handleDeleteProduct = async (productId: string) => {
     if (
@@ -152,8 +148,8 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
             <div
               key={product.id}
               className={`p-2 border rounded-lg cursor-pointer transition relative ${isSelected
-                  ? "bg-yellow-200 border-yellow-400"
-                  : "hover:bg-gray-100"
+                ? "bg-yellow-200 border-yellow-400"
+                : "hover:bg-gray-100"
                 }`}
               onClick={
                 mode === "square"
@@ -161,12 +157,7 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
                   : undefined
               }
             >
-              <img
-                src={imgErrors[product.id] ? "/assets/product-placeholder.png" : (product.image || "/assets/product-placeholder.png")}
-                alt={product.title}
-                className="h-12 w-12 md:h-16 md:w-16 object-cover rounded mb-1 md:mb-2 mx-auto"
-                onError={() => handleImageError(product.id)}
-              />
+              <StorageImage alt="cat" path={product.image} />
               <p className="text-xs md:text-sm font-semibold truncate">{product.title}</p>
               <p className="text-xs md:text-sm text-gray-600 font-medium">
                 ${product.price.toFixed(2)}

@@ -1,12 +1,11 @@
 import { useAppContext } from "../../../context/AppContext";
 import { useDashboard } from "../DashboardContext/useDashboard";
 import { Product } from "../types";
-import { useState } from "react";
+import { StorageImage } from '@aws-amplify/ui-react-storage';
 
 const DisplaySquare = () => {
   const { selectedSquare, setSelectedSquare } = useDashboard();
   const { supermarket } = useAppContext();
-  const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
 
   if (!selectedSquare || !supermarket) return null;
 
@@ -15,12 +14,6 @@ const DisplaySquare = () => {
     .map((id) => supermarket.products.find((p) => p.id === id))
     .filter((p) => p !== undefined) as Product[];
 
-  const handleImageError = (productId: string) => {
-    setImgErrors(prev => ({
-      ...prev,
-      [productId]: true
-    }));
-  };
 
   return (
     <div className="w-full max-w-md bg-white p-3 md:p-6 border rounded-lg shadow-lg relative">
@@ -49,12 +42,7 @@ const DisplaySquare = () => {
                 key={`${product.id}-${index}`}
                 className="flex-none w-24 md:w-40 p-2 md:p-3 bg-white border rounded-lg shadow-md text-center"
               >
-                <img
-                  src={imgErrors[product.id] ? "/assets/product-placeholder.png" : (product.image || "/assets/product-placeholder.png")}
-                  alt={product.title}
-                  className="w-full h-12 md:h-24 object-cover rounded-md mb-1 md:mb-2"
-                  onError={() => handleImageError(product.id)}
-                />
+                <StorageImage alt="cat" path={product.image} />
                 <h4 className="text-xs md:text-sm font-semibold text-gray-900 truncate" title={product.title}>
                   {product.title}
                 </h4>

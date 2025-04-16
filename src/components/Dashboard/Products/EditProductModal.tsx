@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Product } from "../types";
 import { useDashboard } from "../DashboardContext/useDashboard";
+import { fetchAuthSession } from "aws-amplify/auth";
+import { uploadData } from "aws-amplify/storage";
+import { StorageImage } from '@aws-amplify/ui-react-storage';
 
 interface EditProductModalProps {
   product: Product;
@@ -21,16 +24,119 @@ const EditProductModal = ({
   const [image, setImage] = useState(product.image || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
+  const [identityId, setIdentityId] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    getSession();
+  }, []);
+
+  // Generate preview for selected file
+  useEffect(() => {
+    if (!file) {
+      setFilePreview(null);
+      return;
+    }
+
+    // Create a preview URL for the selected file
+    const objectUrl = URL.createObjectURL(file);
+    setFilePreview(objectUrl);
+
+    // Clean up the URL when component unmounts or file changes
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [file]);
+
+  const getSession = async () => {
+    try {
+      const session = await fetchAuthSession();
+      setIdentityId(session?.identityId || "");
+    } catch (error) {
+      console.error("Error fetching session:", error);
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(event.target.files?.[0] || null);
+    console.log(event.target.files?.[0]);
+  };
+
+  // Function to clear file selection
+  const handleClearFile = () => {
+    setFile(null);
+    setFilePreview(null);
+    // Reset the file input element
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // Validate form fields
+  const validateForm = () => {
+    const errors: { [key: string]: string } = {};
+
+    // Check title
+    if (!title.trim()) {
+      errors.title = "Product title is required";
+    }
+
+    // Check price
+    if (price <= 0) {
+      errors.price = "Price must be greater than zero";
+    }
+
+    // Check category
+    if (!category.trim()) {
+      errors.category = "Category is required";
+    }
+
+    // Check if we have an image (either existing or new)
+    if (!image && !file) {
+      errors.image = "Product must have an image";
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSave = async () => {
-    if (!title || price <= 0) {
-      setError("Title and price are required");
+    // Reset errors
+    setError("");
+    setFieldErrors({});
+
+    // Validate form
+    if (!validateForm()) {
+      setError("Please fix the errors below before saving");
       return;
     }
 
     try {
       setIsSubmitting(true);
-      setError("");
+
+      let imagePath = image; // Default to current image path
+
+      // If a new file is selected, upload it
+      if (file) {
+        try {
+          const fileName = `${Date.now()}-${file.name}`;
+          const uploadPath = `profile-pictures/${identityId}/${fileName}`;
+
+          await uploadData({
+            path: uploadPath,
+            data: file,
+          });
+
+          imagePath = uploadPath; // Update the image path
+          console.log('Uploaded file successfully to:', uploadPath);
+        } catch (uploadError) {
+          console.error("Error uploading file:", uploadError);
+          setError("Failed to upload image. Please try again.");
+          setIsSubmitting(false);
+          return;
+        }
+      }
 
       const updatedProduct: Product = {
         ...product,
@@ -38,7 +144,7 @@ const EditProductModal = ({
         price,
         category,
         description,
-        image,
+        image: imagePath,
       };
 
       // Update product in database via context
@@ -69,59 +175,143 @@ const EditProductModal = ({
           </div>
         )}
 
-        <label className="block mb-2">
-          <span className="text-xs md:text-sm text-gray-700">Product Title *</span>
-          <input
-            type="text"
-            className="w-full p-2 border rounded text-xs md:text-sm"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </label>
+        <div className="space-y-3">
+          {/* Product Title */}
+          <div className="space-y-1">
+            <label className="block text-xs md:text-sm text-gray-700 font-medium">
+              Product Title <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              className={`w-full p-2 border rounded text-xs md:text-sm ${fieldErrors.title ? 'border-red-500' : ''}`}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+            {fieldErrors.title && (
+              <p className="text-red-500 text-xs">{fieldErrors.title}</p>
+            )}
+          </div>
 
-        <label className="block mb-2">
-          <span className="text-xs md:text-sm text-gray-700">Price *</span>
-          <input
-            type="number"
-            className="w-full p-2 border rounded text-xs md:text-sm"
-            value={price}
-            onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
-            step="0.01"
-            min="0"
-            required
-          />
-        </label>
+          {/* Price */}
+          <div className="space-y-1">
+            <label className="block text-xs md:text-sm text-gray-700 font-medium">
+              Price <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              className={`w-full p-2 border rounded text-xs md:text-sm ${fieldErrors.price ? 'border-red-500' : ''}`}
+              value={price}
+              onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
+              step="0.01"
+              min="0"
+              required
+            />
+            {fieldErrors.price && (
+              <p className="text-red-500 text-xs">{fieldErrors.price}</p>
+            )}
+          </div>
 
-        <label className="block mb-2">
-          <span className="text-xs md:text-sm text-gray-700">Category</span>
-          <input
-            type="text"
-            className="w-full p-2 border rounded text-xs md:text-sm"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          />
-        </label>
+          {/* Category */}
+          <div className="space-y-1">
+            <label className="block text-xs md:text-sm text-gray-700 font-medium">
+              Category <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              className={`w-full p-2 border rounded text-xs md:text-sm ${fieldErrors.category ? 'border-red-500' : ''}`}
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            />
+            {fieldErrors.category && (
+              <p className="text-red-500 text-xs">{fieldErrors.category}</p>
+            )}
+          </div>
 
-        <label className="block mb-2">
-          <span className="text-xs md:text-sm text-gray-700">Description</span>
-          <textarea
-            className="w-full p-2 border rounded text-xs md:text-sm"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={3}
-          />
-        </label>
+          {/* Description */}
+          <div className="space-y-1">
+            <label className="block text-xs md:text-sm text-gray-700 font-medium">
+              Description
+            </label>
+            <textarea
+              className="w-full p-2 border rounded text-xs md:text-sm"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={3}
+            />
+          </div>
 
-        <label className="block mb-2">
-          <span className="text-xs md:text-sm text-gray-700">Image URL</span>
-          <input
-            type="text"
-            className="w-full p-2 border rounded text-xs md:text-sm"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
-          />
-        </label>
+          {/* Image */}
+          <div className="space-y-1">
+            {/* Show new image preview OR current image */}
+            {filePreview ? (
+              <div>
+                <span className="block text-xs md:text-sm text-gray-700 mb-1">New Image Preview</span>
+                <div className="mb-2 flex justify-center bg-gray-100 p-2 rounded border border-gray-300">
+                  <div className="w-24 h-24 md:w-32 md:h-32 relative">
+                    <img
+                      src={filePreview}
+                      alt="New image preview"
+                      className="w-full h-full object-cover rounded"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleClearFile}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 w-5 h-5 flex items-center justify-center text-xs"
+                      disabled={isSubmitting || isSaving}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <span className="block text-xs md:text-sm text-gray-700 mb-1">
+                  Current Image <span className="text-red-500">*</span>
+                </span>
+                {image ? (
+                  <div className={`mb-2 flex justify-center bg-gray-100 p-2 rounded border ${fieldErrors.image ? 'border-red-500' : 'border-gray-300'}`}>
+                    <div className="w-24 h-24 md:w-32 md:h-32 relative">
+                      <StorageImage
+                        alt={title}
+                        path={image}
+                        className="w-full h-full object-cover rounded"
+                        fallbackSrc="/assets/product-placeholder.png"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-xs text-gray-500 mb-2">No image set</div>
+                )}
+              </div>
+            )}
+
+            {fieldErrors.image && (
+              <p className="text-red-500 text-xs">{fieldErrors.image}</p>
+            )}
+
+            <div className="mt-2">
+              <span className="block text-xs md:text-sm text-gray-700 mb-1">Upload New Image</span>
+              <label className="flex items-center gap-2">
+                <div className="px-3 py-2 bg-emerald-300 text-black rounded hover:bg-emerald-400 cursor-pointer text-xs md:text-sm">
+                  Choose File
+                </div>
+                <input
+                  className="hidden"
+                  type="file"
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  id="product-image-upload"
+                  ref={fileInputRef}
+                />
+                <span className="text-xs text-gray-500 truncate">
+                  {file ? file.name : "No file selected"}
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
 
         <div className="flex justify-end mt-3 md:mt-4">
           <button
