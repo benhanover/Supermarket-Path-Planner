@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Product } from "../types";
 import { useDashboard } from "../DashboardContext/useDashboard";
+import { fetchAuthSession } from "aws-amplify/auth";
+import { uploadData } from "aws-amplify/storage";
 
 interface AddProductModalProps {
   onClose: () => void;
@@ -16,6 +18,26 @@ const AddProductModal = ({ onClose, onSave }: AddProductModalProps) => {
   const [image, setImage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [identityId, setIdentityId] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    getSession();
+  }, []);
+
+  const getSession = async () => {
+    try {
+      const session = await fetchAuthSession();
+      setIdentityId(session?.identityId || "");
+    } catch (error) {
+      console.error("Error fetching session:", error);
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(event.target.files?.[0] || null);
+    console.log(event.target.files?.[0]);
+  }
 
   // Handle form submission
   const handleSave = async () => {
@@ -25,6 +47,20 @@ const AddProductModal = ({ onClose, onSave }: AddProductModalProps) => {
     }
 
     try {
+      if (!file) {
+        return;
+      }
+      try {
+
+        uploadData({
+          path: `profile-pictures/${identityId}/${file.name}`,
+          data: file,
+        })
+        console.log('uploaded file successfully');
+      } catch (error) {
+        console.log(error);
+      }
+
       setIsSubmitting(true);
       setError("");
 
@@ -119,16 +155,7 @@ const AddProductModal = ({ onClose, onSave }: AddProductModalProps) => {
           />
         </label>
 
-        <label className="block mb-2">
-          <span className="text-xs md:text-sm text-gray-700">Image URL</span>
-          <input
-            type="text"
-            className="w-full p-2 border rounded text-xs md:text-sm"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
-            placeholder="https://example.com/image.jpg"
-          />
-        </label>
+        <input className="px-3 md:px-4 py-1 md:py-2 bg-emerald-300 text-black rounded hover:bg-emerald-400 flex items-center text-xs md:text-sm" type="file" onChange={handleFileChange} />
 
         <div className="flex justify-end mt-3 md:mt-4">
           <button
@@ -167,6 +194,9 @@ const AddProductModal = ({ onClose, onSave }: AddProductModalProps) => {
             )}
             {isSubmitting || isSaving ? "Saving..." : "Save Product"}
           </button>
+
+
+
         </div>
       </div>
     </div>
