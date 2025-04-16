@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { memo } from "react";
 import { Square as SquareType } from "../types";
 import { useDashboard } from "../DashboardContext/useDashboard";
@@ -49,16 +48,23 @@ const Square = memo(
     const isSelected =
       selectedSquare?.row === square.row && selectedSquare?.col === square.col;
 
-      
     return (
       <div
         className={`w-full h-full ${getColor()} border rounded-md transition-all
-      ${activeAction === EditableAction.EditProducts && square.type !== "products" ? "opacity-30" : ""}
-      ${activeAction === EditableAction.EditProducts && square.type === "products"
+      ${
+        activeAction === EditableAction.EditProducts &&
+        square.type !== "products"
+          ? "opacity-30"
+          : ""
+      }
+      ${
+        activeAction === EditableAction.EditProducts &&
+        square.type === "products"
           ? "hover:scale-110 cursor-pointer active:scale-105"
           : isInteractive
           ? "cursor-pointer hover:opacity-80 active:opacity-70"
-          : ""}
+          : ""
+      }
           ${isSelected ? "ring-4 ring-sky-600 z-10" : ""}
       `}
         onMouseDown={handleMouseDown}
