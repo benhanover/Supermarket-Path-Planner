@@ -1,48 +1,54 @@
+import { useState } from "react";
 import { useDashboard } from "./DashboardContext/useDashboard";
 import DashboardProvider from "./DashboardContext/DashboardContext";
-import LayoutEditor from "./Layout/LayoutEditor";
+import Layout from "./Layout/Layout";
+import SidebarMenu from "./Layout/SidebarMenu";
 import ProductsEditor from "./Products/ProductsEditor";
 import ProductSquareEditor from "./Product_Square_Editor/ProductSquareEditor";
 
 const DashboardContent = () => {
-  const { activeTab, setActiveTab } = useDashboard();
+  const { activeTab } = useDashboard();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Toggle sidebar for mobile view
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
 
   return (
-    <div className="flex h-screen min-h-screen">
-      {/* Sidebar Navigation */}
-      <div className="w-56 bg-gray-200 text-purple p-4 space-y-4">
-        <button
-          className={`w-full text-left px-4 py-2 rounded-lg font-semibold transition hover:bg-purple-200 ${
-            activeTab === "layout" ? "bg-purple-200" : ""
-          }`}
-          onClick={() => setActiveTab("layout")}
-        >
-          Layout Editor
-        </button>
-        <button
-          className={`w-full text-left px-4 py-2 rounded-lg font-semibold transition hover:bg-purple-200 ${
-            activeTab === "products" ? "bg-purple-200" : ""
-          }`}
-          onClick={() => setActiveTab("products")}
-        >
-          Products Editor
-        </button>
-        <button
-          className={`w-full text-left px-4 py-2 rounded-lg font-semibold transition hover:bg-purple-200 ${
-            activeTab === "product_square" ? "bg-purple-200" : ""
-          }`}
-          onClick={() => setActiveTab("product_square")}
-        >
-          Product Square Editor
-        </button>
+    <div className="flex flex-col md:flex-row h-screen w-full overflow-auto">
+      {/* Mobile sidebar toggle button */}
+      <button
+        className="md:hidden bg-purple-600 text-white p-2 m-2 rounded-md fixed top-16 left-2 z-30"
+        onClick={toggleSidebar}
+        aria-label="Toggle Menu"
+      >
+        {sidebarOpen ? "✕" : "☰"}
+      </button>
+
+      {/* Responsive Sidebar */}
+      <div
+        className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0 transform transition-transform duration-300 fixed md:relative z-20 h-full md:h-auto md:flex-shrink-0`}
+      >
+        <SidebarMenu closeSidebar={() => setSidebarOpen(false)} />
       </div>
 
-      {/* Main Content */}
-      <div className="w-370 p-6 bg-white shadow-lg rounded-xl ml-4 my-4">
-        {activeTab === "layout" && <LayoutEditor />}
+      {/* Main Content - white content area */}
+      <div className={`flex-1 p-2 md:p-6 bg-white shadow-lg rounded-lg m-2 md:mx-4 md:my-4 overflow-auto transition-all duration-300"
+        }`}>
+        {activeTab === "layout" && <Layout />}
         {activeTab === "products" && <ProductsEditor mode="global" />}
         {activeTab === "product_square" && <ProductSquareEditor />}
       </div>
+
+      {/* Backdrop overlay for mobile */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+      )}
     </div>
   );
 };
