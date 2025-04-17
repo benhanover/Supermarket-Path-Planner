@@ -157,7 +157,7 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
                   : undefined
               }
             >
-              <StorageImage alt="cat" path={product.image} />
+              <StorageImage alt="image" path={product.image} />
               <p className="text-xs md:text-sm font-semibold truncate">{product.title}</p>
               <p className="text-xs md:text-sm text-gray-600 font-medium">
                 ${product.price.toFixed(2)}
