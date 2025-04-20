@@ -4,6 +4,7 @@ import Dashboard from "../components/Dashboard/Dashboard";
 import InitializeLayout from "../components/InitializeLayout";
 import { useState } from "react";
 import Loader from "../components/Loader";
+import { NavBar } from "../components/Navbar";
 
 const Home: React.FC = () => {
   const { loading, supermarket, setUser } = useAppContext();

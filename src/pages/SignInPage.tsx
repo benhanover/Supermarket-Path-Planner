@@ -1,9 +1,9 @@
-
 import { useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { useAppContext } from "../context/AppContext";
+import { NavBar } from "../components/Navbar";
 
 const SignInPage: React.FC = () => {
   const { setUser } = useAppContext();
@@ -18,29 +18,14 @@ const SignInPage: React.FC = () => {
   }, [user, navigate]);
 
   return (
-    <div className="relative min-h-screen font-sans bg-gradient-to-br from-purple-100 to-white overflow-hidden">
+    <div className="relative min-h-screen font-sans bg-gradient-to-br from-purple-100 to-white overflow-auto">
       <img
         src="/bg-blue.svg"
         alt="background blob"
         className="absolute top-0 left-0 w-full h-full object-cover opacity-10 -z-10"
       />
 
-      <header className="bg-white bg-opacity-70 backdrop-blur-md shadow-md py-4 px-8 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-purple-800 flex items-center gap-2">
-            🛒 Supermarket Path Planner
-          </h1>
-          <nav className="space-x-6">
-            <Link to="/" className="text-gray-700 hover:text-purple-800 font-medium transition">Home</Link>
-            <Link to="/about" className="text-gray-700 hover:text-purple-800 font-medium transition">About</Link>
-            <Link to="/goal" className="text-gray-700 hover:text-purple-800 font-medium transition">Goal</Link>
-            <Link to="/docs" className="text-gray-700 hover:text-purple-800 font-medium transition">Docs</Link>
-            <Link to="/signin" className="ml-2 px-5 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg shadow hover:from-purple-600 hover:to-pink-600 transition-all duration-300">
-              Sign In
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <NavBar />
 
       <main className="flex items-center justify-center py-16 px-4 animate-fade-in">
         <div className="bg-white shadow-xl rounded-xl w-full max-w-xl p-0">
@@ -57,7 +42,6 @@ const SignInPage: React.FC = () => {
               [&_.amplify-tabs__button--active]:border-b-2
               [&_.amplify-tabs__button--active]:border-purple-600
               [&_.amplify-tabs__content]:p-4
-
               [&_.amplify-field__control]:border
               [&_.amplify-field__control]:border-gray-300
               [&_.amplify-field__control]:rounded-md
@@ -66,7 +50,6 @@ const SignInPage: React.FC = () => {
               [&_.amplify-field__control]:focus:ring-purple-500
               [&_.amplify-field__control]:focus:border-purple-500
               [&_.amplify-field]:relative
-
               [&_.amplify-button]:bg-gradient-to-r
               [&_.amplify-button]:from-purple-600
               [&_.amplify-button]:to-pink-500
@@ -82,7 +65,7 @@ const SignInPage: React.FC = () => {
               <Authenticator />
             </div>
             <p className="text-center text-sm text-gray-500 mt-6">
-              Don’t have an account? <a href="#" className="text-purple-700 hover:underline">Contact Admin</a>
+              Don't have an account? <a href="#" className="text-purple-700 hover:underline">Contact Admin</a>
             </p>
           </div>
         </div>
@@ -92,4 +75,3 @@ const SignInPage: React.FC = () => {
 };
 
 export default SignInPage;
-
