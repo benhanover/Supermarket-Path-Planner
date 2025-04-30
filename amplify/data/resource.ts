@@ -8,8 +8,9 @@ const schema = a.schema({
       address: a.string().required(),
       layout: a.json().required(),
       products: a.hasMany("Product", "supermarketID"),
+      shoppingLists: a.hasMany("ShoppingList", "supermarketID"),
     })
-    .authorization((allow) => [allow.owner()]),
+    .authorization((allow) => [allow.owner(), allow.authenticated().to(["read"])]),
 
   Product: a
     .model({
@@ -20,6 +21,18 @@ const schema = a.schema({
       image: a.string().required(),
       supermarketID: a.id().required(),
       supermarket: a.belongsTo("Supermarket", "supermarketID"),
+    })
+    .authorization((allow) => [allow.owner(), allow.authenticated().to(["read"])]),
+
+  ShoppingList: a
+    .model({
+      name: a.string().required(),
+      owner: a.string().required(), // user.sub
+      productIDs: a.json().required(), // Array of product IDs as JSON string
+      supermarketID: a.id().required(),
+      supermarket: a.belongsTo("Supermarket", "supermarketID"),
+      createdAt: a.datetime(),
+      completedAt: a.datetime(),
     })
     .authorization((allow) => [allow.owner()]),
 });
