@@ -3,6 +3,8 @@ import { useDashboard } from "../DashboardContext/useDashboard";
 import { EditableAction } from "../types";
 import { SquareType } from "../types";
 import { useState } from "react";
+import { buildGraph } from "../../../utils/layoutGraph";
+import { floydWarshall } from "../../../utils/floydWarshall";
 
 // Square types with colors for UI
 const squareTypes: { type: SquareType; color: string; label: string }[] = [
@@ -28,17 +30,72 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
     activeTab,
     setActiveTab
   } = useDashboard();
-  const { setSupermarket } = useAppContext();
+  const { supermarket, setSupermarket } = useAppContext();
 
   const [showSizePrompt, setShowSizePrompt] = useState(false);
   const [newRows, setNewRows] = useState<number | "">();
   const [newCols, setNewCols] = useState<number | "">();
+  const [isComputingPaths, setIsComputingPaths] = useState(false);
 
   // Handle tab change with optional sidebar closing for mobile
   const handleTabChange = (tab: "layout" | "products" | "product_square") => {
     setActiveTab(tab);
     if (closeSidebar) {
       closeSidebar();
+    }
+  };
+
+  // Function to compute path data and log results
+  const computePathData = async () => {
+    if (!supermarket || !supermarket.layout) return;
+
+    try {
+      setIsComputingPaths(true);
+
+      // Build the graph from the layout
+      console.log("Building graph from layout...");
+      const graph = buildGraph(supermarket.layout);
+
+      // Log the graph for verification
+      console.log("Graph adjacency matrix:", graph);
+
+      // Run Floyd-Warshall algorithm
+      console.log("Running Floyd-Warshall algorithm...");
+      const { dist, next } = floydWarshall(graph);
+
+      // Log the results for verification
+      console.log("Distance matrix:", dist);
+      console.log("Next matrix:", next);
+
+      // Create path data object
+      const pathData = {
+        dist,
+        next,
+        metadata: {
+          timestamp: new Date().toISOString(),
+          rowCount: supermarket.layout.length,
+          colCount: supermarket.layout[0].length
+        }
+      };
+
+      console.log("Path data created:", pathData);
+
+      // Update supermarket state with path data (without saving to DB)
+      setSupermarket(prev => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          pathData
+        };
+      });
+
+      console.log("Path data computed successfully!");
+      alert("Path optimization data computed successfully!");
+    } catch (error) {
+      console.error("Failed to compute path data:", error);
+      alert("Failed to compute path data. Please check console for details.");
+    } finally {
+      setIsComputingPaths(false);
     }
   };
 
@@ -75,6 +132,8 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
         return {
           ...prevSupermarket,
           layout: newLayout,
+          // Reset path data since layout changed completely
+          pathData: undefined
         };
       });
 
@@ -114,6 +173,38 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
         >
           🔍 Product Square Editor
         </button>
+      </div>
+
+      {/* Path Optimization Button */}
+      <div className="mb-4">
+        <button
+          onClick={computePathData}
+          disabled={isComputingPaths || !supermarket}
+          className={`w-full px-3 py-2 rounded-lg font-semibold text-sm md:text-base transition
+            ${isComputingPaths
+              ? "bg-yellow-300 cursor-wait"
+              : "bg-emerald-500 text-white hover:bg-emerald-600"}
+            ${!supermarket ? "opacity-50 cursor-not-allowed" : ""}
+          `}
+        >
+          {isComputingPaths ? (
+            <span className="flex items-center justify-center">
+              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Computing Paths...
+            </span>
+          ) : (
+            "🧭 Optimize Shopping Paths"
+          )}
+        </button>
+
+        {supermarket?.pathData && (
+          <div className="mt-2 text-xs text-gray-600">
+            Path data last updated: {new Date(supermarket.pathData.metadata?.timestamp || "").toLocaleString()}
+          </div>
+        )}
       </div>
 
       {/* Show Layout Controls only when Layout tab is active */}

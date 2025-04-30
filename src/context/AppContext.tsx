@@ -80,6 +80,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
           } catch (jsonError) {
             handleError(jsonError, "loadSupermarketData (JSON parsing)");
           }
+          console.log("Parsed Layout:", parsedLayout);
 
           const products = await client.models.Product.list({
             filter: { supermarketID: { eq: userSupermarket.id } },

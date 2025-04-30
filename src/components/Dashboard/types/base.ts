@@ -1,3 +1,22 @@
+/**
+ * Interface for storing Floyd-Warshall algorithm results
+ * Used for optimizing shopping paths
+ */
+export interface PathData {
+  // Distance matrix - dist[i][j] is the shortest distance from node i to node j
+  dist: number[][];
+
+  // Next hop matrix - next[i][j] is the next node on the shortest path from i to j
+  next: number[][];
+
+  // Metadata about when and how the path data was created
+  metadata: {
+    timestamp: string;
+    rowCount: number;
+    colCount: number;
+  };
+}
+
 export interface Product {
   id: string;
   title: string;
@@ -27,4 +46,5 @@ export interface Supermarket {
   name: string;
   layout: Square[][];
   products: Product[];
+  pathData?: PathData; // Added optional pathData property
 }
