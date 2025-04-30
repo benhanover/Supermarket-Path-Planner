@@ -10,7 +10,7 @@ const schema = a.schema({
       products: a.hasMany("Product", "supermarketID"),
       shoppingLists: a.hasMany("ShoppingList", "supermarketID"),
     })
-    .authorization((allow) => [allow.owner(), allow.authenticated().to(["read"])]),
+    .authorization((allow) => [allow.owner(), allow.authenticated().to(["read"]), allow.guest().to(["read"])]),
 
   Product: a
     .model({
@@ -22,7 +22,7 @@ const schema = a.schema({
       supermarketID: a.id().required(),
       supermarket: a.belongsTo("Supermarket", "supermarketID"),
     })
-    .authorization((allow) => [allow.owner(), allow.authenticated().to(["read"])]),
+    .authorization((allow) => [allow.owner(), allow.authenticated().to(["read"]), allow.guest().to(["read"])]),
 
   ShoppingList: a
     .model({
