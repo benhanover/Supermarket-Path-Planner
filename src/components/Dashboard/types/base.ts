@@ -1,7 +1,4 @@
-/**
- * Interface for storing Floyd-Warshall algorithm results
- * Used for optimizing shopping paths
- */
+
 export interface PathData {
   // Distance matrix - dist[i][j] is the shortest distance from node i to node j
   dist: number[][];

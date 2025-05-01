@@ -7,7 +7,8 @@ import { buildGraph } from "../../../utils/layoutGraph";
 import { floydWarshall } from "../../../utils/floydWarshall";
 import { tspNearestNeighbor } from "../../../utils/tsp_heuristic";
 import { tspHeldKarp } from "../../../utils/held_karp_tsp_optimal";
-
+import { generateClient } from "aws-amplify/data";
+import type { Schema } from "../../../../amplify/data/resource";
 // Square types with colors for UI
 const squareTypes: { type: SquareType; color: string; label: string }[] = [
   { type: "empty", color: "bg-gray-300", label: "Empty" },
@@ -31,6 +32,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
     saveLayout,
     activeTab,
     setActiveTab,
+    setIsSaving
   } = useDashboard();
   const { supermarket, setSupermarket } = useAppContext();
 
@@ -47,7 +49,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
     }
   };
 
-  // Function to compute path data and log results
+  // Function to compute path data and save it to the database
   const computePathData = async () => {
     if (!supermarket || !supermarket.layout) return;
 
@@ -58,14 +60,10 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
       console.log("Building graph from layout...");
       const graph = buildGraph(supermarket.layout);
 
-      // Log the graph for verification
-      console.log("Graph adjacency matrix:", graph);
-
       // Run Floyd-Warshall algorithm
       console.log("Running Floyd-Warshall algorithm...");
       const { dist, next } = floydWarshall(graph);
 
-      // Log the results for verification
       console.log("Distance matrix:", dist);
       console.log("Next matrix:", next);
 
@@ -80,9 +78,9 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
         },
       };
 
-      console.log("Path data created:", pathData);
+      console.log("Path data created successfully");
 
-      // Update supermarket state with path data (without saving to DB)
+      // Update local state with path data
       setSupermarket((prev) => {
         if (!prev) return null;
         return {
@@ -91,11 +89,36 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
         };
       });
 
-      console.log("Path data computed successfully!");
-      alert("Path optimization data computed successfully!");
+      // Save path data to the database
+      if (supermarket.id) {
+        console.log("Saving path data to the database...");
+        setIsSaving(true);
+
+        // Import the client from your existing Amplify configuration
+        const client = generateClient<Schema>();
+
+        // Update the supermarket in the database
+        await client.models.Supermarket.update({
+          id: supermarket.id,
+          pathData: JSON.stringify(pathData), // Convert to string for storage
+        });
+
+        console.log("Path data saved to database successfully!");
+
+        // Keep the saving indicator visible briefly
+        setTimeout(() => {
+          setIsSaving(false);
+        }, 500);
+
+        alert("Path optimization data computed and saved successfully!");
+      } else {
+        console.error("No supermarket ID found for saving path data");
+        alert("Path optimization data computed but not saved (missing supermarket ID)");
+      }
     } catch (error) {
-      console.error("Failed to compute path data:", error);
-      alert("Failed to compute path data. Please check console for details.");
+      console.error("Failed to compute or save path data:", error);
+      setIsSaving(false);
+      alert("Failed to process path data. Please check console for details.");
     } finally {
       setIsComputingPaths(false);
     }
@@ -155,25 +178,22 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
       <div className="mb-4 space-y-2">
         <h2 className="text-lg font-bold text-gray-700 mb-3">Dashboard</h2>
         <button
-          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${
-            activeTab === "layout" ? "bg-blue-200" : ""
-          }`}
+          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${activeTab === "layout" ? "bg-blue-200" : ""
+            }`}
           onClick={() => handleTabChange("layout")}
         >
           🎨 Layout Editor
         </button>
         <button
-          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${
-            activeTab === "products" ? "bg-blue-200" : ""
-          }`}
+          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${activeTab === "products" ? "bg-blue-200" : ""
+            }`}
           onClick={() => handleTabChange("products")}
         >
           🛠 Products Editor
         </button>
         <button
-          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${
-            activeTab === "product_square" ? "bg-blue-200" : ""
-          }`}
+          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${activeTab === "product_square" ? "bg-blue-200" : ""
+            }`}
           onClick={() => handleTabChange("product_square")}
         >
           🔍 Product Square Editor
@@ -186,10 +206,9 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
           onClick={computePathData}
           disabled={isComputingPaths || !supermarket}
           className={`w-full px-3 py-2 rounded-lg font-semibold text-sm md:text-base transition
-            ${
-              isComputingPaths
-                ? "bg-yellow-300 cursor-wait"
-                : "bg-emerald-500 text-white hover:bg-emerald-600"
+            ${isComputingPaths
+              ? "bg-yellow-300 cursor-wait"
+              : "bg-emerald-500 text-white hover:bg-emerald-600"
             }
             ${!supermarket ? "opacity-50 cursor-not-allowed" : ""}
           `}
@@ -254,7 +273,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
             console.log("TSP result:", result);
             alert(
               "TSP order:\n" +
-                result.map((sq) => `(${sq.row},${sq.col})`).join(" → ")
+              result.map((sq) => `(${sq.row},${sq.col})`).join(" → ")
             );
           }}
           className="w-full px-3 py-2 rounded-lg font-semibold text-sm md:text-base bg-indigo-500 text-white hover:bg-indigo-600 mt-2"
@@ -312,10 +331,9 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
 
             console.log("Optimal TSP result:", result);
             alert(
-              `Start: (${startSquare?.row ?? "default"},${
-                startSquare?.col ?? ""
+              `Start: (${startSquare?.row ?? "default"},${startSquare?.col ?? ""
               })\nOptimal TSP order:\n` +
-                result.map((sq) => `(${sq.row},${sq.col})`).join(" → ")
+              result.map((sq) => `(${sq.row},${sq.col})`).join(" → ")
             );
           }}
           className="w-full px-3 py-2 rounded-lg font-semibold text-sm md:text-base bg-purple-600 text-white hover:bg-purple-700 mt-2"
@@ -350,10 +368,9 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
                   )
                 }
                 className={`p-2 md:p-3 rounded-lg font-semibold transition w-full text-sm md:text-base
-                  ${
-                    activeAction === EditableAction.ModifyLayout
-                      ? "bg-blue-200 hover:bg-blue-300 text-black"
-                      : "bg-gray-400 hover:bg-blue-200 text-black"
+                  ${activeAction === EditableAction.ModifyLayout
+                    ? "bg-blue-200 hover:bg-blue-300 text-black"
+                    : "bg-gray-400 hover:bg-blue-200 text-black"
                   }`}
               >
                 {activeAction === EditableAction.ModifyLayout
@@ -396,10 +413,9 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
                   }
                 }}
                 className={`p-2 md:p-3 rounded-lg font-semibold transition w-full text-sm md:text-base
-                  ${
-                    activeAction === EditableAction.EditProducts
-                      ? "bg-blue-200 hover:bg-blue-300 text-black"
-                      : "bg-gray-400 hover:bg-blue-200 text-black"
+                  ${activeAction === EditableAction.EditProducts
+                    ? "bg-blue-200 hover:bg-blue-300 text-black"
+                    : "bg-gray-400 hover:bg-blue-200 text-black"
                   }`}
               >
                 {activeAction === EditableAction.EditProducts
@@ -421,10 +437,9 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
                   setShowSizePrompt(true);
                 }}
                 className={`p-2 md:p-3 rounded-lg font-semibold transition w-full text-sm md:text-base
-                  ${
-                    activeAction === EditableAction.ChangeLayoutSize
-                      ? "bg-blue-200 hover:bg-blue-300 text-black"
-                      : "bg-gray-400 hover:bg-blue-200 text-black"
+                  ${activeAction === EditableAction.ChangeLayoutSize
+                    ? "bg-blue-200 hover:bg-blue-300 text-black"
+                    : "bg-gray-400 hover:bg-blue-200 text-black"
                   }`}
               >
                 {activeAction === EditableAction.ChangeLayoutSize

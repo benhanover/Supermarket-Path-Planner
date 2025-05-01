@@ -7,6 +7,7 @@ const schema = a.schema({
       name: a.string().required(),
       address: a.string().required(),
       layout: a.json().required(),
+      pathData: a.json(), // Added pathData field to store the Floyd-Warshall results
       products: a.hasMany("Product", "supermarketID"),
       shoppingLists: a.hasMany("ShoppingList", "supermarketID"),
     })
