@@ -5,6 +5,8 @@ import { SquareType } from "../types";
 import { useState } from "react";
 import { buildGraph } from "../../../utils/layoutGraph";
 import { floydWarshall } from "../../../utils/floydWarshall";
+import { tspNearestNeighbor } from "../../../utils/tsp_heuristic";
+import { tspHeldKarp } from "../../../utils/held_karp_tsp_optimal";
 
 // Square types with colors for UI
 const squareTypes: { type: SquareType; color: string; label: string }[] = [
@@ -28,7 +30,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
     setSelectedSquare,
     saveLayout,
     activeTab,
-    setActiveTab
+    setActiveTab,
   } = useDashboard();
   const { supermarket, setSupermarket } = useAppContext();
 
@@ -74,18 +76,18 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
         metadata: {
           timestamp: new Date().toISOString(),
           rowCount: supermarket.layout.length,
-          colCount: supermarket.layout[0].length
-        }
+          colCount: supermarket.layout[0].length,
+        },
       };
 
       console.log("Path data created:", pathData);
 
       // Update supermarket state with path data (without saving to DB)
-      setSupermarket(prev => {
+      setSupermarket((prev) => {
         if (!prev) return null;
         return {
           ...prev,
-          pathData
+          pathData,
         };
       });
 
@@ -133,7 +135,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
           ...prevSupermarket,
           layout: newLayout,
           // Reset path data since layout changed completely
-          pathData: undefined
+          pathData: undefined,
         };
       });
 
@@ -153,22 +155,25 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
       <div className="mb-4 space-y-2">
         <h2 className="text-lg font-bold text-gray-700 mb-3">Dashboard</h2>
         <button
-          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${activeTab === "layout" ? "bg-blue-200" : ""
-            }`}
+          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${
+            activeTab === "layout" ? "bg-blue-200" : ""
+          }`}
           onClick={() => handleTabChange("layout")}
         >
           🎨 Layout Editor
         </button>
         <button
-          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${activeTab === "products" ? "bg-blue-200" : ""
-            }`}
+          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${
+            activeTab === "products" ? "bg-blue-200" : ""
+          }`}
           onClick={() => handleTabChange("products")}
         >
           🛠 Products Editor
         </button>
         <button
-          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${activeTab === "product_square" ? "bg-blue-200" : ""
-            }`}
+          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${
+            activeTab === "product_square" ? "bg-blue-200" : ""
+          }`}
           onClick={() => handleTabChange("product_square")}
         >
           🔍 Product Square Editor
@@ -181,17 +186,35 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
           onClick={computePathData}
           disabled={isComputingPaths || !supermarket}
           className={`w-full px-3 py-2 rounded-lg font-semibold text-sm md:text-base transition
-            ${isComputingPaths
-              ? "bg-yellow-300 cursor-wait"
-              : "bg-emerald-500 text-white hover:bg-emerald-600"}
+            ${
+              isComputingPaths
+                ? "bg-yellow-300 cursor-wait"
+                : "bg-emerald-500 text-white hover:bg-emerald-600"
+            }
             ${!supermarket ? "opacity-50 cursor-not-allowed" : ""}
           `}
         >
           {isComputingPaths ? (
             <span className="flex items-center justify-center">
-              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               Computing Paths...
             </span>
@@ -200,9 +223,112 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
           )}
         </button>
 
+        <button
+          onClick={() => {
+            const input = prompt(
+              "Enter product square coordinates (e.g. 0,1;1,2;3,3):"
+            );
+            if (!input || !supermarket?.pathData) {
+              alert("Invalid input or path data missing.");
+              return;
+            }
+
+            const coords = input
+              .split(";")
+              .map((pair) => pair.trim().split(",").map(Number))
+              .filter((arr) => arr.length === 2 && arr.every(Number.isFinite))
+              .map(([row, col]) => ({ row, col }));
+
+            if (coords.length === 0) {
+              alert("No valid coordinates provided.");
+              return;
+            }
+
+            const result = tspNearestNeighbor(
+              coords,
+              supermarket.pathData.dist,
+              supermarket.pathData.metadata.colCount,
+              coords[0] // assume starting from the first given square
+            );
+
+            console.log("TSP result:", result);
+            alert(
+              "TSP order:\n" +
+                result.map((sq) => `(${sq.row},${sq.col})`).join(" → ")
+            );
+          }}
+          className="w-full px-3 py-2 rounded-lg font-semibold text-sm md:text-base bg-indigo-500 text-white hover:bg-indigo-600 mt-2"
+        >
+          🧪 Test TSP Heuristic
+        </button>
+
+        <button
+          onClick={() => {
+            const input = prompt(
+              "Enter:\nstart=row,col;products=row1,col1;row2,col2;..."
+            );
+
+            if (!input || !supermarket?.pathData) {
+              alert("Invalid input or path data missing.");
+              return;
+            }
+
+            // Parse format: start=3,2;0,0;1,2;2,3
+            const parts = input.split(";");
+            const startPart = parts.find((p) => p.trim().startsWith("start="));
+            const productParts = parts.filter(
+              (p) => !p.trim().startsWith("start=")
+            );
+
+            let startSquare: { row: number; col: number } | undefined =
+              undefined;
+
+            if (startPart) {
+              const coords = startPart
+                .replace("start=", "")
+                .split(",")
+                .map(Number);
+              if (coords.length === 2 && coords.every(Number.isFinite)) {
+                startSquare = { row: coords[0], col: coords[1] };
+              }
+            }
+
+            const coords = productParts
+              .map((pair) => pair.trim().split(",").map(Number))
+              .filter((arr) => arr.length === 2 && arr.every(Number.isFinite))
+              .map(([row, col]) => ({ row, col }));
+
+            if (coords.length === 0) {
+              alert("No valid product coordinates provided.");
+              return;
+            }
+
+            const result = tspHeldKarp(
+              coords,
+              supermarket.pathData.dist,
+              supermarket.pathData.metadata.colCount,
+              startSquare
+            );
+
+            console.log("Optimal TSP result:", result);
+            alert(
+              `Start: (${startSquare?.row ?? "default"},${
+                startSquare?.col ?? ""
+              })\nOptimal TSP order:\n` +
+                result.map((sq) => `(${sq.row},${sq.col})`).join(" → ")
+            );
+          }}
+          className="w-full px-3 py-2 rounded-lg font-semibold text-sm md:text-base bg-purple-600 text-white hover:bg-purple-700 mt-2"
+        >
+          🧪 Test Optimal TSP (DP)
+        </button>
+
         {supermarket?.pathData && (
           <div className="mt-2 text-xs text-gray-600">
-            Path data last updated: {new Date(supermarket.pathData.metadata?.timestamp || "").toLocaleString()}
+            Path data last updated:{" "}
+            {new Date(
+              supermarket.pathData.metadata?.timestamp || ""
+            ).toLocaleString()}
           </div>
         )}
       </div>
@@ -224,9 +350,10 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
                   )
                 }
                 className={`p-2 md:p-3 rounded-lg font-semibold transition w-full text-sm md:text-base
-                  ${activeAction === EditableAction.ModifyLayout
-                    ? "bg-blue-200 hover:bg-blue-300 text-black"
-                    : "bg-gray-400 hover:bg-blue-200 text-black"
+                  ${
+                    activeAction === EditableAction.ModifyLayout
+                      ? "bg-blue-200 hover:bg-blue-300 text-black"
+                      : "bg-gray-400 hover:bg-blue-200 text-black"
                   }`}
               >
                 {activeAction === EditableAction.ModifyLayout
@@ -269,9 +396,10 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
                   }
                 }}
                 className={`p-2 md:p-3 rounded-lg font-semibold transition w-full text-sm md:text-base
-                  ${activeAction === EditableAction.EditProducts
-                    ? "bg-blue-200 hover:bg-blue-300 text-black"
-                    : "bg-gray-400 hover:bg-blue-200 text-black"
+                  ${
+                    activeAction === EditableAction.EditProducts
+                      ? "bg-blue-200 hover:bg-blue-300 text-black"
+                      : "bg-gray-400 hover:bg-blue-200 text-black"
                   }`}
               >
                 {activeAction === EditableAction.EditProducts
@@ -293,9 +421,10 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
                   setShowSizePrompt(true);
                 }}
                 className={`p-2 md:p-3 rounded-lg font-semibold transition w-full text-sm md:text-base
-                  ${activeAction === EditableAction.ChangeLayoutSize
-                    ? "bg-blue-200 hover:bg-blue-300 text-black"
-                    : "bg-gray-400 hover:bg-blue-200 text-black"
+                  ${
+                    activeAction === EditableAction.ChangeLayoutSize
+                      ? "bg-blue-200 hover:bg-blue-300 text-black"
+                      : "bg-gray-400 hover:bg-blue-200 text-black"
                   }`}
               >
                 {activeAction === EditableAction.ChangeLayoutSize
@@ -305,31 +434,34 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
             )}
 
           {/* Layout Size Input Prompt */}
-          {showSizePrompt && activeAction === EditableAction.ChangeLayoutSize && (
-            <div className="p-3 md:p-4 border rounded-lg bg-gray-200 text-black mt-2 md:mt-4">
-              <h3 className="text-sm md:text-md font-bold">Enter New Layout Size</h3>
-              <input
-                type="number"
-                placeholder="Rows"
-                className="w-full p-2 mt-2 border rounded text-sm"
-                value={newRows ?? ""}
-                onChange={(e) => setNewRows(Number(e.target.value) || "")}
-              />
-              <input
-                type="number"
-                placeholder="Columns"
-                className="w-full p-2 mt-2 border rounded text-sm"
-                value={newCols ?? ""}
-                onChange={(e) => setNewCols(Number(e.target.value) || "")}
-              />
-              <button
-                className="mt-2 md:mt-3 px-3 md:px-4 py-1 md:py-2 bg-emerald-300 text-black rounded-lg hover:bg-emerald-400 text-sm"
-                onClick={confirmLayoutSize}
-              >
-                Confirm
-              </button>
-            </div>
-          )}
+          {showSizePrompt &&
+            activeAction === EditableAction.ChangeLayoutSize && (
+              <div className="p-3 md:p-4 border rounded-lg bg-gray-200 text-black mt-2 md:mt-4">
+                <h3 className="text-sm md:text-md font-bold">
+                  Enter New Layout Size
+                </h3>
+                <input
+                  type="number"
+                  placeholder="Rows"
+                  className="w-full p-2 mt-2 border rounded text-sm"
+                  value={newRows ?? ""}
+                  onChange={(e) => setNewRows(Number(e.target.value) || "")}
+                />
+                <input
+                  type="number"
+                  placeholder="Columns"
+                  className="w-full p-2 mt-2 border rounded text-sm"
+                  value={newCols ?? ""}
+                  onChange={(e) => setNewCols(Number(e.target.value) || "")}
+                />
+                <button
+                  className="mt-2 md:mt-3 px-3 md:px-4 py-1 md:py-2 bg-emerald-300 text-black rounded-lg hover:bg-emerald-400 text-sm"
+                  onClick={confirmLayoutSize}
+                >
+                  Confirm
+                </button>
+              </div>
+            )}
         </>
       )}
     </div>
