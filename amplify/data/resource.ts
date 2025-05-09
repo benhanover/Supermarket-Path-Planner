@@ -7,9 +7,11 @@ const schema = a.schema({
       name: a.string().required(),
       address: a.string().required(),
       layout: a.json().required(),
+      pathData: a.json(), // Added pathData field to store the Floyd-Warshall results
       products: a.hasMany("Product", "supermarketID"),
+      shoppingLists: a.hasMany("ShoppingList", "supermarketID"),
     })
-    .authorization((allow) => [allow.owner()]),
+    .authorization((allow) => [allow.owner(), allow.authenticated().to(["read"]), allow.guest().to(["read"])]),
 
   Product: a
     .model({
@@ -20,6 +22,18 @@ const schema = a.schema({
       image: a.string().required(),
       supermarketID: a.id().required(),
       supermarket: a.belongsTo("Supermarket", "supermarketID"),
+    })
+    .authorization((allow) => [allow.owner(), allow.authenticated().to(["read"]), allow.guest().to(["read"])]),
+
+  ShoppingList: a
+    .model({
+      name: a.string().required(),
+      owner: a.string().required(), // user.sub
+      productIDs: a.json().required(), // Array of product IDs as JSON string
+      supermarketID: a.id().required(),
+      supermarket: a.belongsTo("Supermarket", "supermarketID"),
+      createdAt: a.datetime(),
+      completedAt: a.datetime(),
     })
     .authorization((allow) => [allow.owner()]),
 });

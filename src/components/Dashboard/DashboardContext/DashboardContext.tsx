@@ -34,6 +34,7 @@ interface DashboardContextType {
     React.SetStateAction<"layout" | "products" | "product_square">
   >;
   isSaving: boolean;
+  setIsSaving: React.Dispatch<React.SetStateAction<boolean>>;
   saveLayout: (layoutToSave?: Square[][]) => Promise<void>;
   addProduct: (product: Omit<Product, "id">) => Promise<string>;
   updateProductData: (product: Product) => Promise<void>;
@@ -231,6 +232,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         activeTab,
         setActiveTab,
         isSaving,
+        setIsSaving,
         saveLayout,
         addProduct,
         updateProductData,

@@ -5,7 +5,7 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { Supermarket } from "../components/Dashboard/types";
+import { Supermarket, PathData } from "../components/Dashboard/types";
 import { getCurrentUser, AuthUser } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
 import type { Schema } from "../../amplify/data/resource";
@@ -71,16 +71,28 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
         if (userSupermarket) {
           let parsedLayout;
+          let parsedPathData: PathData | undefined;
 
           try {
+            // Parse layout
             parsedLayout =
               typeof userSupermarket.layout === "string"
                 ? JSON.parse(userSupermarket.layout)
                 : userSupermarket.layout;
+
+            console.log("pathData", userSupermarket.pathData);
+            // Parse pathData if it exists
+            if (userSupermarket.pathData) {
+              parsedPathData =
+                typeof userSupermarket.pathData === "string"
+                  ? JSON.parse(userSupermarket.pathData)
+                  : userSupermarket.pathData;
+            }
           } catch (jsonError) {
             handleError(jsonError, "loadSupermarketData (JSON parsing)");
           }
-
+          console.log("Parsed Layout:", parsedLayout);
+          if (parsedPathData) console.log("Parsed Path Data:", parsedPathData);
           const products = await client.models.Product.list({
             filter: { supermarketID: { eq: userSupermarket.id } },
           });
@@ -91,6 +103,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
             name: userSupermarket.name,
             layout: parsedLayout,
             products: products.data,
+            pathData: parsedPathData,
           });
         }
       } catch (error) {
@@ -125,12 +138,22 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
         if (userSupermarket) {
           let parsedLayout;
+          let parsedPathData: PathData | undefined;
 
           try {
+            // Parse layout
             parsedLayout =
               typeof userSupermarket.layout === "string"
                 ? JSON.parse(userSupermarket.layout)
                 : userSupermarket.layout;
+
+            // Parse pathData if it exists
+            if (userSupermarket.pathData) {
+              parsedPathData =
+                typeof userSupermarket.pathData === "string"
+                  ? JSON.parse(userSupermarket.pathData)
+                  : userSupermarket.pathData;
+            }
           } catch (jsonError) {
             handleError(jsonError, "loadSupermarketData (JSON parsing)");
           }
@@ -145,6 +168,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
             name: userSupermarket.name,
             layout: parsedLayout,
             products: products.data,
+            pathData: parsedPathData,
           });
         }
       } catch (error) {
