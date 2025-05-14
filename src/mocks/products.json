@@ -5,350 +5,700 @@
       "price": 2.99,
       "category": "Fresh Produce",
       "description": "Ripe, yellow organic bananas from certified organic farms",
-      "image": "https://example.com/banana.jpg"
+      "image": "https://example.com/bellpeppers.jpg"
     },
     {
       "title": "Whole Milk",
       "price": 3.49,
       "category": "Dairy",
       "description": "Fresh, locally sourced whole milk from grass-fed cows",
-      "image": "https://example.com/milk.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=19l_820HeKwyni9g4O1AvEQ6HrAy9OXiF"
     },
     {
       "title": "Organic Eggs",
       "price": 4.99,
       "category": "Dairy",
       "description": "Free-range, organic large brown eggs",
-      "image": "https://example.com/eggs.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1AHHKJ_Is_WF6_5NvJwv1TmENie1R2PQT"
     },
     {
       "title": "Bread Loaf",
       "price": 2.79,
       "category": "Bakery",
       "description": "Freshly baked whole wheat bread, sliced and packaged",
-      "image": "https://example.com/bread.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1y8Z6Hpbn_hZZeLE09q9ywIFXUpYqxdsv"
     },
     {
       "title": "Chicken Breast",
       "price": 6.99,
       "category": "Meat",
       "description": "Boneless, skinless chicken breasts, individually packaged",
-      "image": "https://example.com/chicken.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1Zpg2amrxa-ACL49dd80o5VzZJP3djp7h"
     },
     {
       "title": "Ground Beef",
       "price": 5.49,
       "category": "Meat",
       "description": "Lean ground beef, 85% lean, perfect for burgers",
-      "image": "https://example.com/groundbeef.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1W5gbih4PGtnITDk-f4YEbX772CG8GKPG"
     },
     {
       "title": "Salmon Fillet",
       "price": 12.99,
       "category": "Seafood",
       "description": "Fresh wild-caught salmon fillet, skin-on",
-      "image": "https://example.com/salmon.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1QxX0k9tCmW_BgxOB426ZJ7B3G2xq3eHH"
     },
     {
       "title": "Pasta Sauce",
       "price": 2.99,
       "category": "Pantry",
       "description": "Classic marinara pasta sauce, made with ripe tomatoes",
-      "image": "https://example.com/pastasauce.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1yCd0ac1s_1J6IlV7WotErKRD7PFSNlws"
     },
     {
       "title": "Spaghetti Pasta",
       "price": 1.49,
       "category": "Pantry",
       "description": "Long, thin spaghetti pasta made from durum wheat",
-      "image": "https://example.com/spaghetti.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1GgehWR6-_Pbx8VHeQV2JG_DGfqmlUfC-"
     },
     {
       "title": "Olive Oil",
       "price": 6.99,
       "category": "Pantry",
       "description": "Extra virgin olive oil, cold-pressed, 100% pure",
-      "image": "https://example.com/oliveoil.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1PJzSgKHFZNLRGmY23PtcbMh06Ops-IbR"
     },
     {
       "title": "Cheddar Cheese",
       "price": 3.79,
       "category": "Dairy",
       "description": "Sharp cheddar cheese block, aged to perfection",
-      "image": "https://example.com/cheddar.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1f1EG9h9PJVUb29SBf89TmcGTLrMthskz"
     },
     {
       "title": "Greek Yogurt",
       "price": 3.49,
       "category": "Dairy",
       "description": "Creamy, protein-rich Greek yogurt, plain",
-      "image": "https://example.com/greekyogurt.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1f_c2PGlBkfVEtjHadOGjy2wyZhbEibvw"
     },
     {
       "title": "Apples",
       "price": 4.99,
       "category": "Fresh Produce",
       "description": "Crisp Gala apples, fresh and locally sourced",
-      "image": "https://example.com/apples.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1WU1oeHGAYPX77oOZ6BAES4MnxRnZOmRp"
     },
     {
       "title": "Spinach",
       "price": 2.49,
       "category": "Fresh Produce",
       "description": "Fresh organic baby spinach, pre-washed",
-      "image": "https://example.com/spinach.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1N71dGvubUWGaH-3C4eWx7nZv5ypFRlaz"
     },
     {
       "title": "Orange Juice",
       "price": 3.99,
       "category": "Beverages",
       "description": "100% pure squeezed orange juice, no added sugar",
-      "image": "https://example.com/orangejuice.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=18rWGpTP0QnXYWutanxiQDX-E5Gkku4vj"
     },
     {
       "title": "Almond Milk",
       "price": 3.29,
       "category": "Beverages",
       "description": "Unsweetened almond milk, dairy-free alternative",
-      "image": "https://example.com/almondmilk.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1MlN9d2cMUnCtHvJbUp_w2u4uh3T2a99t"
     },
     {
       "title": "Peanut Butter",
       "price": 2.99,
       "category": "Pantry",
       "description": "Creamy natural peanut butter, no added sugar",
-      "image": "https://example.com/peanutbutter.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=10x1_VStB-hyyG-mmDPxijt36bWXvOl3i"
     },
     {
       "title": "Rice",
       "price": 3.49,
       "category": "Pantry",
       "description": "Long-grain white rice, bulk packaging",
-      "image": "https://example.com/rice.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1fq_dwxYpzqofX3cdGEDyRl08Js43wfUa"
     },
     {
       "title": "Black Beans",
       "price": 1.29,
       "category": "Pantry",
       "description": "Canned black beans, low sodium",
-      "image": "https://example.com/blackbeans.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1T7Q5FB82KWYGu9HawL6voFYFl_cFp8RO"
     },
     {
       "title": "Frozen Pizza",
       "price": 4.99,
       "category": "Frozen Foods",
       "description": "Margherita frozen pizza, thin crust",
-      "image": "https://example.com/frozenpizza.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1JZNGY1eOi9IC81rBN5-Kue30OMGfRpAL"
     },
     {
       "title": "Ice Cream",
       "price": 4.49,
       "category": "Frozen Foods",
       "description": "Vanilla bean ice cream, premium quality",
-      "image": "https://example.com/icecream.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1mSYjstxSf8EZsWEKkZyPGkKNpDYWvpar"
     },
     {
       "title": "Broccoli",
       "price": 2.29,
       "category": "Fresh Produce",
       "description": "Fresh broccoli crowns, packed with nutrients",
-      "image": "https://example.com/broccoli.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1z6oqD20GC0pxcy_ElBeX2ItuJWX4iF_O"
     },
     {
       "title": "Tomatoes",
       "price": 3.49,
       "category": "Fresh Produce",
       "description": "Ripe, vine-ripened red tomatoes",
-      "image": "https://example.com/tomatoes.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1CuRfLJdztWzH_X3hKd3w2uQ0ZD6A-Niv"
     },
     {
       "title": "Tortilla Chips",
       "price": 2.79,
       "category": "Snacks",
       "description": "Crispy corn tortilla chips, lightly salted",
-      "image": "https://example.com/tortillachips.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1sQ51wPWcOO3rhynTghrb9zxT-p70_CAX"
     },
     {
       "title": "Salsa",
       "price": 2.49,
       "category": "Condiments",
       "description": "Medium heat salsa, fresh ingredients",
-      "image": "https://example.com/salsa.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1cn-en7U5jS2CgvPibk6eXQIY2fuu8Mm7"
     },
     {
       "title": "Cereal",
       "price": 3.99,
       "category": "Breakfast",
       "description": "Whole grain breakfast cereal, low sugar",
-      "image": "https://example.com/cereal.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1vDSWG6kNQ8ZML2WeSgydDvFVpLbhCA1P"
     },
     {
       "title": "Coffee",
       "price": 8.99,
       "category": "Beverages",
       "description": "Medium roast ground coffee, 100% Arabica",
-      "image": "https://example.com/coffee.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1g4YN6FuQnM2fnz7wtmyDqVhJJy8ozF71"
     },
     {
       "title": "Chocolate Bar",
       "price": 1.99,
       "category": "Sweets",
       "description": "Dark chocolate bar with 70% cocoa content",
-      "image": "https://example.com/chocolatebar.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=143R2Z5nBbZw1QzCJtrLXELwKNuLkHMxI"
     },
     {
       "title": "Butter",
       "price": 3.29,
       "category": "Dairy",
       "description": "Unsalted butter, made from fresh cream",
-      "image": "https://example.com/butter.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1Vq5SQGbLjU4vaSlNFzxyyTdCO0I7_kHu"
     },
     {
       "title": "Frozen Vegetables",
       "price": 2.49,
       "category": "Frozen Foods",
       "description": "Mixed vegetable blend, ready to cook",
-      "image": "https://example.com/frozenvegetables.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1nQmND7r_bf3F4sWELOPku5SDXFyQS18b"
     },
     {
       "title": "Carrots",
       "price": 1.99,
       "category": "Fresh Produce",
       "description": "Fresh whole carrots, organic",
-      "image": "https://example.com/carrots.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1VjpCzEbcYf324m0FBfq-8ODTmOczpHxW"
     },
     {
       "title": "Honey",
       "price": 4.99,
       "category": "Pantry",
       "description": "Pure raw honey, locally sourced",
-      "image": "https://example.com/honey.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1onu7Bkn0urv4vfYkVSkvCuTYr33p1VVA"
     },
     {
       "title": "Canned Tuna",
       "price": 1.79,
       "category": "Pantry",
       "description": "Solid white albacore tuna in water",
-      "image": "https://example.com/cannedtuna.jpg"
-    },
-    {
-      "title": "Sour Cream",
-      "price": 2.49,
-      "category": "Dairy",
-      "description": "Full-fat sour cream, rich and creamy",
-      "image": "https://example.com/sourcream.jpg"
-    },
-    {
-      "title": "BBQ Sauce",
-      "price": 2.29,
-      "category": "Condiments",
-      "description": "Classic BBQ sauce, tangy and sweet",
-      "image": "https://example.com/bbqsauce.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1Xm7nQi0eAJLaNmEiFoBCPkmGQdZ05cwO"
     },
     {
       "title": "Protein Bars",
       "price": 5.99,
       "category": "Snacks",
       "description": "Chocolate chip protein bars, high protein",
-      "image": "https://example.com/proteinbars.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1ICPhRvCVR8GxZMq-y0LTmDs8dvTx-vOa"
     },
     {
       "title": "Paper Towels",
       "price": 4.49,
       "category": "Household",
       "description": "Absorbent paper towel rolls, 6 pack",
-      "image": "https://example.com/papertowels.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1XrpJ6X6asxujP1IRiKkI7-Jr5vM50sGU"
     },
     {
       "title": "Dish Soap",
       "price": 2.99,
       "category": "Household",
       "description": "Concentrated dish liquid, grease-cutting formula",
-      "image": "https://example.com/dishsoap.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1aarwuvD11FGRiEKI2PtNkSji1ZmDonzh"
     },
     {
       "title": "Laundry Detergent",
       "price": 7.99,
       "category": "Household",
       "description": "Liquid laundry detergent, hypoallergenic",
-      "image": "https://example.com/laundrydetergent.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1ZtZ5u_yD4ZTqoRr5aAnsMT5dd8WZwQkl"
     },
     {
       "title": "Potato Chips",
       "price": 2.99,
       "category": "Snacks",
       "description": "Classic salted potato chips",
-      "image": "https://example.com/potatochips.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=14ZLgrTbHnlqEnE2tbmuDrn0mC7MAFN58"
     },
     {
       "title": "Popcorn",
       "price": 2.49,
       "category": "Snacks",
       "description": "Microwave popcorn, butter flavor",
-      "image": "https://example.com/popcorn.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1A1Bpk0hOGZDnrVt4rA66SuoUKb4vt6fo"
     },
     {
       "title": "Hot Sauce",
       "price": 1.99,
       "category": "Condiments",
       "description": "Classic hot sauce, medium heat",
-      "image": "https://example.com/hotsauce.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1shlT3OwKOsqt0rrj_o2AaOgOrwySCZkr"
     },
     {
       "title": "Maple Syrup",
       "price": 6.99,
       "category": "Pantry",
       "description": "Pure maple syrup, grade A dark color",
-      "image": "https://example.com/maplesyrup.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=15Tm4HJJiFfaQ-Kh-5rwBNkU5TszJmsWj"
     },
     {
       "title": "Tea Bags",
       "price": 3.49,
       "category": "Beverages",
       "description": "English breakfast tea, 20 count",
-      "image": "https://example.com/teabags.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=18UX71QZEWPK5H3Eak3YZY3NLUeWxE4DC"
     },
     {
       "title": "Pickles",
       "price": 2.29,
       "category": "Condiments",
       "description": "Dill pickle spears, crunchy and tangy",
-      "image": "https://example.com/pickles.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1wPYfrWWbrF0G-Tw22Cdgdl_e12f37tGg"
     },
     {
       "title": "Tofu",
       "price": 2.79,
       "category": "Refrigerated",
       "description": "Extra firm tofu, plant-based protein",
-      "image": "https://example.com/tofu.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1mAoLwTevV5pYamtNzP7IB0DQgJTB5Azf"
     },
     {
       "title": "Hummus",
       "price": 3.49,
       "category": "Refrigerated",
       "description": "Classic hummus, smooth and creamy",
-      "image": "https://example.com/hummus.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=18ko_PGWUmJrrOkpRq5pfD7A1Oa4lgS3R"
     },
     {
       "title": "Garlic",
       "price": 0.99,
       "category": "Fresh Produce",
       "description": "Fresh garlic bulbs, aromatic and flavorful",
-      "image": "https://example.com/garlic.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1yxoX5dgAHkPYDP-Fwye_gFydf97ueCPi"
     },
     {
       "title": "Onions",
       "price": 1.29,
       "category": "Fresh Produce",
       "description": "Yellow onions, perfect for cooking",
-      "image": "https://example.com/onions.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1nnZZ-RICY-yMhhHCM-O7yhTS9DSMScpz"
     },
     {
       "title": "Bell Peppers",
       "price": 2.49,
       "category": "Fresh Produce",
       "description": "Colorful mixed bell peppers, red, yellow, and green",
-      "image": "https://example.com/bellpeppers.jpg"
+      "image": "https://drive.google.com/uc?export=view&id=1xfV7A3p1hdvOt9rJgMGA2pxXkULM7bNM"
+    },
+    {
+      "title": "Tomato Paste",
+      "price": 1.29,
+      "category": "Pantry",
+      "description": "Thick and rich tomato paste for sauces and stews",
+      "image": "https://drive.google.com/uc?export=view&id=1Hzxltnu6Yn31sYbv8ye1UVSA2Pyqv_mc"
+    },
+    {
+      "title": "Vanilla Yogurt",
+      "price": 2.49,
+      "category": "Dairy",
+      "description": "Creamy vanilla flavored yogurt with live cultures",
+      "image": "https://drive.google.com/uc?export=view&id=1VuWII56SCbA4KX1dxYLeWFMe7l0eO_Bp"
+    },
+    {
+      "title": "Whole Wheat Pasta",
+      "price": 2.19,
+      "category": "Pantry",
+      "description": "Healthy whole wheat penne pasta",
+      "image": "https://drive.google.com/uc?export=view&id=1xAEvXXDatWKRy4GaSu5djZh66Ux9oj3w"
+    },
+    {
+      "title": "Dish Detergent",
+      "price": 2.99,
+      "category": "Household",
+      "description": "Lemon-scented dishwashing liquid",
+      "image": "https://drive.google.com/uc?export=view&id=1SpB9qRxQNRNVWI5P6SGLfL-qQVWjykON"
+    },
+    {
+      "title": "Banana Chips",
+      "price": 1.99,
+      "category": "Snacks",
+      "description": "Crunchy sweet dried banana slices",
+      "image": "https://drive.google.com/uc?export=view&id=1DRuekTeU19OFD5IAQFoOhw3rhy0b7vUm"
+    },
+    {
+      "title": "Pineapple Juice",
+      "price": 2.79,
+      "category": "Beverages",
+      "description": "100% pure pineapple juice, no added sugar",
+      "image": "https://drive.google.com/uc?export=view&id=18dNdImvmJgYMUGpKAtfERanHwOUFE1NG"
+    },
+    {
+      "title": "Shredded Mozzarella",
+      "price": 3.99,
+      "category": "Dairy",
+      "description": "Low-moisture shredded mozzarella cheese",
+      "image": "https://drive.google.com/uc?export=view&id=1sO70yjikKgPHF9CVKkkk3BZGbAGXOWtE"
+    },
+    {
+      "title": "Brown Rice",
+      "price": 2.89,
+      "category": "Pantry",
+      "description": "Whole grain long brown rice",
+      "image": "https://drive.google.com/uc?export=view&id=12fGRfyNcZaquMykduv_FykLIOKGAMffB"
+    },
+    {
+      "title": "Apple Sauce",
+      "price": 1.79,
+      "category": "Snacks",
+      "description": "Smooth unsweetened apple sauce cups",
+      "image": "https://drive.google.com/uc?export=view&id=1dFuzJeXFyolipJk7WuEBORfyF-ojRxTQ"
+    },
+    {
+      "title": "Green Tea",
+      "price": 2.99,
+      "category": "Beverages",
+      "description": "Antioxidant-rich green tea bags",
+      "image": "https://drive.google.com/uc?export=view&id=1dHf2-klbjftqfpX2tNLDM82UUT-IVoHJ"
+    },
+    {
+      "title": "Ground Cinnamon",
+      "price": 1.59,
+      "category": "Pantry",
+      "description": "Aromatic ground cinnamon for baking",
+      "image": "https://drive.google.com/uc?export=view&id=1ZcU0WaGU1p9VB54YhFeRxDrP8MwrKisn"
+    },
+    {
+      "title": "Lettuce (Romaine)",
+      "price": 1.49,
+      "category": "Fresh Produce",
+      "description": "Crisp and fresh romaine lettuce hearts",
+      "image": "https://drive.google.com/uc?export=view&id=1jyYRkkyzjMw_IX6zozkFFacImyRd1Xk_"
+    },
+    {
+      "title": "Toothpaste",
+      "price": 3.49,
+      "category": "Household",
+      "description": "Minty toothpaste for fresh breath and clean teeth",
+      "image": "https://drive.google.com/uc?export=view&id=1FgzIpvtlVgOQgo64E72Pci4WrclgTIWp"
+    },
+    {
+      "title": "Tortillas (Whole Wheat)",
+      "price": 2.99,
+      "category": "Bakery",
+      "description": "Soft whole wheat tortillas, 10 pack",
+      "image": "https://drive.google.com/uc?export=view&id=1FVyFFowee6BAZ0hqRtjshp7BV4hug7Ol"
+    },
+    {
+      "title": "Tomato Soup",
+      "price": 2.49,
+      "category": "Pantry",
+      "description": "Classic creamy tomato soup, canned",
+      "image": "https://drive.google.com/uc?export=view&id=1rIAw8etBrXf11hpgcyzUMi4JXU5TV_3b"
+    },
+    {
+      "title": "Cranberry Juice",
+      "price": 3.29,
+      "category": "Beverages",
+      "description": "Tart cranberry juice, vitamin C enriched",
+      "image": "https://drive.google.com/uc?export=view&id=1Iitm9uzc_nRq--mXPy0q8YExvRbj-FzK"
+    },
+    {
+      "title": "Vanilla Ice Cream",
+      "price": 4.59,
+      "category": "Frozen Foods",
+      "description": "Classic vanilla bean ice cream tub",
+      "image": "https://drive.google.com/uc?export=view&id=1jK94Ic_8dfqoHBQR3EwL6q3ZTTjZQVYc"
+    },
+    {
+      "title": "Beef Hot Dogs",
+      "price": 3.99,
+      "category": "Meat",
+      "description": "All-beef hot dogs, 8 pack",
+      "image": "https://drive.google.com/uc?export=view&id=1168c1Pr2BW7NtKNPASUcPyzHsJmMTmNQ"
+    },
+    {
+      "title": "Dish Cloth Set",
+      "price": 5.99,
+      "category": "Household",
+      "description": "Set of 5 absorbent cotton dish cloths",
+      "image": "https://drive.google.com/uc?export=view&id=16XUSaOA0Di-oFfI-W_EcP75Fr7GLMt-M"
+    },
+    {
+      "title": "Olives (Pitted Green)",
+      "price": 2.49,
+      "category": "Pantry",
+      "description": "Jar of pitted green olives in brine",
+      "image": "https://drive.google.com/uc?export=view&id=1RMl32cEiYbrWxKNA0bn3M9w2JAmvO4sM"
+    },
+    {
+      "title": "Instant Coffee",
+      "price": 4.79,
+      "category": "Beverages",
+      "description": "Instant coffee granules, rich and bold",
+      "image": "https://drive.google.com/uc?export=view&id=1ohR9oZB2jQbKd856oiL-XO4nWE5G-Tuk"
+    },
+    {
+      "title": "Strawberry Jam",
+      "price": 2.99,
+      "category": "Pantry",
+      "description": "Sweet strawberry jam made with real fruit",
+      "image": "https://drive.google.com/uc?export=view&id=1LhL2gBe5tpdL9nypDeGg6RNpESZBdiqN"
+    },
+    {
+      "title": "Zucchini",
+      "price": 1.69,
+      "category": "Fresh Produce",
+      "description": "Fresh green zucchini squash",
+      "image": "https://drive.google.com/uc?export=view&id=1I6aX8wAyRNjmK-mwDoE4EYxtSOCrtq3n"
+    },
+    {
+      "title": "Frozen Peas",
+      "price": 2.59,
+      "category": "Frozen Foods",
+      "description": "Green peas frozen at peak freshness",
+      "image": "https://drive.google.com/uc?export=view&id=1QvS6q_w5weEzNKTwcoZVBG74tcfciaf5"
+    },
+    {
+      "title": "Coconut Water",
+      "price": 2.29,
+      "category": "Beverages",
+      "description": "Natural coconut water with electrolytes",
+      "image": "https://drive.google.com/uc?export=view&id=1hc__KcJRzhVn0uHQEENLfClx_ybFMOjF"
+    },
+    {
+      "title": "Liquid Hand Sanitizer",
+      "price": 3.29,
+      "category": "Household",
+      "description": "Alcohol-based sanitizer with aloe vera",
+      "image": "https://drive.google.com/uc?export=view&id=1lbFBEiEnQv28KPe9p9I0P1gi81k-dq9a"
+    },
+    {
+      "title": "Steel-Cut Oats",
+      "price": 2.89,
+      "category": "Breakfast",
+      "description": "Hearty steel-cut oats for hot cereal",
+      "image": "https://drive.google.com/uc?export=view&id=1Q9YLb3N2MTJ00cDmK9lLOqqBST80D2jb"
+    },
+    {
+      "title": "Cucumber",
+      "price": 1.19,
+      "category": "Fresh Produce",
+      "description": "Crisp green cucumber, medium size",
+      "image": "https://drive.google.com/uc?export=view&id=14yMSl2RvONZsG3IombggKyQcSc0nID8D"
+    },
+    {
+      "title": "Cooking Spray",
+      "price": 2.49,
+      "category": "Pantry",
+      "description": "Non-stick cooking spray with canola oil",
+      "image": "https://drive.google.com/uc?export=view&id=16q6z0JyKaXYpdb6h_5PeUFVACcZ-QSi0"
+    },
+    {
+      "title": "Trail Mix",
+      "price": 3.79,
+      "category": "Snacks",
+      "description": "Mix of nuts, dried fruit and chocolate chips",
+      "image": "https://drive.google.com/uc?export=view&id=1Txvd5cfQhuiu5f6Y_LpWCQKzFzrCcBMg"
+    },
+    {
+      "title": "Cabbage",
+      "price": 1.59,
+      "category": "Fresh Produce",
+      "description": "Fresh green cabbage head",
+      "image": "https://drive.google.com/uc?export=view&id=1KKt5SYxXuokS1YzbAQam7pCaJuQkVK-v"
+    },
+    {
+      "title": "Maple Brown Sugar Oatmeal",
+      "price": 3.19,
+      "category": "Breakfast",
+      "description": "Instant oatmeal packets with maple & brown sugar",
+      "image": "https://drive.google.com/uc?export=view&id=12WsciDGjtykBe_Gdun7Ee2t5Pp53gfON"
+    },
+    {
+      "title": "French Baguette",
+      "price": 2.49,
+      "category": "Bakery",
+      "description": "Crispy golden-crust French baguette",
+      "image": "https://drive.google.com/uc?export=view&id=1ZsWqaiArWUYeDYMF28fKLVZItja1tIh6"
+    },
+    {
+      "title": "Sunflower Seeds",
+      "price": 2.19,
+      "category": "Snacks",
+      "description": "Roasted and lightly salted sunflower seeds in resealable bag",
+      "image": "https://drive.google.com/uc?export=view&id=1ap2GW4FKc8KCY8prCKsrBPK0BlAJbpoI"
+    },
+    {
+      "title": "Avocados (2-pack)",
+      "price": 3.49,
+      "category": "Fresh Produce",
+      "description": "Hass avocados, ripe and creamy",
+      "image": "https://drive.google.com/uc?export=view&id=18aMo00Wn8dwByRSCCxwa-b_dl9IY4BK1"
+    },
+    {
+      "title": "Fruit Snacks",
+      "price": 2.99,
+      "category": "Snacks",
+      "description": "Mixed fruit gummies, made with real fruit juice",
+      "image": "https://drive.google.com/uc?export=view&id=1rpznIGPwSLTqybbvwMMJHy-yt8tB8upO"
+    },
+    {
+      "title": "Fabric Softener",
+      "price": 4.49,
+      "category": "Household",
+      "description": "Liquid fabric softener for fresh laundry",
+      "image": "https://drive.google.com/uc?export=view&id=1NQcp4KZb-pkq48ITHAtHY6PcutOi-dGo"
+    },
+    {
+      "title": "Canned Corn",
+      "price": 1.39,
+      "category": "Pantry",
+      "description": "Sweet yellow corn in water",
+      "image": "https://drive.google.com/uc?export=view&id=1VR7aYZc8H1yrK8IRSGuvS5OToS38Rplu"
+    },
+    {
+      "title": "Red Grapes",
+      "price": 2.99,
+      "category": "Fresh Produce",
+      "description": "Juicy seedless red grapes",
+      "image": "https://drive.google.com/uc?export=view&id=11974PZiFLRcs7H9lzLhm36DKP5mm4NAK"
+    },
+    {
+      "title": "Basil Pesto",
+      "price": 3.99,
+      "category": "Pantry",
+      "description": "Italian-style basil pesto in a jar",
+      "image": "https://drive.google.com/uc?export=view&id=17Li95NLm3Jilt2tZeVa4J_Xo_8tH3lfb"
+    },
+    {
+      "title": "Sour Cream",
+      "price": 2.49,
+      "category": "Dairy",
+      "description": "Full-fat sour cream, rich and creamy",
+      "image": "https://drive.google.com/uc?export=view&id=16Pu-pwtWzIerOAHcjrU-Vc-98V0NmFnd"
+    },
+    {
+      "title": "BBQ Sauce",
+      "price": 2.29,
+      "category": "Condiments",
+      "description": "Classic BBQ sauce, tangy and sweet",
+      "image": "https://drive.google.com/uc?export=view&id=1B3P5LTJ1PHY4TGd-fm6ge4UmBubv138P"
+    },
+    {
+      "title": "Cream Cheese",
+      "price": 2.79,
+      "category": "Dairy",
+      "description": "Smooth and creamy original cream cheese spread",
+      "image": "https://drive.google.com/uc?export=view&id=1P1HPm5h2TlAjVI_P94KrCPYDwK2eVBAp"
+    },
+    {
+      "title": "Sliced Turkey Breast",
+      "price": 4.99,
+      "category": "Meat",
+      "description": "Deli-style oven roasted turkey breast slices",
+      "image": "https://drive.google.com/uc?export=view&id=1pBZGQrwgBV0YfNLbPIHyA5q7DT0cIinl"
+    },
+    {
+      "title": "Grapefruit Juice",
+      "price": 3.39,
+      "category": "Beverages",
+      "description": "100% pure grapefruit juice, no added sugar",
+      "image": "https://drive.google.com/uc?export=view&id=1DPe11ShJ3083uh-_izQH3OInWa4dUfiT"
+    },
+    {
+      "title": "Baking Soda",
+      "price": 0.99,
+      "category": "Pantry",
+      "description": "Multi-purpose pure baking soda for baking and cleaning",
+      "image": "https://drive.google.com/uc?export=view&id=1MZ1UXMnW9iBKa91dP693PoSmtkqxL9gT"
+    },
+    {
+      "title": "Aluminum Foil",
+      "price": 2.99,
+      "category": "Household",
+      "description": "Heavy-duty aluminum foil for cooking and storage",
+      "image": "https://drive.google.com/uc?export=view&id=1BgFOY6EERmfjbB7UNVk9IWUt9h_yJGtK"
+    },
+    {
+      "title": "Frozen Blueberries",
+      "price": 3.49,
+      "category": "Frozen Foods",
+      "description": "Individually quick frozen blueberries, no sugar added",
+      "image": "https://drive.google.com/uc?export=view&id=19YeOBt2JVIPt0OMBb6bJu4s_oHtVZCYP"
+    },
+    {
+      "title": "Cottage Cheese",
+      "price": 2.89,
+      "category": "Dairy",
+      "description": "Low-fat cottage cheese with small curds",
+      "image": "https://drive.google.com/uc?export=view&id=1FMf2MqFvBWYFmD28Et14Kb9fThDPbO43"
+    },
+    {
+      "title": "Taco Shells",
+      "price": 2.59,
+      "category": "Pantry",
+      "description": "Crunchy taco shells made from corn",
+      "image": "https://drive.google.com/uc?export=view&id=1CghUiRgo8Xj7ixEd7q8tNvZ5NtCTKCf9"
+    },
+    {
+      "title": "Apple Cider Vinegar",
+      "price": 3.29,
+      "category": "Pantry",
+      "description": "Raw unfiltered apple cider vinegar with the mother",
+      "image": "https://drive.google.com/uc?export=view&id=1ij1fExREQiGdbJrNwcLUEKQ6JiKlIgoK"
+    },
+    {
+      "title": "Mineral Water",
+      "price": 1.99,
+      "category": "Beverages",
+      "description": "Natural mineral water in a clear plastic bottle, sourced from a mountain spring",
+      "image": "https://drive.google.com/uc?export=view&id=1c0LkfE_t1WI6Eo60VE1nMN9bHkAugVmb"
     }
   ]
 }
