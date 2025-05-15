@@ -30,9 +30,9 @@ const SignInPage: React.FC = () => {
       <main className="flex items-center justify-center py-16 px-4 animate-fade-in">
         <div className="bg-white shadow-xl rounded-xl w-full max-w-xl p-0">
           <div className="p-6 sm:p-8">
-            <h2 className="text-2xl font-extrabold text-center text-purple-800 mb-6">
+            {/* <h2 className="text-2xl font-extrabold text-center text-purple-800 mb-6">
               Sign In to Supermarket Planner
-            </h2>
+            </h2> */}
             <div
               className="w-full mx-auto rounded-lg overflow-hidden
               [&_.amplify-tabs__list]:justify-center
@@ -64,9 +64,9 @@ const SignInPage: React.FC = () => {
             >
               <Authenticator />
             </div>
-            <p className="text-center text-sm text-gray-500 mt-6">
+            {/* <p className="text-center text-sm text-gray-500 mt-6">
               Don't have an account? <a href="#" className="text-purple-700 hover:underline">Contact Admin</a>
-            </p>
+            </p> */}
           </div>
         </div>
       </main>
