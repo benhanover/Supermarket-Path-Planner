@@ -58,7 +58,7 @@ const LandingPage: React.FC = () => {
         </div>
 
         {/* Lower Section */}
-        <section className="bg-white bg-opacity-60 backdrop-blur-md rounded-xl p-10 shadow-xl w-full max-w-5xl mx-auto mt-16 text-left">
+        <section className=" backdrop-blur-md rounded-xl p-10  w-full max-w-5xl mx-auto mt-16 text-left">
           <div className="flex flex-col md:flex-row items-center gap-10 md:gap-12">
             <div className="md:w-1/2 ">
               <h3 className="text-3xl font-extrabold text-gray-900 mb-3">
