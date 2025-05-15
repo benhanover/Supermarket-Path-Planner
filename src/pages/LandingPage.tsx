@@ -35,22 +35,22 @@ const LandingPage: React.FC = () => {
 
       <NavBar />
 
-      <main className="py-20 px-6 animate-fade-in text-center">
+      <main className="py-20 px-6 text-center">
         <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
-          <h2 className="text-5xl font-extrabold text-gray-900 mb-4 animate-fade-up">
+          <h2 className="text-5xl font-extrabold text-gray-900 mb-4 animate-scale-in">
             Smarter Shopping Starts Here
           </h2>
-          <p className="text-2xl text-gray-800 max-w-xl mx-auto animate-fade-up delay-100">
+          <p className="text-2xl text-gray-800 max-w-xl mx-auto animate-scale-in">
             Optimize your shopping route with ease ✨
           </p>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto mt-3 animate-fade-up delay-200">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mt-3 animate-scale-in">
             Discover a new way to navigate your grocery list — faster paths, fewer missed items, and a smoother store experience.
           </p>
 
-          <div className="mt-8 animate-fade-up delay-300">
+          <div className="mt-8 animate-scale-in">
             <Link
               to="/signin"
-              className="inline-block px-8 py-3 bg-purple-700 text-white text-lg font-medium rounded-lg shadow-lg hover:bg-purple-800 transition-transform transform hover:scale-105"
+              className="inline-block px-8 py-3 bg-[#5B8DB8] text-white text-lg font-medium rounded-lg shadow-lg hover:bg-[#5B8DB8] transition-transform transform hover:scale-105"
             >
               Get Started →
             </Link>
@@ -60,7 +60,7 @@ const LandingPage: React.FC = () => {
         {/* Lower Section */}
         <section className="bg-white bg-opacity-60 backdrop-blur-md rounded-xl p-10 shadow-xl w-full max-w-5xl mx-auto mt-16 text-left">
           <div className="flex flex-col md:flex-row items-center gap-10 md:gap-12">
-            <div className="md:w-1/2 animate-fade-up delay-500">
+            <div className="md:w-1/2 ">
               <h3 className="text-3xl font-extrabold text-gray-900 mb-3">
                 Efficient Supermarket Management
               </h3>
@@ -68,11 +68,11 @@ const LandingPage: React.FC = () => {
                 Manage your store layout and optimize shopping routes with our powerful, real-time system.
               </p>
             </div>
-            <div className="md:w-1/2 animate-fade-up delay-600">
+            <div className="md:w-1/2">
               <img
-                src="/assets/landingpic.png"
+                src="public/assets/ladywithcart.png"
                 alt="Store Layout Preview"
-                className="rounded-xl shadow-lg w-full max-w-sm mx-auto"
+                className="rounded-xl w-full max-w-sm mx-auto"
               />
             </div>
           </div>
