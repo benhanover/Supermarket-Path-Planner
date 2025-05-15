@@ -18,7 +18,7 @@ const SignInPage: React.FC = () => {
   }, [user, navigate]);
 
   return (
-    <div className="relative min-h-screen font-sans bg-gradient-to-br from-purple-100 to-white overflow-auto">
+    <div className="relative min-h-screen font-sans bg-gradient-to-br from-white to-purple-50 overflow-hidden">
       <img
         src="/bg-blue.svg"
         alt="background blob"
