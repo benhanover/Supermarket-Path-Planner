@@ -5,7 +5,6 @@ import Layout from "./Layout/Layout";
 import SidebarMenu from "./Layout/SidebarMenu";
 import ProductsEditor from "./Products/ProductsEditor";
 import ProductSquareEditor from "./Product_Square_Editor/ProductSquareEditor";
-import DisplaySquare from "./Product_Square_Editor/DisplaySquare"; // אל תשכח לוודא שזה הנתיב הנכון
 
 const DashboardContent = () => {
   const { activeTab } = useDashboard();
@@ -49,9 +48,6 @@ const DashboardContent = () => {
           onClick={() => setSidebarOpen(false)}
         ></div>
       )}
-
-      {/* Floating product info modal */}
-      <DisplaySquare />
     </div>
   );
 };
@@ -65,4 +61,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
