@@ -4,44 +4,50 @@ import { StorageImage } from '@aws-amplify/ui-react-storage';
 
 interface ProductHoverCardProps {
   square: Square;
-  position: { x: number, y: number };
+  position: { x: number; y: number };
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
 }
 
-const ProductHoverCard = ({ square, position }: ProductHoverCardProps) => {
+const ProductHoverCard = ({
+  square,
+  position,
+  onMouseEnter,
+  onMouseLeave
+}: ProductHoverCardProps) => {
   const { supermarket } = useAppContext();
 
   if (!supermarket || square.type !== "products" || square.productIds.length === 0) {
     return null;
   }
 
-  // Get the actual products from the IDs
   const productList = square.productIds
     .map((id) => supermarket.products.find((p) => p.id === id))
     .filter((p) => p !== undefined);
 
-  if (productList.length === 0) {
-    return null;
-  }
+  if (productList.length === 0) return null;
 
-  // Calculate position with boundaries to avoid edges
   const cardStyle: React.CSSProperties = {
     position: 'fixed',
     top: position.y,
     left: position.x,
-    zIndex: 50,
-    transform: 'translate(10px, 10px)', // Offset from cursor
+    zIndex: 1000,
+    transform: 'translate(-50%, 8px)', // מתחת לריבוע במרכז
+    width: '240px',
     maxHeight: '300px',
     overflowY: 'auto',
-    width: '220px',
+    pointerEvents: 'auto',
   };
 
   return (
     <div
       className="bg-white rounded-lg shadow-lg border border-gray-200 p-2"
       style={cardStyle}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <h3 className="text-sm font-bold mb-2 text-gray-700">Products in this square:</h3>
-      <div className="space-y-2 max-h-64 overflow-y-auto">
+      <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
         {productList.map((product) => (
           product && (
             <div key={product.id} className="p-2 bg-gray-50 rounded flex items-center gap-2 border border-gray-100">
@@ -59,7 +65,7 @@ const ProductHoverCard = ({ square, position }: ProductHoverCardProps) => {
                 </h4>
                 <p className="text-xs text-gray-600">${product.price.toFixed(2)}</p>
                 {product.category && (
-                  <span className="inline-block text-xs bg-gray-200 rounded-full px-1 py-0.5 truncate max-w-full">
+                  <span className="inline-block text-[10px] bg-gray-200 rounded-full px-1 py-0.5 truncate max-w-full">
                     {product.category}
                   </span>
                 )}

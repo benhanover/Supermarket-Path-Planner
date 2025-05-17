@@ -47,26 +47,12 @@ const InitializeLayout: React.FC = () => {
       if (!user?.userId) {
         throw new Error("User not found");
       }
-
-      // Create empty path data structure with metadata
-      const emptyPathData = {
-        dist: [], // Empty distance matrix
-        next: [], // Empty next matrix
-        metadata: {
-          timestamp: new Date().toISOString(),
-          rowCount: formData.layoutRows,
-          colCount: formData.layoutCols,
-          computed: false // Indicate that this is an empty placeholder
-        }
-      };
-
-      // Create Supermarket in DataStore with both layout and pathData
+      // Create Supermarket in DataStore
       const response = await client.models.Supermarket.create({
         owner: user?.userId,
         name: formData.supermarketName,
         address: formData.address,
         layout: JSON.stringify(initialLayout),
-        pathData: JSON.stringify(emptyPathData) // Add empty pathData
       });
 
       const newSupermarket = response.data;
@@ -80,11 +66,9 @@ const InitializeLayout: React.FC = () => {
         name: formData.supermarketName,
         layout: initialLayout,
         products: [],
-        pathData: emptyPathData // Include pathData in local state
       });
 
       console.log("Supermarket created successfully:", newSupermarket.id);
-      console.log("Empty pathData initialized for future path computation");
     } catch (error) {
       console.error("Failed to initialize supermarket:", error);
       setError("Failed to initialize supermarket. Please try again.");

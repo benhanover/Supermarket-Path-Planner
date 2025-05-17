@@ -7,8 +7,6 @@ import EditProductModal from "./EditProductModal";
 import AddProductModal from "./AddProductModal";
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 
-
-
 interface ProductsEditorProps {
   mode: "square" | "global";
 }
@@ -27,7 +25,6 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
   const [editProduct, setEditProduct] = useState<Product | null>(null);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
 
-
   const handleDeleteProduct = async (productId: string) => {
     if (
       window.confirm(
@@ -36,7 +33,6 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
     ) {
       try {
         await removeProduct(productId);
-        // The state updates are handled within the removeProduct function
       } catch (error) {
         console.error("Failed to delete product:", error);
       }
@@ -46,16 +42,13 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
   const toggleProductSelection = async (product: Product) => {
     if (mode !== "square" || !selectedSquare) return;
 
-    // Check if product is already in the square
     const isSelected = selectedSquare.productIds.includes(product.id);
     const updatedProductIds = isSelected
       ? selectedSquare.productIds.filter((id) => id !== product.id)
       : [...selectedSquare.productIds, product.id];
 
-    // Update selected square
     setSelectedSquare({ ...selectedSquare, productIds: updatedProductIds });
 
-    // Create the updated layout directly
     const updatedLayout = supermarket?.layout.map((row) =>
       row.map((square) =>
         square.row === selectedSquare.row && square.col === selectedSquare.col
@@ -64,7 +57,6 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
       )
     );
 
-    // Update supermarket layout in state
     if (updatedLayout) {
       setSupermarket((prev) => {
         if (!prev) return null;
@@ -73,11 +65,7 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
           layout: updatedLayout,
         };
       });
-    }
 
-    // Save the updated layout directly using the layout we just created
-    // This way we don't depend on the updated state being available yet
-    if (updatedLayout) {
       try {
         await saveLayout(updatedLayout);
       } catch (error) {
@@ -95,8 +83,7 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
       {mode === "global" && (
         <button
           onClick={() => setShowAddProductModal(true)}
-          className={`px-3 md:px-4 py-1 md:py-2 bg-emerald-500 text-white rounded mb-2 md:mb-4 hover:bg-emerald-600 flex items-center text-sm md:text-base ${isSaving ? "opacity-70 cursor-not-allowed" : ""
-            }`}
+          className={`px-3 md:px-4 py-1 md:py-2 bg-emerald-500 text-white rounded mb-2 md:mb-4 hover:bg-emerald-600 flex items-center text-sm md:text-base ${isSaving ? "opacity-70 cursor-not-allowed" : ""}`}
           disabled={isSaving}
         >
           {isSaving ? (
@@ -137,70 +124,72 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
         onChange={(e) => setSearchTerm(e.target.value)}
       />
 
-      <Products
-        searchTerm={searchTerm}
-        renderProduct={(product) => {
-          const isSelected =
-            mode === "square" &&
-            selectedSquare?.productIds.includes(product.id);
+      <div className="max-h-[70vh] overflow-y-auto pr-1">
+        <Products
+          searchTerm={searchTerm}
+          renderProduct={(product) => {
+            const isSelected =
+              mode === "square" &&
+              selectedSquare?.productIds.includes(product.id);
 
-          return (
-            <div
-              key={product.id}
-              className={`p-2 border rounded-lg cursor-pointer transition relative ${isSelected
-                ? "bg-yellow-200 border-yellow-400"
-                : "hover:bg-gray-100"
-                }`}
-              onClick={
-                mode === "square"
-                  ? () => toggleProductSelection(product)
-                  : undefined
-              }
-            >
-              <StorageImage alt="image" path={product.image} />
-              <p className="text-xs md:text-sm font-semibold truncate">{product.title}</p>
-              <p className="text-xs md:text-sm text-gray-600 font-medium">
-                ${product.price.toFixed(2)}
-              </p>
-              {product.category && (
-                <span className="text-xs bg-gray-200 rounded-full px-1 md:px-2 py-0.5 md:py-1 mt-1 inline-block truncate max-w-full">
-                  {product.category}
-                </span>
-              )}
+            return (
+              <div
+                key={product.id}
+                className={`p-2 border rounded-lg cursor-pointer transition relative ${isSelected
+                  ? "bg-yellow-200 border-yellow-400"
+                  : "hover:bg-gray-100"
+                  }`}
+                onClick={
+                  mode === "square"
+                    ? () => toggleProductSelection(product)
+                    : undefined
+                }
+              >
+                <StorageImage alt="image" path={product.image} />
+                <p className="text-xs md:text-sm font-semibold truncate">{product.title}</p>
+                <p className="text-xs md:text-sm text-gray-600 font-medium">
+                  ${product.price.toFixed(2)}
+                </p>
+                {product.category && (
+                  <span className="text-xs bg-gray-200 rounded-full px-1 md:px-2 py-0.5 md:py-1 mt-1 inline-block truncate max-w-full">
+                    {product.category}
+                  </span>
+                )}
 
-              {mode === "square" && isSelected && (
-                <span className="absolute top-1 right-1 md:top-2 md:right-2 bg-yellow-500 text-white text-xs px-1 md:px-2 py-0.5 md:py-1 rounded">
-                  Selected
-                </span>
-              )}
-              {mode === "global" && (
-                <div className="flex justify-between mt-1 md:mt-2 gap-1">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setEditProduct(product);
-                    }}
-                    className="px-1 md:px-3 py-0.5 md:py-1 bg-sky-500 text-white rounded text-xs md:text-sm hover:bg-sky-600 disabled:opacity-50"
-                    disabled={isSaving}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteProduct(product.id);
-                    }}
-                    className="px-1 md:px-3 py-0.5 md:py-1 bg-rose-600 text-white rounded text-xs md:text-sm hover:bg-rose-700 disabled:opacity-50"
-                    disabled={isSaving}
-                  >
-                    Delete
-                  </button>
-                </div>
-              )}
-            </div>
-          );
-        }}
-      />
+                {mode === "square" && isSelected && (
+                  <span className="absolute top-1 right-1 md:top-2 md:right-2 bg-yellow-500 text-white text-xs px-1 md:px-2 py-0.5 md:py-1 rounded">
+                    Selected
+                  </span>
+                )}
+                {mode === "global" && (
+                  <div className="flex justify-between mt-1 md:mt-2 gap-1">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditProduct(product);
+                      }}
+                      className="px-1 md:px-3 py-0.5 md:py-1 bg-sky-500 text-white rounded text-xs md:text-sm hover:bg-sky-600 disabled:opacity-50"
+                      disabled={isSaving}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteProduct(product.id);
+                      }}
+                      className="px-1 md:px-3 py-0.5 md:py-1 bg-rose-600 text-white rounded text-xs md:text-sm hover:bg-rose-700 disabled:opacity-50"
+                      disabled={isSaving}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          }}
+        />
+      </div>
 
       {showAddProductModal && mode === "global" && (
         <AddProductModal onClose={() => setShowAddProductModal(false)} />
