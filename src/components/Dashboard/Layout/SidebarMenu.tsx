@@ -9,6 +9,8 @@ import { tspNearestNeighbor } from "../../../utils/tsp_heuristic";
 import { tspHeldKarp } from "../../../utils/held_karp_tsp_optimal";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../../../../amplify/data/resource";
+import ProductsImporter from "../../ProductsImporter"; // Import the ProductsImporter component
+
 // Square types with colors for UI
 const squareTypes: { type: SquareType; color: string; label: string }[] = [
   { type: "empty", color: "bg-gray-300", label: "Empty" },
@@ -40,6 +42,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
   const [newRows, setNewRows] = useState<number | "">();
   const [newCols, setNewCols] = useState<number | "">();
   const [isComputingPaths, setIsComputingPaths] = useState(false);
+  const [showImporter, setShowImporter] = useState(false); // New state for toggling the products importer
 
   // Handle tab change with optional sidebar closing for mobile
   const handleTabChange = (tab: "layout" | "products" | "product_square") => {
@@ -172,6 +175,11 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
     }
   };
 
+  // Function to handle when import is complete
+  const handleImportComplete = (results: { successful: number; failed: number }) => {
+    console.log(`Product import completed: ${results.successful} successful, ${results.failed} failed`);
+  };
+
   return (
     <div className="w-64 min-h-screen bg-gray-200 p-4 md:p-6 flex flex-col gap-3 shadow-lg overflow-y-auto">
       {/* Editor Selection Tabs */}
@@ -198,6 +206,24 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
         >
           🔍 Product Square Editor
         </button>
+      </div>
+
+      {/* Import Products Section */}
+      <div className="mb-4">
+        <button
+          onClick={() => setShowImporter(!showImporter)}
+          className={`w-full px-3 py-2 rounded-lg font-semibold text-sm md:text-base transition
+            ${showImporter ? "bg-indigo-700" : "bg-indigo-600 hover:bg-indigo-700"}
+            text-white`}
+        >
+          {showImporter ? "Hide Products Importer" : "📦 Import Products"}
+        </button>
+
+        {showImporter && (
+          <div className="mt-3">
+            <ProductsImporter onComplete={handleImportComplete} />
+          </div>
+        )}
       </div>
 
       {/* Path Optimization Button */}

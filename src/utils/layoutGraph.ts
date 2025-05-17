@@ -17,10 +17,12 @@ export const buildGraph = (layout: Square[][]): number[][] => {
   const total = rows * cols;
   const INF = Infinity;
 
+  // Initialize graph with all Infinity
   const graph = Array.from({ length: total }, () =>
     Array.from({ length: total }, () => INF)
   );
 
+  // Set self-connections to 0
   for (let i = 0; i < total; i++) graph[i][i] = 0;
 
   // Define orthogonal and diagonal directions
@@ -38,18 +40,20 @@ export const buildGraph = (layout: Square[][]): number[][] => {
     [-1, -1], // up-left
   ];
 
+  // Create a lookup map to track which walkable square can access each product square
+  // Key: product square index, Value: array of walkable square indices that can access it
+  const productAccessMap = new Map<number, number[]>();
+
+  // First pass: identify walkable → product connections
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       const fromSquare = layout[row][col];
-      const from = toIndex(row, col, cols);
+      const fromIdx = toIndex(row, col, cols);
 
-      const isFromWalkable = isWalkable(fromSquare);
-      const isFromProduct = fromSquare.type === "products";
+      // Only consider walkable squares for the first pass
+      if (!isWalkable(fromSquare)) continue;
 
-      // Only move from walkable or product squares
-      if (!isFromWalkable && !isFromProduct) continue;
-
-      // Handle orthogonal movements (up, down, left, right)
+      // Check orthogonal neighbors
       for (const [dx, dy] of orthogonalDirs) {
         const r = row + dx;
         const c = col + dy;
@@ -57,20 +61,56 @@ export const buildGraph = (layout: Square[][]): number[][] => {
         if (r < 0 || r >= rows || c < 0 || c >= cols) continue;
 
         const toSquare = layout[r][c];
-        const to = toIndex(r, c, cols);
+        const toIdx = toIndex(r, c, cols);
 
-        const isToWalkable = isWalkable(toSquare);
-        const isToProduct = toSquare.type === "products";
+        // If neighbor is a product square, record the connection
+        if (toSquare.type === "products") {
+          if (!productAccessMap.has(toIdx)) {
+            productAccessMap.set(toIdx, []);
+          }
+          productAccessMap.get(toIdx)!.push(fromIdx);
 
-        // Disallow product → product
-        if (isFromProduct && isToProduct) continue;
-
-        // Allow walkable → walkable or walkable → product
-        // Allow product → walkable (stepping off)
-        if ((isFromWalkable && (isToWalkable || isToProduct)) ||
-          (isFromProduct && isToWalkable)) {
-          graph[from][to] = 1;
+          // Set walkable → product connection
+          graph[fromIdx][toIdx] = 1;
         }
+      }
+    }
+  }
+
+  // Main pass: set all other connections
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const fromSquare = layout[row][col];
+      const fromIdx = toIndex(row, col, cols);
+
+      // Handle connections from product squares - can only return to squares that can access them
+      if (fromSquare.type === "products") {
+        const accessPoints = productAccessMap.get(fromIdx) || [];
+        for (const accessPointIdx of accessPoints) {
+          // Set product → walkable connection (two-way connection)
+          graph[fromIdx][accessPointIdx] = 1;
+        }
+        continue; // Skip other connection types for product squares
+      }
+
+      // Skip non-walkable squares that aren't products
+      if (!isWalkable(fromSquare)) continue;
+
+      // Handle orthogonal movements for walkable squares
+      for (const [dx, dy] of orthogonalDirs) {
+        const r = row + dx;
+        const c = col + dy;
+
+        if (r < 0 || r >= rows || c < 0 || c >= cols) continue;
+
+        const toSquare = layout[r][c];
+        const toIdx = toIndex(r, c, cols);
+
+        // Allow walkable → walkable
+        if (isWalkable(toSquare)) {
+          graph[fromIdx][toIdx] = 1;
+        }
+        // Note: walkable → product connections are handled in the first pass
       }
 
       // Handle diagonal movements - ONLY BETWEEN EMPTY SQUARES
@@ -82,11 +122,11 @@ export const buildGraph = (layout: Square[][]): number[][] => {
           if (r < 0 || r >= rows || c < 0 || c >= cols) continue;
 
           const toSquare = layout[r][c];
-          const to = toIndex(r, c, cols);
+          const toIdx = toIndex(r, c, cols);
 
           // Only allow diagonal movement to empty squares
           if (toSquare.type === "empty") {
-            graph[from][to] = Math.SQRT2; // Diagonal distance cost
+            graph[fromIdx][toIdx] = Math.SQRT2; // Diagonal distance cost
           }
         }
       }
