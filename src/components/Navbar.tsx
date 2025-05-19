@@ -1,10 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 
-type NavBarProps = {
-  signInStyle?: "compact" | "default";
-};
 
-export const NavBar = ({ signInStyle = "default" }: NavBarProps) => {
+export const NavBar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
 

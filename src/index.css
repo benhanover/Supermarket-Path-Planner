@@ -6,21 +6,15 @@ body {
 }
 
 /* Hide scrollbar for all elements */
-::-webkit-scrollbar {
+/* הסתרת סרגל גלילה רק ל־body */
+body::-webkit-scrollbar {
   display: none;
-  /* For Chrome, Safari, and Opera */
 }
 
-/* For Firefox */
-* {
+body {
   scrollbar-width: none;
-}
-
-/* For IE and Edge */
-* {
   -ms-overflow-style: none;
 }
-
 /* Ensure body and html allow scrolling but hide the bar */
 html,
 body {
