@@ -40,7 +40,7 @@ const DashboardContent = () => {
         {activeTab === "products" && <ProductsEditor mode="global" />}
         {activeTab === "product_square" && <ProductSquareEditor />}
       </div>
-
+     
       {/* Mobile backdrop */}
       {sidebarOpen && (
         <div
