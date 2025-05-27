@@ -7,15 +7,15 @@ export const NavBar = () => {
 
   const getLinkClass = (path: string) => {
     const baseClass = "px-3 py-1 rounded-md transition font-medium";
-    const activeClass = `${baseClass} bg-purple-100 text-purple-800`;
-    const inactiveClass = `${baseClass} text-gray-700 hover:text-purple-800 hover:bg-purple-50`;
+    const activeClass = `${baseClass} text-[#5B8DB8]`;
+    const inactiveClass = `${baseClass} text-black hover:text-[#5B8DB8]`;
 
     return currentPath === path ? activeClass : inactiveClass;
   };
 
   return (
     <header className="flex items-center justify-between px-6 py-4 shadow">
-      <h1 className="text-2xl font-bold text-purple-800 flex items-center gap-2">
+      <h1 className="text-2xl font-bold text-[#5B8DB8] flex items-center gap-2">
         🛒 Supermarket Path Planner
       </h1>
       <nav className="space-x-2">
