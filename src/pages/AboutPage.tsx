@@ -14,7 +14,7 @@ const AboutPage: React.FC = () => {
       <main className="py-20 px-6 animate-fade-in text-center">
         <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
           <img
-            src="public/assets/about.png"
+            src="/assets/about.png"
             alt="About Illustration"
             className="w-44 h-44 mb-8 object-contain drop-shadow-xl transition-transform duration-700 ease-in-out hover:scale-105"
           />

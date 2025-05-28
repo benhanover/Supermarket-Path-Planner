@@ -70,7 +70,7 @@ const LandingPage: React.FC = () => {
             </div>
             <div className="md:w-1/2">
               <img
-                src="public/assets/ladywithcart.png"
+                src="/assets/ladywithcart.png"
                 alt="Store Layout Preview"
                 className="rounded-xl w-full max-w-sm mx-auto"
               />

@@ -15,7 +15,7 @@ const GoalPage = () => {
       <main className="py-20 px-6 animate-fade-in text-center">
         <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
           <img
-            src="public/assets/goals.png"
+            src="/assets/goals.png"
             alt="Goals Illustration"
             className="w-40 h-40 mb-8 object-contain drop-shadow-xl transition-transform duration-700 ease-in-out hover:scale-105"
           />
