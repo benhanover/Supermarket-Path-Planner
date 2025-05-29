@@ -15,7 +15,7 @@ const DocsPage: React.FC = () => {
       <main className="py-20 px-6 animate-fade-in text-center">
         <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
           <img
-            src="public/assets/docsimage.png"
+            src="/assets/docsimage.png"
             alt="Docs Illustration"
             className="w-48 h-48 mb-8 object-contain drop-shadow-xl transition-transform duration-700 ease-in-out hover:scale-105"
           />
