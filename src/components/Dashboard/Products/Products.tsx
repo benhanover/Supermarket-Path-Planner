@@ -20,47 +20,39 @@ const Products = ({ searchTerm, renderProduct }: ProductsProps) => {
     }));
   };
 
-  // Adjust products per page based on screen size
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 640) { // sm
-        setProductsPerPage(6); // Fewer products on mobile
-      } else if (window.innerWidth < 1024) { // md/lg
+      if (window.innerWidth < 640) {
+        setProductsPerPage(6);
+      } else if (window.innerWidth < 1024) {
         setProductsPerPage(8);
       } else {
-        setProductsPerPage(12); // Default for larger screens
+        setProductsPerPage(12);
       }
     };
 
-    handleResize(); // Set initial value
+    handleResize();
     window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Filter products based on search term
   const filteredProducts = useMemo(() => {
     if (!supermarket) return [];
     return supermarket.products.filter(
       (product) =>
         product?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (product?.category &&
-          product.category.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (product?.description &&
-          product.description.toLowerCase().includes(searchTerm.toLowerCase()))
+        product?.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product?.description?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [supermarket, searchTerm]);
 
-  // Pagination calculations
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+
   const paginatedProducts = useMemo(() => {
     const startIndex = (currentPage - 1) * productsPerPage;
     return filteredProducts.slice(startIndex, startIndex + productsPerPage);
   }, [filteredProducts, currentPage, productsPerPage]);
 
-  // Reset to first page when search changes
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm]);
@@ -86,13 +78,18 @@ const Products = ({ searchTerm, renderProduct }: ProductsProps) => {
   return (
     <div>
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4 mb-4">
-        {paginatedProducts.map((product) =>
-          renderProduct ? (
+        {paginatedProducts.map((product) => {
+          const imageUrl =
+            imgErrors[product.id] || !product.image?.startsWith("http")
+              ? "/assets/product-placeholder.png"
+              : product.image;
+
+          return renderProduct ? (
             renderProduct(product)
           ) : (
             <div key={product.id} className="p-2 md:p-4 border rounded-lg shadow-sm">
               <img
-                src={imgErrors[product.id] ? "/assets/product-placeholder.png" : (product.image || "/assets/product-placeholder.png")}
+                src={imageUrl}
                 alt={product.title}
                 className="w-full h-16 md:h-32 object-cover mb-1 md:mb-2 rounded"
                 onError={() => handleImageError(product.id)}
@@ -110,11 +107,10 @@ const Products = ({ searchTerm, renderProduct }: ProductsProps) => {
                 </span>
               )}
             </div>
-          )
-        )}
+          );
+        })}
       </div>
 
-      {/* Pagination Controls */}
       {totalPages > 1 && (
         <div className="flex justify-center items-center space-x-1 md:space-x-2 mt-2 md:mt-4">
           <button
@@ -130,9 +126,7 @@ const Products = ({ searchTerm, renderProduct }: ProductsProps) => {
           </span>
 
           <button
-            onClick={() =>
-              setCurrentPage((page) => Math.min(page + 1, totalPages))
-            }
+            onClick={() => setCurrentPage((page) => Math.min(page + 1, totalPages))}
             disabled={currentPage === totalPages}
             className="px-2 md:px-4 py-1 md:py-2 bg-gray-200 rounded text-xs md:text-sm disabled:opacity-50"
           >
