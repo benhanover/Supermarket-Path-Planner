@@ -3,13 +3,13 @@ import { useDashboard } from "../DashboardContext/useDashboard";
 import { EditableAction } from "../types";
 import { SquareType } from "../types";
 import { useState } from "react";
-import { buildGraph } from "../../../utils/layoutGraph";
-import { floydWarshall } from "../../../utils/floydWarshall";
-import { tspNearestNeighbor } from "../../../utils/tsp_heuristic";
-import { tspHeldKarp } from "../../../utils/held_karp_tsp_optimal";
-import { generateClient } from "aws-amplify/data";
-import type { Schema } from "../../../../amplify/data/resource";
-import ProductsImporter from "../../ProductsImporter"; // Import the ProductsImporter component
+// import { buildGraph } from "../../../utils/layoutGraph";
+// import { floydWarshall } from "../../../utils/floydWarshall";
+// import { tspNearestNeighbor } from "../../../utils/tsp_heuristic";
+// import { tspHeldKarp } from "../../../utils/held_karp_tsp_optimal";
+// import { generateClient } from "aws-amplify/data";
+// import type { Schema } from "../../../../amplify/data/resource";
+// import ProductsImporter from "../../ProductsImporter"; // Import the ProductsImporter component
 
 // Square types with colors for UI
 const squareTypes: { type: SquareType; color: string; label: string }[] = [
@@ -34,15 +34,17 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
     saveLayout,
     activeTab,
     setActiveTab,
-    setIsSaving
+    // setIsSaving
   } = useDashboard();
-  const { supermarket, setSupermarket } = useAppContext();
+  const { setSupermarket } = useAppContext();
+  // const { supermarket, setSupermarket } = useAppContext();
 
   const [showSizePrompt, setShowSizePrompt] = useState(false);
   const [newRows, setNewRows] = useState<number | "">();
   const [newCols, setNewCols] = useState<number | "">();
-  const [isComputingPaths, setIsComputingPaths] = useState(false);
-  const [showImporter, setShowImporter] = useState(false); // New state for toggling the products importer
+  // const [isComputingPaths, setIsComputingPaths] = useState(false);
+  // const [setIsComputingPaths] = useState(false);
+  // const [showImporter, setShowImporter] = useState(false); // New state for toggling the products importer
 
   // Handle tab change with optional sidebar closing for mobile
   const handleTabChange = (tab: "layout" | "products" | "product_square") => {
@@ -52,80 +54,80 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
     }
   };
 
-  // Function to compute path data and save it to the database
-  const computePathData = async () => {
-    if (!supermarket || !supermarket.layout) return;
+  // // Function to compute path data and save it to the database
+  // const computePathData = async () => {
+  //   if (!supermarket || !supermarket.layout) return;
 
-    try {
-      setIsComputingPaths(true);
+  //   try {
+  //     setIsComputingPaths(true);
 
-      // Build the graph from the layout
-      console.log("Building graph from layout...");
-      const graph = buildGraph(supermarket.layout);
+  //     // Build the graph from the layout
+  //     console.log("Building graph from layout...");
+  //     const graph = buildGraph(supermarket.layout);
 
-      // Run Floyd-Warshall algorithm
-      console.log("Running Floyd-Warshall algorithm...");
-      const { dist, next } = floydWarshall(graph);
+  //     // Run Floyd-Warshall algorithm
+  //     console.log("Running Floyd-Warshall algorithm...");
+  //     const { dist, next } = floydWarshall(graph);
 
-      console.log("Distance matrix:", dist);
-      console.log("Next matrix:", next);
+  //     console.log("Distance matrix:", dist);
+  //     console.log("Next matrix:", next);
 
-      // Create path data object
-      const pathData = {
-        dist,
-        next,
-        metadata: {
-          timestamp: new Date().toISOString(),
-          rowCount: supermarket.layout.length,
-          colCount: supermarket.layout[0].length,
-        },
-      };
+  //     // Create path data object
+  //     const pathData = {
+  //       dist,
+  //       next,
+  //       metadata: {
+  //         timestamp: new Date().toISOString(),
+  //         rowCount: supermarket.layout.length,
+  //         colCount: supermarket.layout[0].length,
+  //       },
+  //     };
 
-      console.log("Path data created successfully");
+  //     console.log("Path data created successfully");
 
-      // Update local state with path data
-      setSupermarket((prev) => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          pathData,
-        };
-      });
+  //     // Update local state with path data
+  //     setSupermarket((prev) => {
+  //       if (!prev) return null;
+  //       return {
+  //         ...prev,
+  //         pathData,
+  //       };
+  //     });
 
-      // Save path data to the database
-      if (supermarket.id) {
-        console.log("Saving path data to the database...");
-        setIsSaving(true);
+  //     // Save path data to the database
+  //     if (supermarket.id) {
+  //       console.log("Saving path data to the database...");
+  //       setIsSaving(true);
 
-        // Import the client from your existing Amplify configuration
-        const client = generateClient<Schema>();
+  //       // Import the client from your existing Amplify configuration
+  //       const client = generateClient<Schema>();
 
-        // Update the supermarket in the database
-        await client.models.Supermarket.update({
-          id: supermarket.id,
-          pathData: JSON.stringify(pathData), // Convert to string for storage
-        });
+  //       // Update the supermarket in the database
+  //       await client.models.Supermarket.update({
+  //         id: supermarket.id,
+  //         pathData: JSON.stringify(pathData), // Convert to string for storage
+  //       });
 
-        console.log("Path data saved to database successfully!");
+  //       console.log("Path data saved to database successfully!");
 
-        // Keep the saving indicator visible briefly
-        setTimeout(() => {
-          setIsSaving(false);
-        }, 500);
+  //       // Keep the saving indicator visible briefly
+  //       setTimeout(() => {
+  //         setIsSaving(false);
+  //       }, 500);
 
-        alert("Path optimization data computed and saved successfully!");
-      } else {
-        console.error("No supermarket ID found for saving path data");
-        alert("Path optimization data computed but not saved (missing supermarket ID)");
-      }
-    } catch (error) {
-      console.error("Failed to compute or save path data:", error);
-      setIsSaving(false);
-      alert("Failed to process path data. Please check console for details.");
-    } finally {
-      setIsComputingPaths(false);
-    }
-  };
+  //       alert("Path optimization data computed and saved successfully!");
+  //     } else {
+  //       console.error("No supermarket ID found for saving path data");
+  //       alert("Path optimization data computed but not saved (missing supermarket ID)");
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to compute or save path data:", error);
+  //     setIsSaving(false);
+  //     alert("Failed to process path data. Please check console for details.");
+  //   } finally {
+  //     setIsComputingPaths(false);
+  //   }
+  // };
 
   // Function to confirm new layout size
   const confirmLayoutSize = async () => {
@@ -176,9 +178,9 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
   };
 
   // Function to handle when import is complete
-  const handleImportComplete = (results: { successful: number; failed: number }) => {
-    console.log(`Product import completed: ${results.successful} successful, ${results.failed} failed`);
-  };
+  // const handleImportComplete = (results: { successful: number; failed: number }) => {
+  //   console.log(`Product import completed: ${results.successful} successful, ${results.failed} failed`);
+  // };
 
   return (
     <div className="w-64 min-h-screen bg-gray-200 p-4 md:p-6 flex flex-col gap-3 shadow-lg overflow-y-auto">
@@ -209,7 +211,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
       </div>
 
       {/* Import Products Section */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <button
           onClick={() => setShowImporter(!showImporter)}
           className={`w-full px-3 py-2 rounded-lg font-semibold text-sm md:text-base transition
@@ -224,10 +226,10 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
             <ProductsImporter onComplete={handleImportComplete} />
           </div>
         )}
-      </div>
+      </div> */}
 
       {/* Path Optimization Button */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <button
           onClick={computePathData}
           disabled={isComputingPaths || !supermarket}
@@ -375,7 +377,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
             ).toLocaleString()}
           </div>
         )}
-      </div>
+      </div> */}
 
       {/* Show Layout Controls only when Layout tab is active */}
       {activeTab === "layout" && (
