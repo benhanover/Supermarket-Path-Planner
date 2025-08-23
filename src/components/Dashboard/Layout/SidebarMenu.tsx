@@ -3,7 +3,7 @@ import { useDashboard } from "../DashboardContext/useDashboard";
 import { EditableAction } from "../types";
 import { SquareType } from "../types";
 import { useState } from "react";
-import { tspNearestNeighbor } from "../../../utils/tsp_heuristic";
+// import { tspNearestNeighbor } from "../../../utils/tsp_heuristic";
 import { tspHeldKarp } from "../../../utils/held_karp_tsp_optimal";
 // import ProductsImporter from "../../ProductsImporter"; // Import the ProductsImporter component
 
@@ -216,6 +216,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
         </button>
         */}
 
+        {/**
         <button
           onClick={() => {
             const input = prompt(
@@ -254,6 +255,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
         >
           🧪 Test TSP Heuristic
         </button>
+        */}
 
         <button
           onClick={() => {
