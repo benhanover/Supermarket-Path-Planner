@@ -3,12 +3,9 @@ import { useDashboard } from "../DashboardContext/useDashboard";
 import { EditableAction } from "../types";
 import { SquareType } from "../types";
 import { useState } from "react";
-import { buildGraph } from "../../../utils/layoutGraph";
-import { floydWarshall } from "../../../utils/floydWarshall";
+import { computePathDataForLayout } from "../../../utils/pathOptimization";
 import { tspNearestNeighbor } from "../../../utils/tsp_heuristic";
 import { tspHeldKarp } from "../../../utils/held_karp_tsp_optimal";
-import { generateClient } from "aws-amplify/data";
-import type { Schema } from "../../../../amplify/data/resource";
 import ProductsImporter from "../../ProductsImporter"; // Import the ProductsImporter component
 
 // Square types with colors for UI
@@ -34,7 +31,8 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
     saveLayout,
     activeTab,
     setActiveTab,
-    setIsSaving
+    setIsSaving,
+    triggerPathRecompute,
   } = useDashboard();
   const { supermarket, setSupermarket } = useAppContext();
 
@@ -58,29 +56,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
 
     try {
       setIsComputingPaths(true);
-
-      // Build the graph from the layout
-      console.log("Building graph from layout...");
-      const graph = buildGraph(supermarket.layout);
-
-      // Run Floyd-Warshall algorithm
-      console.log("Running Floyd-Warshall algorithm...");
-      const { dist, next } = floydWarshall(graph);
-
-      console.log("Distance matrix:", dist);
-      console.log("Next matrix:", next);
-
-      // Create path data object
-      const pathData = {
-        dist,
-        next,
-        metadata: {
-          timestamp: new Date().toISOString(),
-          rowCount: supermarket.layout.length,
-          colCount: supermarket.layout[0].length,
-        },
-      };
-
+      const pathData = computePathDataForLayout(supermarket.layout);
       console.log("Path data created successfully");
 
       // Update local state with path data
@@ -96,15 +72,8 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
       if (supermarket.id) {
         console.log("Saving path data to the database...");
         setIsSaving(true);
-
-        // Import the client from your existing Amplify configuration
-        const client = generateClient<Schema>();
-
-        // Update the supermarket in the database
-        await client.models.Supermarket.update({
-          id: supermarket.id,
-          pathData: JSON.stringify(pathData), // Convert to string for storage
-        });
+        const { persistPathData } = await import("../DashboardContext/pathApi");
+        await persistPathData(supermarket.id, pathData);
 
         console.log("Path data saved to database successfully!");
 
@@ -116,7 +85,9 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
         alert("Path optimization data computed and saved successfully!");
       } else {
         console.error("No supermarket ID found for saving path data");
-        alert("Path optimization data computed but not saved (missing supermarket ID)");
+        alert(
+          "Path optimization data computed but not saved (missing supermarket ID)"
+        );
       }
     } catch (error) {
       console.error("Failed to compute or save path data:", error);
@@ -167,6 +138,8 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
 
       // Save the layout to the database
       await saveLayout(newLayout);
+      // Trigger path recompute after size change
+      triggerPathRecompute();
 
       setShowSizePrompt(false);
       setActiveAction(EditableAction.None);
@@ -176,8 +149,13 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
   };
 
   // Function to handle when import is complete
-  const handleImportComplete = (results: { successful: number; failed: number }) => {
-    console.log(`Product import completed: ${results.successful} successful, ${results.failed} failed`);
+  const handleImportComplete = (results: {
+    successful: number;
+    failed: number;
+  }) => {
+    console.log(
+      `Product import completed: ${results.successful} successful, ${results.failed} failed`
+    );
   };
 
   return (
@@ -186,22 +164,25 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
       <div className="mb-4 space-y-2">
         <h2 className="text-lg font-bold text-gray-700 mb-3">Dashboard</h2>
         <button
-          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${activeTab === "layout" ? "bg-blue-200" : ""
-            }`}
+          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${
+            activeTab === "layout" ? "bg-blue-200" : ""
+          }`}
           onClick={() => handleTabChange("layout")}
         >
           🎨 Layout Editor
         </button>
         <button
-          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${activeTab === "products" ? "bg-blue-200" : ""
-            }`}
+          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${
+            activeTab === "products" ? "bg-blue-200" : ""
+          }`}
           onClick={() => handleTabChange("products")}
         >
           🛠 Products Editor
         </button>
         <button
-          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${activeTab === "product_square" ? "bg-blue-200" : ""
-            }`}
+          className={`w-full text-left px-3 py-2 rounded-lg font-semibold transition hover:bg-blue-200 text-sm md:text-base ${
+            activeTab === "product_square" ? "bg-blue-200" : ""
+          }`}
           onClick={() => handleTabChange("product_square")}
         >
           🔍 Product Square Editor
@@ -213,7 +194,11 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
         <button
           onClick={() => setShowImporter(!showImporter)}
           className={`w-full px-3 py-2 rounded-lg font-semibold text-sm md:text-base transition
-            ${showImporter ? "bg-indigo-700" : "bg-indigo-600 hover:bg-indigo-700"}
+            ${
+              showImporter
+                ? "bg-indigo-700"
+                : "bg-indigo-600 hover:bg-indigo-700"
+            }
             text-white`}
         >
           {showImporter ? "Hide Products Importer" : "📦 Import Products"}
@@ -232,9 +217,10 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
           onClick={computePathData}
           disabled={isComputingPaths || !supermarket}
           className={`w-full px-3 py-2 rounded-lg font-semibold text-sm md:text-base transition
-            ${isComputingPaths
-              ? "bg-yellow-300 cursor-wait"
-              : "bg-emerald-500 text-white hover:bg-emerald-600"
+            ${
+              isComputingPaths
+                ? "bg-yellow-300 cursor-wait"
+                : "bg-emerald-500 text-white hover:bg-emerald-600"
             }
             ${!supermarket ? "opacity-50 cursor-not-allowed" : ""}
           `}
@@ -299,7 +285,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
             console.log("TSP result:", result);
             alert(
               "TSP order:\n" +
-              result.map((sq) => `(${sq.row},${sq.col})`).join(" → ")
+                result.map((sq) => `(${sq.row},${sq.col})`).join(" → ")
             );
           }}
           className="w-full px-3 py-2 rounded-lg font-semibold text-sm md:text-base bg-indigo-500 text-white hover:bg-indigo-600 mt-2"
@@ -357,9 +343,10 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
 
             console.log("Optimal TSP result:", result);
             alert(
-              `Start: (${startSquare?.row ?? "default"},${startSquare?.col ?? ""
+              `Start: (${startSquare?.row ?? "default"},${
+                startSquare?.col ?? ""
               })\nOptimal TSP order:\n` +
-              result.map((sq) => `(${sq.row},${sq.col})`).join(" → ")
+                result.map((sq) => `(${sq.row},${sq.col})`).join(" → ")
             );
           }}
           className="w-full px-3 py-2 rounded-lg font-semibold text-sm md:text-base bg-purple-600 text-white hover:bg-purple-700 mt-2"
@@ -394,9 +381,10 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
                   )
                 }
                 className={`p-2 md:p-3 rounded-lg font-semibold transition w-full text-sm md:text-base
-                  ${activeAction === EditableAction.ModifyLayout
-                    ? "bg-blue-200 hover:bg-blue-300 text-black"
-                    : "bg-gray-400 hover:bg-blue-200 text-black"
+                  ${
+                    activeAction === EditableAction.ModifyLayout
+                      ? "bg-blue-200 hover:bg-blue-300 text-black"
+                      : "bg-gray-400 hover:bg-blue-200 text-black"
                   }`}
               >
                 {activeAction === EditableAction.ModifyLayout
@@ -439,9 +427,10 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
                   }
                 }}
                 className={`p-2 md:p-3 rounded-lg font-semibold transition w-full text-sm md:text-base
-                  ${activeAction === EditableAction.EditProducts
-                    ? "bg-blue-200 hover:bg-blue-300 text-black"
-                    : "bg-gray-400 hover:bg-blue-200 text-black"
+                  ${
+                    activeAction === EditableAction.EditProducts
+                      ? "bg-blue-200 hover:bg-blue-300 text-black"
+                      : "bg-gray-400 hover:bg-blue-200 text-black"
                   }`}
               >
                 {activeAction === EditableAction.EditProducts
@@ -463,9 +452,10 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
                   setShowSizePrompt(true);
                 }}
                 className={`p-2 md:p-3 rounded-lg font-semibold transition w-full text-sm md:text-base
-                  ${activeAction === EditableAction.ChangeLayoutSize
-                    ? "bg-blue-200 hover:bg-blue-300 text-black"
-                    : "bg-gray-400 hover:bg-blue-200 text-black"
+                  ${
+                    activeAction === EditableAction.ChangeLayoutSize
+                      ? "bg-blue-200 hover:bg-blue-300 text-black"
+                      : "bg-gray-400 hover:bg-blue-200 text-black"
                   }`}
               >
                 {activeAction === EditableAction.ChangeLayoutSize

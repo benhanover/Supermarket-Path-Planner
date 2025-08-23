@@ -2,12 +2,14 @@ import { useState } from "react";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../../amplify/data/resource";
 import { useAppContext } from "../context/AppContext";
+import { useDashboard } from "./Dashboard/DashboardContext/useDashboard";
 import { SquareType, Square } from "./Dashboard/types";
 
 const client = generateClient<Schema>();
 
 const InitializeLayout: React.FC = () => {
   const { setSupermarket, user } = useAppContext();
+  const { triggerPathRecompute } = useDashboard();
   const [formData, setFormData] = useState({
     supermarketName: "",
     address: "",
@@ -56,8 +58,8 @@ const InitializeLayout: React.FC = () => {
           timestamp: new Date().toISOString(),
           rowCount: formData.layoutRows,
           colCount: formData.layoutCols,
-          computed: false // Indicate that this is an empty placeholder
-        }
+          computed: false, // Indicate that this is an empty placeholder
+        },
       };
 
       // Create Supermarket in DataStore with both layout and pathData
@@ -66,7 +68,7 @@ const InitializeLayout: React.FC = () => {
         name: formData.supermarketName,
         address: formData.address,
         layout: JSON.stringify(initialLayout),
-        pathData: JSON.stringify(emptyPathData) // Add empty pathData
+        pathData: JSON.stringify(emptyPathData), // Add empty pathData
       });
 
       const newSupermarket = response.data;
@@ -80,11 +82,13 @@ const InitializeLayout: React.FC = () => {
         name: formData.supermarketName,
         layout: initialLayout,
         products: [],
-        pathData: emptyPathData // Include pathData in local state
+        pathData: emptyPathData, // Include pathData in local state
       });
 
       console.log("Supermarket created successfully:", newSupermarket.id);
       console.log("Empty pathData initialized for future path computation");
+      // Trigger initial path computation in background
+      triggerPathRecompute();
     } catch (error) {
       console.error("Failed to initialize supermarket:", error);
       setError("Failed to initialize supermarket. Please try again.");

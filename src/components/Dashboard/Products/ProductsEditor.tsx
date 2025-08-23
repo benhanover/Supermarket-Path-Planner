@@ -5,9 +5,7 @@ import { useAppContext } from "../../../context/AppContext";
 import { Product } from "../types";
 import EditProductModal from "./EditProductModal";
 import AddProductModal from "./AddProductModal";
-import { StorageImage } from '@aws-amplify/ui-react-storage';
-
-
+import { StorageImage } from "@aws-amplify/ui-react-storage";
 
 interface ProductsEditorProps {
   mode: "square" | "global";
@@ -20,13 +18,13 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
     removeProduct,
     isSaving,
     saveLayout,
+    triggerPathRecompute,
   } = useDashboard();
   const { supermarket, setSupermarket } = useAppContext();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [editProduct, setEditProduct] = useState<Product | null>(null);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
-
 
   const handleDeleteProduct = async (productId: string) => {
     if (
@@ -82,6 +80,9 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
         await saveLayout(updatedLayout);
       } catch (error) {
         console.error("Failed to save product selection:", error);
+      } finally {
+        // Recompute paths after the layout change
+        triggerPathRecompute();
       }
     }
   };
@@ -95,8 +96,9 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
       {mode === "global" && (
         <button
           onClick={() => setShowAddProductModal(true)}
-          className={`px-3 md:px-4 py-1 md:py-2 bg-emerald-500 text-white rounded mb-2 md:mb-4 hover:bg-emerald-600 flex items-center text-sm md:text-base ${isSaving ? "opacity-70 cursor-not-allowed" : ""
-            }`}
+          className={`px-3 md:px-4 py-1 md:py-2 bg-emerald-500 text-white rounded mb-2 md:mb-4 hover:bg-emerald-600 flex items-center text-sm md:text-base ${
+            isSaving ? "opacity-70 cursor-not-allowed" : ""
+          }`}
           disabled={isSaving}
         >
           {isSaving ? (
@@ -147,10 +149,11 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
           return (
             <div
               key={product.id}
-              className={`p-2 border rounded-lg cursor-pointer transition relative ${isSelected
-                ? "bg-yellow-200 border-yellow-400"
-                : "hover:bg-gray-100"
-                }`}
+              className={`p-2 border rounded-lg cursor-pointer transition relative ${
+                isSelected
+                  ? "bg-yellow-200 border-yellow-400"
+                  : "hover:bg-gray-100"
+              }`}
               onClick={
                 mode === "square"
                   ? () => toggleProductSelection(product)
@@ -158,7 +161,9 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
               }
             >
               <StorageImage alt="image" path={product.image} />
-              <p className="text-xs md:text-sm font-semibold truncate">{product.title}</p>
+              <p className="text-xs md:text-sm font-semibold truncate">
+                {product.title}
+              </p>
               <p className="text-xs md:text-sm text-gray-600 font-medium">
                 ${product.price.toFixed(2)}
               </p>
