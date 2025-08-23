@@ -4,7 +4,7 @@ import { EditableAction } from "../types";
 import { SquareType } from "../types";
 import { useState } from "react";
 // import { tspNearestNeighbor } from "../../../utils/tsp_heuristic";
-import { tspHeldKarp } from "../../../utils/held_karp_tsp_optimal";
+// import { tspHeldKarp } from "../../../utils/held_karp_tsp_optimal";
 // import ProductsImporter from "../../ProductsImporter"; // Import the ProductsImporter component
 
 // Square types with colors for UI
@@ -257,6 +257,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
         </button>
         */}
 
+        {/**
         <button
           onClick={() => {
             const input = prompt(
@@ -317,6 +318,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
         >
           🧪 Test Optimal TSP (DP)
         </button>
+        */}
 
         {supermarket?.pathData && (
           <div className="mt-2 text-xs text-gray-600">
