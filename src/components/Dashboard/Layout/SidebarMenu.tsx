@@ -3,7 +3,6 @@ import { useDashboard } from "../DashboardContext/useDashboard";
 import { EditableAction } from "../types";
 import { SquareType } from "../types";
 import { useState } from "react";
-import { computePathDataForLayout } from "../../../utils/pathOptimization";
 import { tspNearestNeighbor } from "../../../utils/tsp_heuristic";
 import { tspHeldKarp } from "../../../utils/held_karp_tsp_optimal";
 import ProductsImporter from "../../ProductsImporter"; // Import the ProductsImporter component
@@ -31,15 +30,14 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
     saveLayout,
     activeTab,
     setActiveTab,
-    setIsSaving,
     triggerPathRecompute,
+    isComputingPaths,
   } = useDashboard();
   const { supermarket, setSupermarket } = useAppContext();
 
   const [showSizePrompt, setShowSizePrompt] = useState(false);
   const [newRows, setNewRows] = useState<number | "">();
   const [newCols, setNewCols] = useState<number | "">();
-  const [isComputingPaths, setIsComputingPaths] = useState(false);
   const [showImporter, setShowImporter] = useState(false); // New state for toggling the products importer
 
   // Handle tab change with optional sidebar closing for mobile
@@ -52,50 +50,8 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
 
   // Function to compute path data and save it to the database
   const computePathData = async () => {
-    if (!supermarket || !supermarket.layout) return;
-
-    try {
-      setIsComputingPaths(true);
-      const pathData = computePathDataForLayout(supermarket.layout);
-      console.log("Path data created successfully");
-
-      // Update local state with path data
-      setSupermarket((prev) => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          pathData,
-        };
-      });
-
-      // Save path data to the database
-      if (supermarket.id) {
-        console.log("Saving path data to the database...");
-        setIsSaving(true);
-        const { persistPathData } = await import("../DashboardContext/pathApi");
-        await persistPathData(supermarket.id, pathData);
-
-        console.log("Path data saved to database successfully!");
-
-        // Keep the saving indicator visible briefly
-        setTimeout(() => {
-          setIsSaving(false);
-        }, 500);
-
-        alert("Path optimization data computed and saved successfully!");
-      } else {
-        console.error("No supermarket ID found for saving path data");
-        alert(
-          "Path optimization data computed but not saved (missing supermarket ID)"
-        );
-      }
-    } catch (error) {
-      console.error("Failed to compute or save path data:", error);
-      setIsSaving(false);
-      alert("Failed to process path data. Please check console for details.");
-    } finally {
-      setIsComputingPaths(false);
-    }
+    // Delegate to global debounced recompute and give user feedback via global indicator
+    triggerPathRecompute();
   };
 
   // Function to confirm new layout size

@@ -4,6 +4,7 @@ import {
   useEffect,
   ReactNode,
   useCallback,
+  useRef,
 } from "react";
 import { SquareType, Square, EditableAction } from "../types";
 import { useAppContext } from "../../../context/AppContext";
@@ -105,6 +106,20 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     }, 1000);
     setPathComputeTimeout(t);
   }, [pathComputeTimeout, runPathComputation]);
+
+  // Safety-net: if the supermarket.layout reference changes anywhere in the app,
+  // trigger a debounced path recomputation. Skip on initial mount.
+  const didMountRef = useRef(false);
+  useEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
+    if (supermarket?.layout) {
+      triggerPathRecompute();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [supermarket?.layout]);
 
   // Wrapper around the API saveLayout function
   const saveLayout = async (layoutToSave?: Square[][]) => {
