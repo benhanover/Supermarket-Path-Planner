@@ -156,6 +156,8 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
     console.log(
       `Product import completed: ${results.successful} successful, ${results.failed} failed`
     );
+    // Recompute paths after import to keep pathData fresh
+    triggerPathRecompute();
   };
 
   return (
