@@ -33,7 +33,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
     triggerPathRecompute,
     // isComputingPaths,
   } = useDashboard();
-  const { supermarket, setSupermarket } = useAppContext();
+  const { /* supermarket, */ setSupermarket } = useAppContext();
 
   const [showSizePrompt, setShowSizePrompt] = useState(false);
   const [newRows, setNewRows] = useState<number | "">();
@@ -320,6 +320,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
         </button>
         */}
 
+        {/**
         {supermarket?.pathData && (
           <div className="mt-2 text-xs text-gray-600">
             Path data last updated:{" "}
@@ -328,6 +329,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
             ).toLocaleString()}
           </div>
         )}
+        */}
       </div>
 
       {/* Show Layout Controls only when Layout tab is active */}
