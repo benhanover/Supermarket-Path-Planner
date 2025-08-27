@@ -2,14 +2,14 @@ import { useState } from "react";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../../amplify/data/resource";
 import { useAppContext } from "../context/AppContext";
-import { useDashboard } from "./Dashboard/DashboardContext/useDashboard";
+// import { useDashboard } from "./Dashboard/DashboardContext/useDashboard";
 import { SquareType, Square } from "./Dashboard/types";
 
 const client = generateClient<Schema>();
 
 const InitializeLayout: React.FC = () => {
   const { setSupermarket, user } = useAppContext();
-  const { triggerPathRecompute } = useDashboard();
+  // const { triggerPathRecompute } = useDashboard();
   const [formData, setFormData] = useState({
     supermarketName: "",
     address: "",
@@ -87,8 +87,8 @@ const InitializeLayout: React.FC = () => {
 
       console.log("Supermarket created successfully:", newSupermarket.id);
       console.log("Empty pathData initialized for future path computation");
-      // Trigger initial path computation in background
-      triggerPathRecompute();
+      // Initial path computation will be triggered by DashboardProvider's safety-net
+      // effect when the Dashboard mounts and detects the new layout.
     } catch (error) {
       console.error("Failed to initialize supermarket:", error);
       setError("Failed to initialize supermarket. Please try again.");
