@@ -30,8 +30,6 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
     saveLayout,
     activeTab,
     setActiveTab,
-    triggerPathRecompute,
-    // isComputingPaths,
   } = useDashboard();
   const { /* supermarket, */ setSupermarket } = useAppContext();
 
@@ -48,11 +46,6 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
     }
   };
 
-  // Function to compute path data and save it to the database (hidden)
-  const computePathData = async () => {
-    // Delegate to global debounced recompute and give user feedback via global indicator
-    triggerPathRecompute();
-  };
 
   // Function to confirm new layout size
   const confirmLayoutSize = async () => {
@@ -95,7 +88,6 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
       // Save the layout to the database
       await saveLayout(newLayout);
       // Trigger path recompute after size change
-      triggerPathRecompute();
 
       setShowSizePrompt(false);
       setActiveAction(EditableAction.None);
@@ -113,7 +105,6 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
       `Product import completed: ${results.successful} successful, ${results.failed} failed`
     );
     // Recompute paths after import to keep pathData fresh
-    triggerPathRecompute();
   };
 
   return (
@@ -169,7 +160,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
           </div>
         )}
       </div>
-     
+
 
       {/* Path Optimization Button */}
       <div className="mb-4">

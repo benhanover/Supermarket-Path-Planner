@@ -18,7 +18,6 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
     removeProduct,
     isSaving,
     saveLayout,
-    triggerPathRecompute,
   } = useDashboard();
   const { supermarket, setSupermarket } = useAppContext();
 
@@ -81,8 +80,6 @@ const ProductsEditor = ({ mode }: ProductsEditorProps) => {
       } catch (error) {
         console.error("Failed to save product selection:", error);
       } finally {
-        // Recompute paths after the layout change
-        triggerPathRecompute();
       }
     }
   };
