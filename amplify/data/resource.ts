@@ -98,7 +98,7 @@ const schema = a.schema({
       createdAt: a.datetime(),
       completedAt: a.datetime(),
     })
-    .authorization((allow) => [allow.owner(), allow.authenticated().to(["read"])]), // you may want to allow read for authenticated users
+    .authorization((allow) => [allow.owner()]), // Only the owner can access their shopping lists
 });
 
 export type Schema = ClientSchema<typeof schema>;

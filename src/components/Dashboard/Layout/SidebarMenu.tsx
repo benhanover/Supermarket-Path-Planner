@@ -5,7 +5,7 @@ import { SquareType } from "../types";
 import { useState } from "react";
 // import { tspNearestNeighbor } from "../../../utils/tsp_heuristic";
 // import { tspHeldKarp } from "../../../utils/held_karp_tsp_optimal";
-// import ProductsImporter from "../../ProductsImporter"; // Import the ProductsImporter component
+import ProductsImporter from "../../ProductsImporter"; // Import the ProductsImporter component
 
 // Square types with colors for UI
 const squareTypes: { type: SquareType; color: string; label: string }[] = [
@@ -36,7 +36,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
   const [showSizePrompt, setShowSizePrompt] = useState(false);
   const [newRows, setNewRows] = useState<number | "">();
   const [newCols, setNewCols] = useState<number | "">();
-  // const [showImporter, setShowImporter] = useState(false); // New state for toggling the products importer
+  const [showImporter, setShowImporter] = useState(false); // New state for toggling the products importer
 
   // Handle tab change with optional sidebar closing for mobile
   const handleTabChange = (tab: "layout" | "products" | "product_square") => {
@@ -96,16 +96,16 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
     }
   };
 
-  // // Function to handle when import is complete
-  // const handleImportComplete = (results: {
-  //   successful: number;
-  //   failed: number;
-  // }) => {
-  //   console.log(
-  //     `Product import completed: ${results.successful} successful, ${results.failed} failed`
-  //   );
-  //   // Recompute paths after import to keep pathData fresh
-  // };
+  // Function to handle when import is complete
+  const handleImportComplete = (results: {
+    successful: number;
+    failed: number;
+  }) => {
+    console.log(
+      `Product import completed: ${results.successful} successful, ${results.failed} failed`
+    );
+    // Recompute paths after import to keep pathData fresh
+  };
 
   return (
     <div className="w-64 min-h-screen bg-gray-200 p-4 md:p-6 flex flex-col gap-3 shadow-lg overflow-y-auto">
@@ -136,15 +136,14 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
       </div>
 
 
-      {/* Import Products Section (hidden)
+      Import Products Section (hidden)
       <div className="mb-4">
         <button
           onClick={() => setShowImporter(!showImporter)}
           className={`w-full px-3 py-2 rounded-lg font-semibold text-sm md:text-base transition
-            ${
-              showImporter
-                ? "bg-indigo-700"
-                : "bg-indigo-600 hover:bg-indigo-700"
+            ${showImporter
+              ? "bg-indigo-700"
+              : "bg-indigo-600 hover:bg-indigo-700"
             }
             text-white`}
         >
@@ -156,7 +155,7 @@ const SidebarMenu = ({ closeSidebar }: SidebarMenuProps) => {
             <ProductsImporter onComplete={handleImportComplete} />
           </div>
         )}
-      </div> */}
+      </div>
 
 
       {/* Path Optimization Button */}
