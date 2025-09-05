@@ -4,7 +4,6 @@ import {
   useEffect,
   ReactNode,
   useCallback,
-  useRef,
 } from "react";
 import { SquareType, Square, EditableAction } from "../types";
 import { useAppContext } from "../../../context/AppContext";
@@ -42,8 +41,6 @@ interface DashboardContextType {
   addProduct: (product: Omit<Product, "id">) => Promise<string>;
   updateProductData: (product: Product) => Promise<void>;
   removeProduct: (productId: string) => Promise<void>;
-  isComputingPaths: boolean;
-  triggerPathRecompute: () => void;
 }
 
 // Create the context
@@ -66,9 +63,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   >("layout");
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
-  const [isComputingPaths, setIsComputingPaths] = useState(false);
-  const [pathComputeTimeout, setPathComputeTimeout] =
-    useState<NodeJS.Timeout | null>(null);
 
   // Clean up timeout on unmount
   useEffect(() => {
@@ -76,16 +70,12 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
       if (saveTimeout) {
         clearTimeout(saveTimeout);
       }
-      if (pathComputeTimeout) {
-        clearTimeout(pathComputeTimeout);
-      }
     };
-  }, [saveTimeout, pathComputeTimeout]);
+  }, [saveTimeout]);
 
   const runPathComputation = useCallback(async () => {
     if (!supermarket?.layout || !supermarket?.id) return;
     try {
-      setIsComputingPaths(true);
       const pathData = computePathDataForLayout(supermarket.layout);
       // Update local state first
       setSupermarket((prev) => (prev ? { ...prev, pathData } : prev));
@@ -95,42 +85,23 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
       console.error("Error computing path data:", error);
       // Non-fatal; leave previous pathData intact
     } finally {
-      setIsComputingPaths(false);
+      // Path computation is complete, so the entire "save" process is done
     }
   }, [supermarket, setSupermarket]);
-
-  const triggerPathRecompute = useCallback(() => {
-    if (pathComputeTimeout) clearTimeout(pathComputeTimeout);
-    const t = setTimeout(() => {
-      runPathComputation();
-    }, 1000);
-    setPathComputeTimeout(t);
-  }, [pathComputeTimeout, runPathComputation]);
-
-  // Safety-net: if the supermarket.layout reference changes anywhere in the app,
-  // trigger a debounced path recomputation. Skip on initial mount.
-  const didMountRef = useRef(false);
-  useEffect(() => {
-    if (!didMountRef.current) {
-      didMountRef.current = true;
-      return;
-    }
-    if (supermarket?.layout) {
-      triggerPathRecompute();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [supermarket?.layout]);
 
   // Wrapper around the API saveLayout function
   const saveLayout = async (layoutToSave?: Square[][]) => {
     if (!supermarket) return;
     try {
       await saveLayoutApi(supermarket, layoutToSave, setError, setIsSaving);
-      // After persisting layout, trigger path recompute (debounced)
-      triggerPathRecompute();
+      // After persisting layout, immediately run path computation
+      // Note: isSaving stays true until path computation completes
+      runPathComputation();
     } catch (error) {
       // Error handling is done within the API function
       console.error("Error in saveLayout:", error);
+      // Make sure to set isSaving to false if save fails
+      setIsSaving(false);
     }
   };
 
@@ -165,10 +136,11 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         setIsSaving
       );
       // Product data changes may affect path choices; recompute
-      triggerPathRecompute();
+      runPathComputation();
     } catch (error) {
       // Error handling is done within the API function
       console.error("Error in updateProductData:", error);
+      setIsSaving(false);
       throw error;
     }
   };
@@ -185,10 +157,11 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         setIsSaving
       );
       // Removing products from squares/layout can affect graph; recompute
-      triggerPathRecompute();
+      runPathComputation();
     } catch (error) {
       // Error handling is done within the API function
       console.error("Error in removeProduct:", error);
+      setIsSaving(false);
       throw error;
     }
   };
@@ -236,8 +209,8 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
           }, 1000);
 
           setSaveTimeout(newTimeout);
-          // Also trigger debounced path recompute (coalesced)
-          triggerPathRecompute();
+          // // Also trigger debounced path recompute (coalesced)
+          // triggerPathRecompute();
         } else {
           // For other actions, use the original implementation
           handleSquareClickAction(
@@ -262,7 +235,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
       selectedType,
       setActiveTab,
       saveTimeout,
-      triggerPathRecompute,
     ]
   );
 
@@ -291,16 +263,8 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         addProduct,
         updateProductData,
         removeProduct,
-        isComputingPaths,
-        triggerPathRecompute,
       }}
     >
-      {isComputingPaths && (
-        <div className="fixed bottom-4 left-4 bg-yellow-100 border border-yellow-300 text-yellow-800 px-3 py-2 rounded-lg shadow-md z-40 flex items-center space-x-2 pointer-events-none">
-          <div className="w-4 h-4 border-2 border-yellow-600 border-t-transparent rounded-full animate-spin"></div>
-          <span className="text-sm font-medium">Computing paths...</span>
-        </div>
-      )}
       {error && (
         <div className="fixed bottom-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50 shadow-lg max-w-md">
           <strong className="font-bold">Error in {error.source}:</strong>
