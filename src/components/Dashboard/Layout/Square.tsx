@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useEffect } from "react";
 import { Square as SquareType } from "../types";
 import { useDashboard } from "../DashboardContext/useDashboard";
 import { EditableAction } from "../types";
@@ -14,9 +14,13 @@ interface SquareProps {
 // Use memo to prevent unnecessary re-renders
 const Square = memo(
   ({ square, onMouseDown, onMouseEnter, onTouchStart }: SquareProps) => {
-    const { activeAction } = useDashboard();
-    const [showHover, setShowHover] = useState(false);
-    const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
+    const {
+      activeAction,
+      productCardSquare,
+      setProductCardSquare,
+      productCardPosition,
+      setProductCardPosition
+    } = useDashboard();
 
     const getColor = () => {
       switch (square.type) {
@@ -41,22 +45,48 @@ const Square = memo(
       onMouseEnter(square.row, square.col);
     };
 
-    // Handle hover events
-    const handleMouseOver = (e: React.MouseEvent) => {
-      // Only show hover card when not in any edit mode
+    // Handle click events for product cards
+    const handleClick = (e: React.MouseEvent) => {
+      // Only show product card when not in any edit mode and square has products
       if (
         activeAction === EditableAction.None &&
         square.type === "products" &&
         square.productIds.length > 0
       ) {
-        setHoverPosition({ x: e.clientX, y: e.clientY });
-        setShowHover(true);
+        e.stopPropagation(); // Prevent event bubbling
+
+        // If the same square is clicked, close it
+        if (productCardSquare?.row === square.row && productCardSquare?.col === square.col) {
+          setProductCardSquare(null);
+        } else {
+          // Otherwise, close any open card and open this one
+          setProductCardPosition({ x: e.clientX, y: e.clientY });
+          setProductCardSquare({ row: square.row, col: square.col });
+        }
       }
     };
 
-    const handleMouseLeave = () => {
-      setShowHover(false);
+    const handleCloseProductCard = () => {
+      setProductCardSquare(null);
     };
+
+    // Close card when clicking outside
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (productCardSquare) {
+          // Check if click is outside the ProductHoverCard
+          const target = event.target as Element;
+          if (target && !target.closest('.product-hover-card')) {
+            setProductCardSquare(null);
+          }
+        }
+      };
+
+      if (productCardSquare) {
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+      }
+    }, [productCardSquare, setProductCardSquare]);
 
     // Determine if square should be interactive based on active action
     const isInteractive =
@@ -67,6 +97,9 @@ const Square = memo(
     const { selectedSquare } = useDashboard();
     const isSelected =
       selectedSquare?.row === square.row && selectedSquare?.col === square.col;
+
+    // Check if this square should show the product card
+    const showProductCard = productCardSquare?.row === square.row && productCardSquare?.col === square.col;
 
     return (
       <div
@@ -85,13 +118,12 @@ const Square = memo(
           }
         ${isSelected ? "ring-4 ring-sky-600 z-10" : ""}
         ${square.type === "products" && square.productIds.length > 0 && activeAction === EditableAction.None
-            ? "hover:ring-2 hover:ring-green-500"
+            ? "hover:ring-2 hover:ring-green-500 cursor-pointer"
             : ""}
         `}
         onMouseDown={handleMouseDown}
         onMouseEnter={handleMouseEnter}
-        onMouseOver={handleMouseOver}
-        onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
         onTouchStart={onTouchStart}
         data-square-type={square.type}
         data-position={`${square.row},${square.col}`}
@@ -103,11 +135,12 @@ const Square = memo(
           </div>
         )}
 
-        {/* Product hover card */}
-        {showHover && (
+        {/* Product card */}
+        {showProductCard && (
           <ProductHoverCard
             square={square}
-            position={hoverPosition}
+            position={productCardPosition}
+            onClose={handleCloseProductCard}
           />
         )}
       </div>

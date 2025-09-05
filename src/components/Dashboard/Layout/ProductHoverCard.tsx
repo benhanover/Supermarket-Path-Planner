@@ -5,9 +5,10 @@ import { StorageImage } from '@aws-amplify/ui-react-storage';
 interface ProductHoverCardProps {
   square: Square;
   position: { x: number, y: number };
+  onClose: () => void;
 }
 
-const ProductHoverCard = ({ square, position }: ProductHoverCardProps) => {
+const ProductHoverCard = ({ square, position, onClose }: ProductHoverCardProps) => {
   const { supermarket } = useAppContext();
 
   if (!supermarket || square.type !== "products" || square.productIds.length === 0) {
@@ -30,17 +31,24 @@ const ProductHoverCard = ({ square, position }: ProductHoverCardProps) => {
     left: position.x,
     zIndex: 50,
     transform: 'translate(10px, 10px)', // Offset from cursor
-    maxHeight: '300px',
-    overflowY: 'auto',
     width: '220px',
   };
 
   return (
     <div
-      className="bg-white rounded-lg shadow-lg border border-gray-200 p-2"
+      className="bg-white rounded-lg shadow-lg border border-gray-200 p-2 product-hover-card"
       style={cardStyle}
     >
-      <h3 className="text-sm font-bold mb-2 text-gray-700">Products in this square:</h3>
+      <div className="flex justify-between items-center mb-2">
+        <h3 className="text-sm font-bold text-gray-700">Products in this square:</h3>
+        <button
+          onClick={onClose}
+          className="text-gray-400 hover:text-gray-600 text-sm font-bold w-5 h-5 flex items-center justify-center rounded-full hover:bg-gray-100"
+          aria-label="Close"
+        >
+          ×
+        </button>
+      </div>
       <div className="space-y-2 max-h-64 overflow-y-auto">
         {productList.map((product) => (
           product && (

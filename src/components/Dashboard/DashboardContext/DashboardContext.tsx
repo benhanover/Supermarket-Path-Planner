@@ -38,6 +38,10 @@ interface DashboardContextType {
   isSaving: boolean;
   setIsSaving: React.Dispatch<React.SetStateAction<boolean>>;
   saveLayout: (layoutToSave?: Square[][]) => Promise<void>;
+  productCardSquare: { row: number; col: number } | null;
+  setProductCardSquare: React.Dispatch<React.SetStateAction<{ row: number; col: number } | null>>;
+  productCardPosition: { x: number; y: number };
+  setProductCardPosition: React.Dispatch<React.SetStateAction<{ x: number; y: number }>>;
   addProduct: (product: Omit<Product, "id">) => Promise<string>;
   updateProductData: (product: Product) => Promise<void>;
   removeProduct: (productId: string) => Promise<void>;
@@ -63,6 +67,8 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   >("layout");
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [productCardSquare, setProductCardSquare] = useState<{ row: number; col: number } | null>(null);
+  const [productCardPosition, setProductCardPosition] = useState({ x: 0, y: 0 });
 
   // Clean up timeout on unmount
   useEffect(() => {
@@ -263,6 +269,10 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
         addProduct,
         updateProductData,
         removeProduct,
+        productCardSquare,
+        setProductCardSquare,
+        productCardPosition,
+        setProductCardPosition,
       }}
     >
       {error && (

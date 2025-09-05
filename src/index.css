@@ -5,11 +5,7 @@ body {
   @apply bg-white text-gray-900 font-sans;
 }
 
-/* Hide scrollbar for all elements */
-::-webkit-scrollbar {
-  display: none;
-  /* For Chrome, Safari, and Opera */
-}
+Hide scrollbar for all elements
 
 /* For Firefox */
 * {
