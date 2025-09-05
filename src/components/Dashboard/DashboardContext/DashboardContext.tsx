@@ -187,10 +187,16 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
             rowArray.map((square) => ({ ...square }))
           );
 
+          const currentSquare = supermarket.layout[row][col];
+
           // Update the specific square
           updatedLayout[row][col] = {
             ...updatedLayout[row][col],
             type: selectedType,
+            // Clear productIds if changing from "products" to another type
+            productIds: currentSquare.type === "products" && selectedType !== "products"
+              ? []
+              : updatedLayout[row][col].productIds,
           };
 
           // Update the state

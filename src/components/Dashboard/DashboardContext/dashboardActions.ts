@@ -67,9 +67,16 @@ export const handleSquareClick = (
       newLayout[row][col] = {
         ...newLayout[row][col],
         type: selectedType,
+        // Clear productIds if changing from "products" to another type
+        productIds: clickedSquare.type === "products" && selectedType !== "products"
+          ? []
+          : newLayout[row][col].productIds,
       };
 
       console.log("New square type:", newLayout[row][col].type);
+      if (clickedSquare.type === "products" && selectedType !== "products") {
+        console.log("Cleared productIds from former products square");
+      }
 
       // Create a new supermarket object with the new layout
       const newSupermarket = {
